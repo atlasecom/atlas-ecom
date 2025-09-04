@@ -109,6 +109,56 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Admin creation endpoint
+app.post('/create-admin', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    
+    // Check if admin already exists
+    const existingAdmin = await User.findOne({ email });
+    if (existingAdmin) {
+      return res.status(400).json({
+        success: false,
+        message: 'Admin account already exists!'
+      });
+    }
+    
+    // Hash password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password || 'Admin@123', saltRounds);
+    
+    // Create admin user
+    const adminUser = await User.create({
+      name: name || 'Admin User',
+      email: email || 'admin@atlasecom.com',
+      password: hashedPassword,
+      phoneNumber: '+1234567890',
+      address: '123 Admin Street, Admin City, AC 12345',
+      role: 'admin',
+      isVerified: true
+    });
+    
+    res.status(201).json({
+      success: true,
+      message: 'Admin account created successfully!',
+      admin: {
+        name: adminUser.name,
+        email: adminUser.email,
+        role: adminUser.role,
+        isVerified: adminUser.isVerified
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error creating admin:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating admin account',
+      error: error.message
+    });
+  }
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/shops', shopRoutes);
