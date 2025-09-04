@@ -4,6 +4,8 @@ const path = require('path');
 const fs = require('fs');
 const helmet = require('helmet');
 const compression = require('compression');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
 require('dotenv').config({ path: './config.env' });
 
 // Import database connection
@@ -947,7 +949,55 @@ deleteExpiredEvents().then(deletedCount => {
 });
 
 // Start server
-app.listen(PORT, () => {
+// Create HTTP server and Socket.IO
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: [
+      "http://localhost:3000", 
+      "http://localhost:3001",
+      "https://atlas-ecom-1.onrender.com",
+      "https://atlas-ecom-frontend.onrender.com"
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+  socket.on('addUser', (userId) => {
+    socket.join(userId);
+    console.log('User added to room:', userId);
+  });
+
+  socket.on('sendMessage', (data) => {
+    const { receiverId, senderId, text } = data;
+    socket.to(receiverId).emit('getMessage', {
+      senderId,
+      text,
+      createdAt: new Date()
+    });
+  });
+
+  socket.on('updateLastMessage', (data) => {
+    const { lastMessage, lastMessageId } = data;
+    socket.emit('getLastMessage', {
+      lastMessage,
+      lastMessageId,
+      createdAt: new Date()
+    });
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
+
+// Start the server
+httpServer.listen(PORT, () => {
   console.log(`🚀 Atlas Ecom Backend Server running on http://localhost:${PORT}`);
   console.log(`📱 Frontend can connect to: http://localhost:${PORT}`);
   console.log(`🔍 Health check: http://localhost:${PORT}/health`);
@@ -960,6 +1010,7 @@ app.listen(PORT, () => {
   console.log(`🔑 JWT Secret loaded: ${process.env.JWT_SECRET ? 'Yes' : 'No'}`);
   console.log(`🔑 JWT Expire: ${process.env.JWT_EXPIRE || 'Not set'}`);
   console.log(`🕐 Automatic event cleanup: Every hour`);
+  console.log(`🔌 Socket.IO server running on port ${PORT}`);
 });
 
 // Graceful shutdown
