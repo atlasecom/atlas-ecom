@@ -1,11 +1,10 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const Shop = require('../models/Shop');
 const User = require('../models/User');
 const { protect, authorize, checkOwnership } = require('../middleware/auth');
+const { upload } = require('../config/cloudinary');
 
 const router = express.Router();
 
@@ -38,38 +37,7 @@ const deleteExpiredEvents = async () => {
   }
 };
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = './uploads/shops';
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 10 * 1024 * 1024 // 10MB
-  },
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif|webp/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    
-    if (mimetype && extname) {
-      return cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'));
-    }
-  }
-});
+// Cloudinary upload is configured in ../config/cloudinary.js
 
 // @desc    Create shop (for existing sellers)
 // @route   POST /api/shops
@@ -117,8 +85,8 @@ router.post('/', protect, authorize('seller'), upload.single('image'), [
     // Add banner if uploaded
     if (req.file) {
       shopData.banner = {
-        public_id: req.file.filename,
-        url: `https://${req.get('host')}/uploads/shops/${req.file.filename}`
+        public_id: req.file.public_id,
+        url: req.file.secure_url
       };
     }
 
@@ -201,8 +169,8 @@ router.post('/become-seller', protect, upload.single('image'), [
     // Add banner if uploaded
     if (req.file) {
       shopData.banner = {
-        public_id: req.file.filename,
-        url: `https://${req.get('host')}/uploads/shops/${req.file.filename}`
+        public_id: req.file.public_id,
+        url: req.file.secure_url
       };
     }
 
@@ -349,8 +317,8 @@ router.put('/:id', protect, upload.single('image'), [
     // Add banner if uploaded
     if (req.file) {
       updateData.banner = {
-        public_id: req.file.filename,
-        url: `https://${req.get('host')}/uploads/shops/${req.file.filename}`
+        public_id: req.file.public_id,
+        url: req.file.secure_url
       };
     }
 

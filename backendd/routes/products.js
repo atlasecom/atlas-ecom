@@ -1,46 +1,12 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const Product = require('../models/Product');
 const Shop = require('../models/Shop');
 const { protect, authorize, checkOwnership } = require('../middleware/auth');
+const { upload } = require('../config/cloudinary');
 
 const router = express.Router();
-
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = './uploads/products';
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 10 * 1024 * 1024 // 10MB
-  },
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif|webp/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    
-    if (mimetype && extname) {
-      return cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'));
-    }
-  }
-});
 
 // @desc    Create product
 // @route   POST /api/products/:shopId
@@ -109,10 +75,10 @@ router.post('/:shopId', protect, authorize('seller'), upload.array('images', 10)
       shop: shopId
     };
 
-    // Add images
+    // Add images from Cloudinary
     productData.images = req.files.map(file => ({
-      public_id: file.filename,
-      url: `https://${req.get('host')}/uploads/products/${file.filename}`
+      public_id: file.public_id,
+      url: file.secure_url
     }));
 
     // Create product
@@ -327,8 +293,8 @@ router.put('/:id', protect, upload.array('images', 10), [
     // Add new images if uploaded
     if (req.files && req.files.length > 0) {
       const newImages = req.files.map(file => ({
-        public_id: file.filename,
-        url: `https://${req.get('host')}/uploads/products/${file.filename}`
+        public_id: file.public_id,
+        url: file.secure_url
       }));
       
       // Keep existing images and add new ones

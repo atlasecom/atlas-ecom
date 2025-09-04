@@ -1,11 +1,10 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const Event = require('../models/Event');
 const Shop = require('../models/Shop');
 const { protect, authorize } = require('../middleware/auth');
+const { upload } = require('../config/cloudinary');
 
 const router = express.Router();
 
@@ -37,38 +36,7 @@ const deleteExpiredEvents = async () => {
   }
 };
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = './uploads/events';
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 10 * 1024 * 1024 // 10MB
-  },
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif|webp/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    
-    if (mimetype && extname) {
-      return cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'), false);
-    }
-  }
-});
+// Cloudinary upload is configured in ../config/cloudinary.js
 
 // @desc    Get all events
 // @route   GET /api/events
@@ -206,8 +174,8 @@ router.post('/', protect, authorize('seller'), upload.array('images', 5), [
     // Add images if uploaded
     if (req.files && req.files.length > 0) {
       eventData.images = req.files.map(file => ({
-        public_id: file.filename,
-        url: `/uploads/events/${file.filename}`
+        public_id: file.public_id,
+        url: file.secure_url
       }));
     }
 
@@ -293,8 +261,8 @@ router.put('/:id', protect, upload.array('images', 5), [
     // Add new images if uploaded
     if (req.files && req.files.length > 0) {
       const newImages = req.files.map(file => ({
-        public_id: file.filename,
-        url: `/uploads/events/${file.filename}`
+        public_id: file.public_id,
+        url: file.secure_url
       }));
       
       // Keep existing images and add new ones

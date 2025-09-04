@@ -2,40 +2,16 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
 const path = require('path');
 const passport = require('../config/passport');
 const User = require('../models/User');
 const Shop = require('../models/Shop');
 const { protect, authorize } = require('../middleware/auth');
+const { upload } = require('../config/cloudinary');
 
 const router = express.Router();
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, '..', 'uploads', 'avatars');
-    cb(null, uploadPath);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB limit
-  },
-  fileFilter: function (req, file, cb) {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'), false);
-    }
-  }
-});
+// Cloudinary upload is configured in ../config/cloudinary.js
 
 // @desc    Google OAuth routes - MUST BE BEFORE /:id route to avoid conflicts
 // @route   GET /auth/google
@@ -145,8 +121,8 @@ router.post('/register', upload.single('image'), [
     // Add avatar if uploaded
     if (req.file) {
       userData.avatar = {
-        public_id: req.file.filename,
-        url: `/uploads/avatars/${req.file.filename}`
+        public_id: req.file.public_id,
+        url: req.file.secure_url
       };
     }
 
@@ -226,8 +202,8 @@ router.post('/', upload.single('image'), [
     // Add avatar if uploaded
     if (req.file) {
       userData.avatar = {
-        public_id: req.file.filename,
-        url: `/uploads/avatars/${req.file.filename}`
+        public_id: req.file.public_id,
+        url: req.file.secure_url
       };
     }
 
@@ -593,8 +569,8 @@ router.put('/avatar', protect, upload.single('image'), async (req, res) => {
       console.log('File upload detected:', req.file);
       // File upload case
       avatarData = {
-        public_id: req.file.filename,
-        url: `/uploads/avatars/${req.file.filename}`
+        public_id: req.file.public_id,
+        url: req.file.secure_url
       };
     } else if (req.body.avatar) {
       console.log('JSON reset detected:', req.body.avatar);
