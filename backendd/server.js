@@ -43,8 +43,15 @@ app.use(compression());
 
 // Enable CORS for frontend
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:3001"],
-  credentials: true
+  origin: [
+    "http://localhost:3000", 
+    "http://localhost:3001",
+    "https://atlas-ecom-1.onrender.com",
+    "https://atlas-ecom-frontend.onrender.com"
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
 }));
 
 // Global CORS headers for all responses
