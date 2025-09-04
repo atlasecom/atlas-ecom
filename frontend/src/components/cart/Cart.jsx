@@ -157,13 +157,19 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
                 return "/default-product.png";
               }
 
+              // Force HTTPS for production URLs
+              if (imageUrl && imageUrl.startsWith('http://')) {
+                imageUrl = imageUrl.replace('http://', 'https://');
+              }
+
               // Handle relative URLs by adding backend URL
               if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('/')) {
                 imageUrl = `/${imageUrl}`;
               }
               
               if (imageUrl && imageUrl.startsWith('/') && !imageUrl.startsWith('//')) {
-                imageUrl = `${backend_url.replace(/\/$/, "")}${imageUrl}`;
+                const baseUrl = backend_url.replace(/\/$/, "").replace('http://', 'https://');
+                imageUrl = `${baseUrl}${imageUrl}`;
               }
 
               return imageUrl || "/default-product.png";

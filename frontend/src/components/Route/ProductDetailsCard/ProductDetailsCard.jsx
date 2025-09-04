@@ -156,10 +156,14 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                           const imageObj = data.images[0];
                           // Handle different image formats with cache busting
                           if (imageObj && typeof imageObj === 'object' && imageObj.url) {
-                            return imageObj.url + '?v=' + Date.now();
+                            // Force HTTPS for production URLs
+                            const httpsUrl = imageObj.url.replace('http://', 'https://');
+                            return httpsUrl + '?v=' + Date.now();
                           }
                           if (typeof imageObj === 'string') {
-                            return imageObj + '?v=' + Date.now();
+                            // Force HTTPS for production URLs
+                            const httpsUrl = imageObj.replace('http://', 'https://');
+                            return httpsUrl + '?v=' + Date.now();
                           }
                         }
                         return "/placeholder-image.jpg";

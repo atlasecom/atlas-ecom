@@ -263,7 +263,8 @@ const DashboardHero = () => {
                                                                     if (imageObj && typeof imageObj === 'object' && imageObj.url) {
                                                                         const imageUrl = imageObj.url;
                                                                         if (typeof imageUrl === 'string' && imageUrl.startsWith("http")) {
-                                                                            return imageUrl;
+                                                                            // Force HTTPS for production URLs
+                                                                            return imageUrl.replace('http://', 'https://');
                                                                         }
                                                                         if (typeof imageUrl === 'string') {
                                                                             return `/uploads/${imageUrl}`;
@@ -271,7 +272,8 @@ const DashboardHero = () => {
                                                                     }
                                                                     if (typeof imageObj === 'string') {
                                                                         if (imageObj.startsWith("http")) {
-                                                                            return imageObj;
+                                                                            // Force HTTPS for production URLs
+                                                                            return imageObj.replace('http://', 'https://');
                                                                         }
                                                                         return `/uploads/${imageObj}`;
                                                                     }

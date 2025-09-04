@@ -109,10 +109,14 @@ const ProductCard = ({ data, isEvent }) => {
       const imageObj = data.images[0];
       // Handle different image formats with cache busting
       if (imageObj && typeof imageObj === 'object' && imageObj.url) {
-        return imageObj.url + '?v=' + Date.now();
+        // Force HTTPS for production URLs
+        const httpsUrl = imageObj.url.replace('http://', 'https://');
+        return httpsUrl + '?v=' + Date.now();
       }
       if (typeof imageObj === 'string') {
-        return imageObj + '?v=' + Date.now();
+        // Force HTTPS for production URLs
+        const httpsUrl = imageObj.replace('http://', 'https://');
+        return httpsUrl + '?v=' + Date.now();
       }
     }
     return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMDAgODBDMTAzLjMxNCA4MCAxMDYgODIuNjg2MyAxMDYgODZDMTA2IDg5LjMxMzcgMTAzLjMxNCA5MiAxMDAgOTJDOTYuNjg2MyA5MiA5NCA4OS4zMTM3IDk0IDg2Qzk0IDgyLjY4NjMgOTYuNjg2MyA4MCAxMDAgODBaIiBmaWxsPSIjOUM5Qzk3Ii8+CjxwYXRoIGQ9Ik0xNDAgMTIwSDYwTDc2LjE4IDEwMy44MkwxMDAgMTI4TDEyMy44MiAxMDMuODJMMTQwIDEyMFoiIGZpbGw9IiM5QzlDOTciLz4KPC9zdmc+";

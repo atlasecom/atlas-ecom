@@ -120,19 +120,25 @@ const ProductCard = ({ data, isEvent }) => {
       if (imageObj && typeof imageObj === 'object' && imageObj.url) {
         const imageUrl = imageObj.url;
         if (typeof imageUrl === 'string' && imageUrl.startsWith("http")) {
-          return imageUrl + '?v=' + Date.now();
+          // Force HTTPS for production URLs
+          const httpsUrl = imageUrl.replace('http://', 'https://');
+          return httpsUrl + '?v=' + Date.now();
         }
         if (typeof imageUrl === 'string') {
           // For relative paths like /uploads/events/filename.jpg
-          return `${server.replace(/\/$/, "")}${imageUrl}?v=${Date.now()}`;
+          const baseUrl = server.replace(/\/$/, "").replace('http://', 'https://');
+          return `${baseUrl}${imageUrl}?v=${Date.now()}`;
         }
       }
       if (typeof imageObj === 'string') {
         if (imageObj.startsWith("http")) {
-          return imageObj + '?v=' + Date.now();
+          // Force HTTPS for production URLs
+          const httpsUrl = imageObj.replace('http://', 'https://');
+          return httpsUrl + '?v=' + Date.now();
         }
         // For direct string paths
-        return `${server.replace(/\/$/, "")}/${imageObj.replace(/^\//, "")}?v=${Date.now()}`;
+        const baseUrl = server.replace(/\/$/, "").replace('http://', 'https://');
+        return `${baseUrl}/${imageObj.replace(/^\//, "")}?v=${Date.now()}`;
       }
     }
     if (data?.image) {
@@ -140,17 +146,23 @@ const ProductCard = ({ data, isEvent }) => {
       if (imageObj && typeof imageObj === 'object' && imageObj.url) {
         const imageUrl = imageObj.url;
         if (typeof imageUrl === 'string' && imageUrl.startsWith("http")) {
-          return imageUrl + '?v=' + Date.now();
+          // Force HTTPS for production URLs
+          const httpsUrl = imageUrl.replace('http://', 'https://');
+          return httpsUrl + '?v=' + Date.now();
         }
         if (typeof imageUrl === 'string') {
-          return `${server.replace(/\/$/, "")}${imageUrl}?v=${Date.now()}`;
+          const baseUrl = server.replace(/\/$/, "").replace('http://', 'https://');
+          return `${baseUrl}${imageUrl}?v=${Date.now()}`;
         }
       }
       if (typeof imageObj === 'string') {
         if (imageObj.startsWith("http")) {
-          return imageObj + '?v=' + Date.now();
+          // Force HTTPS for production URLs
+          const httpsUrl = imageObj.replace('http://', 'https://');
+          return httpsUrl + '?v=' + Date.now();
         }
-        return `${server.replace(/\/$/, "")}/${imageObj.replace(/^\//, "")}?v=${Date.now()}`;
+        const baseUrl = server.replace(/\/$/, "").replace('http://', 'https://');
+        return `${baseUrl}/${imageObj.replace(/^\//, "")}?v=${Date.now()}`;
       }
     }
     return isEvent ? '/default-event.png' : '/default-product.png';
