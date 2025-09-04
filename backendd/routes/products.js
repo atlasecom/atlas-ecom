@@ -5,6 +5,7 @@ const Product = require('../models/Product');
 const Shop = require('../models/Shop');
 const { protect, authorize, checkOwnership } = require('../middleware/auth');
 const { upload } = require('../config/cloudinary');
+const { getImageUrlFromFile } = require('../utils/imageUtils');
 
 const router = express.Router();
 
@@ -76,21 +77,10 @@ router.post('/:shopId', protect, authorize('seller'), upload.array('images', 10)
     };
 
     // Add images (Cloudinary or local storage)
-    productData.images = req.files.map(file => {
-      if (file.secure_url) {
-        // Cloudinary
-        return {
-          public_id: file.public_id,
-          url: file.secure_url
-        };
-      } else {
-        // Local storage
-        return {
-          public_id: file.filename,
-          url: `https://${req.get('host')}/uploads/products/${file.filename}`
-        };
-      }
-    });
+    productData.images = req.files.map(file => ({
+      public_id: file.public_id || file.filename,
+      url: getImageUrlFromFile(req, file, 'products')
+    }));
 
     // Create product
     const product = await Product.create(productData);
@@ -303,21 +293,10 @@ router.put('/:id', protect, upload.array('images', 10), [
 
     // Add new images if uploaded
     if (req.files && req.files.length > 0) {
-      const newImages = req.files.map(file => {
-        if (file.secure_url) {
-          // Cloudinary
-          return {
-            public_id: file.public_id,
-            url: file.secure_url
-          };
-        } else {
-          // Local storage
-          return {
-            public_id: file.filename,
-            url: `https://${req.get('host')}/uploads/products/${file.filename}`
-          };
-        }
-      });
+      const newImages = req.files.map(file => ({
+        public_id: file.public_id || file.filename,
+        url: getImageUrlFromFile(req, file, 'products')
+      }));
       
       // Keep existing images and add new ones
       updateData.images = [...(product.images || []), ...newImages];
