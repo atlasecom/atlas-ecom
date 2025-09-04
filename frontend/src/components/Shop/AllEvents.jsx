@@ -1,0 +1,357 @@
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { deleteEvent, clearErrors } from "../../redux/actions/event";
+import { server } from "../../server";
+import Loader from "../Layout/Loader";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { getAuthToken } from "../../utils/auth";
+
+const AllEvents = () => {
+  const [events, setEvents] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useSelector((state) => state.user);
+  const eventState = useSelector((state) => state.events);
+  const message = eventState?.message || null;
+  const error = eventState?.error || null;
+  const deleteLoading = eventState?.isLoading || false;
+  const dispatch = useDispatch();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
+  const [localDeleteLoading, setLocalDeleteLoading] = useState(false);
+
+  // Fetch all events for the shop
+  const fetchEvents = async () => {
+    try {
+      setIsLoading(true);
+      const token = getAuthToken();
+      const shopId = user.shop._id || user.shop;
+      const { data } = await axios.get(`${server}/api/shops/${shopId}/events`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setEvents(data.events || []);
+      
+      // Show notification if expired events were deleted
+      if (data.deletedExpiredEvents && data.deletedExpiredEvents > 0) {
+        toast.info(`🕐 ${data.deletedExpiredEvents} expired event(s) were automatically deleted`);
+      }
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      toast.error(error.response?.data?.message || 'Failed to fetch events');
+      setEvents([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.shop) {
+      fetchEvents();
+    }
+  }, [user?.shop]);
+
+  const handleDelete = (id) => {
+    const event = events.find(e => e._id === id);
+    setEventToDelete(event);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!eventToDelete) return;
+    
+    setLocalDeleteLoading(true);
+    try {
+      console.log('Deleting event with ID:', eventToDelete._id);
+      await dispatch(deleteEvent(eventToDelete._id));
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      toast.error('Failed to delete event. Please try again.');
+    } finally {
+      setLocalDeleteLoading(false);
+    }
+  };
+
+  // Handle delete success/error from Redux state
+  useEffect(() => {
+    if (message && !deleteLoading) {
+      toast.success(message);
+      setDeleteModalOpen(false);
+      setEventToDelete(null);
+      
+      // Refresh the events list
+      fetchEvents();
+      
+      // Clear the message
+      dispatch(clearErrors());
+    }
+  }, [message, deleteLoading, dispatch]);
+
+  // Handle delete error from Redux state
+  useEffect(() => {
+    if (error && !deleteLoading) {
+      toast.error(error);
+      // Clear the error
+      dispatch(clearErrors());
+    }
+  }, [error, deleteLoading, dispatch]);
+
+  const cancelDelete = () => {
+    setDeleteModalOpen(false);
+    setEventToDelete(null);
+  };
+
+  const openImageModal = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setModalOpen(false);
+    setSelectedImage("");
+  };
+
+  const getImageUrl = (event) => {
+    if (event?.images && Array.isArray(event.images) && event.images.length > 0) {
+      const imageObj = event.images[0];
+      
+      // Handle different image formats with cache busting
+      if (imageObj && typeof imageObj === 'object' && imageObj.url) {
+        const imageUrl = imageObj.url;
+        if (typeof imageUrl === 'string' && imageUrl.startsWith("http")) {
+          return imageUrl + '?v=' + Date.now();
+        }
+        if (typeof imageUrl === 'string') {
+          // For relative paths like /uploads/events/filename.jpg
+          return `${server.replace(/\/$/, "")}${imageUrl}?v=${Date.now()}`;
+        }
+      }
+      if (typeof imageObj === 'string') {
+        if (imageObj.startsWith("http")) {
+          return imageObj + '?v=' + Date.now();
+        }
+        // For direct string paths
+        return `${server.replace(/\/$/, "")}/${imageObj.replace(/^\//, "")}?v=${Date.now()}`;
+      }
+    }
+    return '/default-event.png';
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  return (
+    <div className="w-full p-4">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">All Events</h1>
+        <Link
+          to="/dashboard-create-event"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          + Add New Event
+        </Link>
+      </div>
+
+      {events.length === 0 ? (
+        <div className="text-center py-12">
+          <span className="text-6xl mb-4 block">🎉</span>
+          <h3 className="text-xl font-semibold text-gray-600 mb-2">No Events Found</h3>
+          <p className="text-gray-500 mb-4">Start by creating your first event</p>
+          <Link
+            to="/dashboard-create-event"
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Create Event
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {events.map((event) => (
+            <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+              {/* Event Image */}
+              <div className="relative h-48 bg-gray-200">
+                                 <img
+                   src={getImageUrl(event)}
+                   alt={event.name}
+                   className="w-full h-full object-cover cursor-pointer"
+                   onClick={() => openImageModal(getImageUrl(event))}
+                   onError={(e) => {
+                     console.error('Image load error for event:', event.name, 'URL:', e.target.src);
+                     // Try alternative loading methods
+                     const imageObj = event.images?.[0];
+                     if (imageObj && typeof imageObj === 'object' && imageObj.url) {
+                       // Try without cache busting
+                       e.target.src = imageObj.url;
+                     } else {
+                       e.target.src = '/default-event.png';
+                     }
+                   }}
+                   onLoad={() => {
+                     console.log('Image loaded successfully for event:', event.name);
+                   }}
+                 />
+                <div className="absolute top-2 right-2">
+                  <span className="px-2 py-1 bg-purple-500 text-white text-xs rounded-full">
+                    {event.category}
+                  </span>
+                </div>
+                <div className="absolute top-2 left-2">
+                  <span className={`px-2 py-1 text-white text-xs rounded-full ${
+                    event.status === 'Running' ? 'bg-green-500' :
+                    event.status === 'Ended' ? 'bg-red-500' : 'bg-yellow-500'
+                  }`}>
+                    {event.status}
+                  </span>
+                </div>
+                {/* Show expiration warning if event ends within 24 hours */}
+                {(() => {
+                  const endDate = new Date(event.Finish_Date);
+                  const now = new Date();
+                  const timeDiff = endDate.getTime() - now.getTime();
+                  const hoursLeft = timeDiff / (1000 * 60 * 60);
+                  
+                  if (hoursLeft > 0 && hoursLeft <= 24) {
+                    return (
+                      <div className="absolute bottom-2 left-2">
+                        <span className="px-2 py-1 bg-orange-500 text-white text-xs rounded-full animate-pulse">
+                          ⏰ Expires in {Math.ceil(hoursLeft)}h
+                        </span>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+              </div>
+
+              {/* Event Info */}
+              <div className="p-4">
+                <h3 className="font-semibold text-gray-900 mb-2 truncate">{event.name}</h3>
+                <p className="text-gray-600 text-sm mb-3 line-clamp-2">{event.description}</p>
+                
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg font-bold text-green-600">${event.discountPrice}</span>
+                    {event.originalPrice && event.originalPrice > event.discountPrice && (
+                      <span className="text-sm text-gray-500 line-through">${event.originalPrice}</span>
+                    )}
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span className="text-yellow-400">⭐</span>
+                    <span className="text-sm text-gray-600">{event.ratings || 0}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-sm mb-4">
+                  <div>
+                    <span className="text-gray-500">Stock:</span>
+                    <span className={`ml-1 font-medium ${event.stock < 10 ? 'text-red-600' : 'text-gray-900'}`}>
+                      {event.stock}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Sold:</span>
+                    <span className="ml-1 font-medium text-gray-900">{event.sold_out || 0}</span>
+                  </div>
+                </div>
+
+                <div className="text-xs text-gray-500 mb-4">
+                  <div className="flex justify-between">
+                    <span>Start: {formatDate(event.start_Date)}</span>
+                    <span>End: {formatDate(event.Finish_Date)}</span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex space-x-2">
+                  <Link
+                    to={`/product/${event._id}?isEvent=true`}
+                    className="flex-1 bg-blue-600 text-white text-sm py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+                  >
+                    <span className="mr-1">👁️</span>
+                    Preview
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(event._id)}
+                    className="flex-1 bg-red-600 text-white text-sm py-2 px-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center"
+                  >
+                    <span className="mr-1">🗑️</span>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Image Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <div className="relative max-w-4xl max-h-full mx-4">
+            <button
+              onClick={closeImageModal}
+              className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
+            >
+              <span className="text-3xl">✕</span>
+            </button>
+            <img
+              src={selectedImage}
+              alt="Event"
+              className="max-w-full max-h-full object-contain rounded-lg"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Delete Event</h3>
+              <button
+                onClick={cancelDelete}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <span className="text-2xl">✕</span>
+              </button>
+            </div>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete "{eventToDelete?.name}"? This action cannot be undone.
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={cancelDelete}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={localDeleteLoading || deleteLoading}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                {(localDeleteLoading || deleteLoading) ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AllEvents;

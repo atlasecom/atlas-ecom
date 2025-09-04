@@ -1,0 +1,642 @@
+import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import styles from "../../styles/styles";
+import { productData, categoriesData } from "../../static/data";
+import { useLocation } from "react-router-dom";
+import {motion, AnimatePresence } from 'framer-motion'
+import {
+  AiOutlineSearch,
+  AiOutlineUser,
+  AiOutlineHeart,
+} from "react-icons/ai";
+import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
+import { BiMenuAltLeft } from "react-icons/bi";
+import { CgProfile } from "react-icons/cg";
+import DropDown from "./DropDown";
+import Navbar from "./Navbar";
+import LanguageChanger from "./LanguageChanger";
+import { useSelector, useDispatch } from "react-redux";
+import { backend_url, server } from "../../server";
+import { addToWishlist, removeFromWishlist } from "../../redux/actions/wishlist";
+
+import { RxCross1 } from "react-icons/rx";
+import atlasLogo from "../../Assests/images/atlasEcom.png";
+import axios from "axios";
+import { useTranslation } from "react-i18next";
+import Avatar from "../Common/Avatar";
+
+// Add custom scrollbar styles
+const customScrollbarStyles = `
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+`;
+
+const Header = ({ activeHeading }) => {
+  const { isSeller } = useSelector((state) => state.seller);
+  const { isAuthenticated, user } = useSelector((state) => state.user);
+  const { allProducts } = useSelector((state) => state.products);
+  const { wishlist } = useSelector((state) => state.wishlist);
+  const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchData, setSearchData] = useState(null);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [active, setActive] = useState(false);
+  const [dropDown, setDropDown] = useState(false);
+  const [open, setOpen] = useState(false); // mobile menu
+  const [showWishlist, setShowWishlist] = useState(false);
+  const location = useLocation();
+  const { t, i18n } = useTranslation();
+
+  // Initialize document direction on component mount
+  useEffect(() => {
+    document.dir = i18n.language === "ar" ? "rtl" : "ltr";
+  }, [i18n.language]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const urlTerm = params.get("item") || "";
+    setSearchTerm(urlTerm);
+  }, [location.search]);
+  const navigate = useNavigate();
+  const handleSearchSubmit = () => {
+    const term = searchTerm.trim();
+    if (!term) return;
+    setOpen(false);
+    navigate(`/products/search?item=${encodeURIComponent(term)}`);
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${backend_url}/login/google`;
+  };
+
+  const toggleWishlist = () => {
+    setShowWishlist(!showWishlist);
+  };
+
+  const addToWishlistHandler = (product) => {
+    dispatch(addToWishlist(product));
+  };
+
+  const removeFromWishlistHandler = (product) => {
+    dispatch(removeFromWishlist(product));
+  };
+  // Handle search change
+  const searchTimeout = useRef();
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+    
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+
+    if (!term.trim()) {
+      setSearchData(null);
+      setSearchLoading(false);
+      return;
+    }
+
+    searchTimeout.current = setTimeout(async () => {
+      setSearchLoading(true);
+      try {
+        console.log('Searching for:', term);
+        console.log('Search URL:', `${server}/api/products/search?term=${encodeURIComponent(term)}&limit=8`);
+        
+        const { data } = await axios.get(
+          `${server}/api/products/search?term=${encodeURIComponent(term)}&limit=8`
+        );
+        
+        console.log('Search response:', data);
+        setSearchData(data.products || []);
+      } catch (error) {
+        console.error('Search error:', error);
+        console.error('Error details:', error.response?.data || error.message);
+        setSearchData([]);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 400); // 400ms debounce
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 70) {
+        setActive(true);
+      } else {
+        setActive(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Close search results when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchData && !event.target.closest('.search-container')) {
+        setSearchData(null);
+      }
+      if (showWishlist && !event.target.closest('.wishlist-container')) {
+        setShowWishlist(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [searchData, showWishlist]);
+
+  console.log(user)
+
+  return (
+    <>
+      {/* Inject custom scrollbar styles */}
+      <style>{customScrollbarStyles}</style>
+      
+      {/* Top Header Bar */}
+      <div className="bg-gradient-to-r from-orange-600 to-orange-700 text-white py-2 hidden lg:block">
+        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center text-sm">
+          <div className="flex items-center space-x-6">
+            <span className="flex items-center">
+              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+              </svg>
+              Delivery throughout Morocco
+            </span>
+            <span className="flex items-center">
+              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              24/7 Customer Support
+            </span>
+          </div>
+          <div className="flex items-center space-x-4">
+            <LanguageChanger />
+            <span>|</span>
+            <span>Track Order</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Header */}
+      <div className={`${active ? 'shadow-lg bg-white/95 backdrop-blur-md' : 'bg-white'} transition-all duration-300 sticky top-0 z-50`}>
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <Link to="/" className="flex items-center">
+                <img
+                  src={atlasLogo}
+                  alt="Atlas Ecom Logo"
+                  className="h-16 w-auto"
+                />
+              </Link>
+            </div>
+
+            {/* Search Bar */}
+            <div className="hidden lg:flex flex-1 max-w-2xl mx-8 search-container">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSearchSubmit();
+                }}
+                className="w-full"
+              >
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder={t("header.searchBar.placeholder")}
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="w-full pl-12 pr-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 text-slate-700 placeholder-slate-400"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-400 hover:text-orange-500 transition-colors"
+                  >
+                    <AiOutlineSearch size={20} />
+                  </button>
+                </div>
+              </form>
+              
+                            {/* Search Results Dropdown */}
+              {(searchData || searchLoading) && (
+                <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-gray-100 max-h-96 overflow-y-auto z-50">
+                  {searchLoading ? (
+                    <div className="px-6 py-8 text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto mb-3"></div>
+                      <p className="text-slate-600 font-medium">Searching...</p>
+                      <p className="text-sm text-slate-400 mt-1">Looking for the best products</p>
+                    </div>
+                  ) : searchData.length > 0 ? (
+                    <>
+                      <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-red-50">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-semibold text-orange-700">
+                            Found {searchData.length} product{searchData.length !== 1 ? 's' : ''}
+                          </p>
+                          <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                        </div>
+                      </div>
+                      <div className="p-2">
+                        {searchData.map((i, index) => (
+                          <div key={index} className="group flex items-center p-4 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 transition-all duration-300 rounded-xl border border-transparent hover:border-orange-200 mb-2 last:mb-0">
+                            <Link to={`/product/${i._id}`} className="flex items-center flex-1">
+                              <div className="relative">
+                                <img
+                                  src={(() => {
+                                    if (i?.images && Array.isArray(i.images) && i.images.length > 0) {
+                                      const imageObj = i.images[0];
+                                      if (imageObj && typeof imageObj === 'object' && imageObj.url) {
+                                        const imageUrl = imageObj.url;
+                                        if (typeof imageUrl === 'string' && imageUrl.startsWith("http")) {
+                                          return imageUrl;
+                                        }
+                                        if (typeof imageUrl === 'string') {
+                                          return `${backend_url}/${imageUrl.replace(/^\/+/, "")}`;
+                                        }
+                                      }
+                                      if (typeof imageObj === 'string') {
+                                        if (imageObj.startsWith("http")) {
+                                          return imageObj;
+                                        }
+                                        return `${backend_url}/${imageObj.replace(/^\/+/, "")}`;
+                                      }
+                                    }
+                                    return '/default-product.png';
+                                  })()}
+                                  alt="img"
+                                  className="w-16 h-16 object-cover rounded-xl shadow-md mr-4"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-slate-800 truncate group-hover:text-orange-600 transition-colors">{i.name}</h3>
+                                <div className="flex items-center space-x-2 mt-2">
+                                  <span className="text-xs bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
+                                    {i.category}
+                                  </span>
+                                  {i.tags && (
+                                    <span className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
+                                      {i.tags}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center space-x-2 mt-2">
+                                  <span className="text-lg font-bold text-orange-600">
+                                    ${i.discountPrice || i.originalPrice}
+                                  </span>
+                                  {i.discountPrice && i.originalPrice && i.discountPrice < i.originalPrice && (
+                                    <span className="text-sm text-gray-500 line-through">
+                                      ${i.originalPrice}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </Link>
+                            
+                            {/* Add to Wishlist Button */}
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                addToWishlistHandler(i);
+                              }}
+                              className="ml-4 p-3 text-orange-400 hover:text-orange-600 hover:bg-orange-100 rounded-full transition-all duration-300 hover:scale-110 group-hover:bg-orange-100"
+                              title="Add to Wishlist"
+                            >
+                              <AiOutlineHeart size={20} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="px-6 py-12 text-center">
+                      <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                      </div>
+                      <h4 className="text-lg font-semibold text-slate-700 mb-2">No products found</h4>
+                      <p className="text-slate-500 mb-2">Try different keywords or categories</p>
+                      <p className="text-sm text-slate-400">Make sure your search terms are specific</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Right Side Actions */}
+            <div className="flex items-center space-x-6">
+              {/* Wishlist */}
+              <div className="relative group wishlist-container">
+                <button
+                  onClick={toggleWishlist}
+                  className="flex items-center justify-center px-3 py-3 rounded-xl hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 transition-all duration-300 border border-transparent hover:border-orange-200 hover:shadow-md transform hover:scale-105"
+                >
+                  <div className="relative">
+                    <AiOutlineHeart size={22} className="text-orange-600 transition-all duration-300 group-hover:text-orange-700" />
+                    {wishlist && wishlist.length > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center shadow-lg animate-pulse">
+                        {wishlist.length > 99 ? '99+' : wishlist.length}
+                      </span>
+                    )}
+                  </div>
+                </button>
+
+                {/* Wishlist Dropdown */}
+                {showWishlist && (
+                  <div className="absolute top-full right-0 mt-2 w-[85vw] sm:w-96 max-w-sm bg-white rounded-xl sm:rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden transform -translate-x-1/2 sm:translate-x-0 left-1/2 sm:left-auto">
+                    {/* Header */}
+                    <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-3 sm:p-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2 sm:space-x-3">
+                          <div className="w-7 h-7 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                            <AiOutlineHeart size={14} className="sm:w-5 sm:h-5 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="text-sm sm:text-lg font-bold">Wishlist</h3>
+                            <p className="text-orange-100 text-xs sm:text-sm">
+                              {wishlist && wishlist.length > 0 ? `${wishlist.length} item${wishlist.length !== 1 ? 's' : ''}` : 'Empty'}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={toggleWishlist}
+                          className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+                        >
+                          <RxCross1 size={12} className="sm:w-4 sm:h-4 text-white" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-3 sm:p-6">
+                      {wishlist && wishlist.length > 0 ? (
+                        <div className="space-y-2 sm:space-y-4 max-h-48 sm:max-h-80 overflow-y-auto custom-scrollbar">
+                          {wishlist.map((item, index) => (
+                            <div key={index} className="group/item bg-gray-50 hover:bg-white rounded-md sm:rounded-xl p-2.5 sm:p-4 transition-all duration-300 border border-gray-100 hover:border-orange-200 hover:shadow-lg">
+                              <div className="flex items-center space-x-2.5 sm:space-x-4">
+                                <div className="relative">
+                                  <Link
+                                    to={item.isEvent ? `/product/${item._id}?isEvent=true` : `/product/${item._id}`}
+                                    onClick={() => setShowWishlist(false)}
+                                    className="block"
+                                  >
+                                    <img
+                                      src={item.images && item.images.length > 0 ? item.images[0].url : '/default-product.png'}
+                                      alt={item.name}
+                                      className="w-10 h-10 sm:w-16 sm:h-16 object-cover rounded-md sm:rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-md sm:rounded-lg"></div>
+                                  </Link>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <Link
+                                    to={item.isEvent ? `/product/${item._id}?isEvent=true` : `/product/${item._id}`}
+                                    onClick={() => setShowWishlist(false)}
+                                    className="block"
+                                  >
+                                    <h4 className="font-semibold text-slate-800 truncate text-xs sm:text-base group-hover/item:text-orange-600 transition-colors hover:text-orange-600 cursor-pointer">
+                                      {item.name}
+                                    </h4>
+                                  </Link>
+                                  <div className="flex items-center space-x-1 sm:space-x-2 mt-0.5 sm:mt-1">
+                                    <span className="text-sm sm:text-lg font-bold text-orange-600">
+                                      ${item.discountPrice || item.originalPrice}
+                                    </span>
+                                    {item.discountPrice && item.originalPrice && item.discountPrice < item.originalPrice && (
+                                      <span className="text-xs sm:text-sm text-gray-500 line-through">
+                                        ${item.originalPrice}
+                                      </span>
+                                    )}
+                                  </div>
+                                  {item.shop && (
+                                    <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1 truncate">
+                                      by {item.shop.name}
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="flex flex-col space-y-1 sm:space-y-2">
+                                  <button
+                                    onClick={() => removeFromWishlistHandler(item)}
+                                    className="w-6 h-6 sm:w-8 sm:h-8 bg-red-100 hover:bg-red-200 text-red-600 hover:text-red-700 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 group-hover/item:bg-red-200"
+                                    title="Remove from wishlist"
+                                  >
+                                    <RxCross1 size={10} className="sm:w-3.5 sm:h-3.5" />
+                                  </button>
+                                  <Link
+                                    to={item.isEvent ? `/product/${item._id}?isEvent=true` : `/product/${item._id}`}
+                                    onClick={() => setShowWishlist(false)}
+                                    className="w-6 h-6 sm:w-8 sm:h-8 bg-orange-100 hover:bg-orange-200 text-orange-600 hover:text-orange-700 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 group-hover/item:bg-orange-200"
+                                    title="View product"
+                                  >
+                                    <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                  </Link>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-6 sm:py-12">
+                          <div className="w-12 h-12 sm:w-20 sm:h-20 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                            <AiOutlineHeart size={20} className="sm:w-8 sm:h-8 text-orange-500" />
+                          </div>
+                          <h4 className="text-sm sm:text-lg font-semibold text-slate-700 mb-1 sm:mb-2">Empty wishlist</h4>
+                          <p className="text-xs sm:text-base text-slate-500 mb-3 sm:mb-6 px-1">Add products you love!</p>
+                          <button
+                            onClick={toggleWishlist}
+                            className="px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-md sm:rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-xs sm:text-base"
+                          >
+                            Start Shopping
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* User Profile */}
+              <div className="relative group">
+                {isAuthenticated ? (
+                  <Link to="/profile" className="flex items-center space-x-2 p-3 rounded-lg hover:bg-orange-50 transition-colors border border-transparent hover:border-orange-200">
+                    <Avatar user={user} size="sm" className="border-2 border-orange-200" />
+                    <span className="hidden md:block text-sm font-medium text-slate-700">
+                      {user.name}
+                    </span>
+                  </Link>
+                ) : (
+                  <Link to="/login" className="flex items-center space-x-2 p-3 rounded-lg hover:bg-orange-50 transition-colors border border-transparent hover:border-orange-200">
+                    <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                      <AiOutlineUser size={20} className="text-orange-600" />
+                    </div>
+                    <span className="hidden md:block text-sm font-medium text-slate-700">
+                      Sign In
+                    </span>
+                  </Link>
+                )}
+              </div>
+
+              {/* Get Started Button */}
+              <Link
+                to={!isAuthenticated ? "/login" : user && user.role === "admin" ? "/admin/dashboard" : user && user.role === "seller" ? "/dashboard" : "/shop-create"}
+                className="hidden md:inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                {!isAuthenticated ? t("header.getStarted", "Get Started") : user && user.role === "admin" ? t("header.goDashboard", "Go Dashboard") : user && user.role === "seller" ? t("header.goDashboard", "Go Dashboard") : t("header.becomeSeller", "Become a Seller")}
+                <IoIosArrowForward className="ml-2" />
+              </Link>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setOpen(true)}
+                className="lg:hidden p-2 text-slate-600 hover:text-orange-500 transition-colors"
+              >
+                <BiMenuAltLeft size={24} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Bar */}
+      <div className="bg-black text-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between">
+            {/* Categories Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setDropDown(!dropDown)}
+                className="flex items-center space-x-2 px-6 py-4 bg-orange-600 hover:bg-orange-500 transition-colors rounded-lg"
+              >
+                <BiMenuAltLeft size={20} />
+                <span className="font-medium">All Categories</span>
+                <IoIosArrowDown size={16} className={`transition-transform ${dropDown ? 'rotate-180' : ''}`} />
+              </button>
+
+              {dropDown && (
+                <div className="absolute top-full left-0 z-50 w-64 bg-white shadow-2xl border border-orange-200 rounded-lg mt-2 overflow-hidden">
+                  {categoriesData.map((category) => (
+                    <Link
+                      key={category.id}
+                      to={`/products?category=${category.title[i18n.language] || category.title.en}`}
+                      className="flex items-center px-4 py-3 hover:bg-orange-50 transition-colors border-b border-orange-100 last:border-b-0"
+                      onClick={() => setDropDown(false)}
+                    >
+                      <img
+                        src={typeof category.image_Url === "string" ? category.image_Url : category.image_Url.default || category.image_Url}
+                        alt={category.title[i18n.language] || category.title.en}
+                        className="w-8 h-8 object-cover rounded mr-3"
+                      />
+                      <span className="text-slate-700 text-sm">
+                        {category.title[i18n.language] || category.title.en}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Navigation Links */}
+            <div className="hidden lg:flex items-center space-x-8">
+              <Navbar active={activeHeading} />
+            </div>
+
+            {/* Right Side */}
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-400">|</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Search Bar */}
+      <div className="lg:hidden bg-white border-b border-orange-200 p-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSearchSubmit();
+          }}
+          className="relative"
+        >
+          <input
+            type="search"
+            placeholder={t("header.searchBar.placeholder")}
+            className="w-full pl-10 pr-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <button
+            type="submit"
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-400"
+          >
+            <AiOutlineSearch size={20} />
+          </button>
+        </form>
+      </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden"
+          >
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="fixed left-0 top-0 h-full w-80 bg-white shadow-2xl overflow-y-auto"
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-slate-800">Menu</h2>
+                  <button
+                    onClick={() => setOpen(false)}
+                    className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    <RxCross1 size={24} />
+                  </button>
+                </div>
+
+                <Navbar active={activeHeading} />
+
+                <div className="mt-8 pt-6 border-t border-orange-200">
+                  <Link
+                    to={!isAuthenticated ? "/login" : user && user.role === "admin" ? "/admin/dashboard" : user && user.role === "seller" ? "/dashboard" : "/shop-create"}
+                    className="block w-full text-center py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+                  >
+                    {!isAuthenticated ? t("header.getStarted", "Get Started") : user && user.role === "admin" ? t("header.goDashboard", "Go Dashboard") : user && user.role === "seller" ? t("header.goDashboard", "Go Dashboard") : t("header.becomeSeller", "Become a Seller")}
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+    </>
+  );
+};
+
+export default Header;
