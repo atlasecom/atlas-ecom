@@ -109,11 +109,20 @@ const ProductCard = ({ data, isEvent }) => {
       const imageObj = data.images[0];
       // Handle different image formats with cache busting
       if (imageObj && typeof imageObj === 'object' && imageObj.url) {
+        const imageUrl = imageObj.url;
+        // Don't add cache busting to data URIs
+        if (imageUrl.startsWith('data:')) {
+          return imageUrl;
+        }
         // Force HTTPS for production URLs
-        const httpsUrl = imageObj.url.replace('http://', 'https://');
+        const httpsUrl = imageUrl.replace('http://', 'https://');
         return httpsUrl + '?v=' + Date.now();
       }
       if (typeof imageObj === 'string') {
+        // Don't add cache busting to data URIs
+        if (imageObj.startsWith('data:')) {
+          return imageObj;
+        }
         // Force HTTPS for production URLs
         const httpsUrl = imageObj.replace('http://', 'https://');
         return httpsUrl + '?v=' + Date.now();
