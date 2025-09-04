@@ -112,7 +112,7 @@ router.post('/:shopId', protect, authorize('seller'), upload.array('images', 10)
     // Add images
     productData.images = req.files.map(file => ({
       public_id: file.filename,
-      url: `${req.protocol}://${req.get('host')}/uploads/products/${file.filename}`
+      url: `https://${req.get('host')}/uploads/products/${file.filename}`
     }));
 
     // Create product
@@ -328,7 +328,7 @@ router.put('/:id', protect, upload.array('images', 10), [
     if (req.files && req.files.length > 0) {
       const newImages = req.files.map(file => ({
         public_id: file.filename,
-        url: `${req.protocol}://${req.get('host')}/uploads/products/${file.filename}`
+        url: `https://${req.get('host')}/uploads/products/${file.filename}`
       }));
       
       // Keep existing images and add new ones

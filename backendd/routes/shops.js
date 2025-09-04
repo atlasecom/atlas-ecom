@@ -118,7 +118,7 @@ router.post('/', protect, authorize('seller'), upload.single('image'), [
     if (req.file) {
       shopData.banner = {
         public_id: req.file.filename,
-        url: `${req.protocol}://${req.get('host')}/uploads/shops/${req.file.filename}`
+        url: `https://${req.get('host')}/uploads/shops/${req.file.filename}`
       };
     }
 
@@ -202,7 +202,7 @@ router.post('/become-seller', protect, upload.single('image'), [
     if (req.file) {
       shopData.banner = {
         public_id: req.file.filename,
-        url: `${req.protocol}://${req.get('host')}/uploads/shops/${req.file.filename}`
+        url: `https://${req.get('host')}/uploads/shops/${req.file.filename}`
       };
     }
 
@@ -350,7 +350,7 @@ router.put('/:id', protect, upload.single('image'), [
     if (req.file) {
       updateData.banner = {
         public_id: req.file.filename,
-        url: `${req.protocol}://${req.get('host')}/uploads/shops/${req.file.filename}`
+        url: `https://${req.get('host')}/uploads/shops/${req.file.filename}`
       };
     }
 
