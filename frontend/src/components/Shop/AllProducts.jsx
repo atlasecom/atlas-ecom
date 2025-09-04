@@ -183,9 +183,18 @@ const AllProducts = () => {
                           const imageObj = product.images[0];
                           // Handle different image formats with cache busting
                           if (imageObj && typeof imageObj === 'object' && imageObj.url) {
-                            return imageObj.url + '?v=' + Date.now();
+                            const imageUrl = imageObj.url;
+                            // Don't add cache busting to data URIs
+                            if (imageUrl.startsWith('data:')) {
+                              return imageUrl;
+                            }
+                            return imageUrl + '?v=' + Date.now();
                           }
                           if (typeof imageObj === 'string') {
+                            // Don't add cache busting to data URIs
+                            if (imageObj.startsWith('data:')) {
+                              return imageObj;
+                            }
                             return imageObj + '?v=' + Date.now();
                           }
                           return '/default-product.png';

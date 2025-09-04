@@ -119,18 +119,26 @@ const ProductCard = ({ data, isEvent }) => {
       // Handle different image formats with cache busting
       if (imageObj && typeof imageObj === 'object' && imageObj.url) {
         const imageUrl = imageObj.url;
-        if (typeof imageUrl === 'string' && imageUrl.startsWith("http")) {
-          // Force HTTPS for production URLs
-          const httpsUrl = imageUrl.replace('http://', 'https://');
-          return httpsUrl + '?v=' + Date.now();
-        }
         if (typeof imageUrl === 'string') {
+          // Don't add cache busting to data URIs
+          if (imageUrl.startsWith('data:')) {
+            return imageUrl;
+          }
+          if (imageUrl.startsWith("http")) {
+            // Force HTTPS for production URLs
+            const httpsUrl = imageUrl.replace('http://', 'https://');
+            return httpsUrl + '?v=' + Date.now();
+          }
           // For relative paths like /uploads/events/filename.jpg
           const baseUrl = server.replace(/\/$/, "").replace('http://', 'https://');
           return `${baseUrl}${imageUrl}?v=${Date.now()}`;
         }
       }
       if (typeof imageObj === 'string') {
+        // Don't add cache busting to data URIs
+        if (imageObj.startsWith('data:')) {
+          return imageObj;
+        }
         if (imageObj.startsWith("http")) {
           // Force HTTPS for production URLs
           const httpsUrl = imageObj.replace('http://', 'https://');
@@ -145,17 +153,25 @@ const ProductCard = ({ data, isEvent }) => {
       const imageObj = data.image;
       if (imageObj && typeof imageObj === 'object' && imageObj.url) {
         const imageUrl = imageObj.url;
-        if (typeof imageUrl === 'string' && imageUrl.startsWith("http")) {
-          // Force HTTPS for production URLs
-          const httpsUrl = imageUrl.replace('http://', 'https://');
-          return httpsUrl + '?v=' + Date.now();
-        }
         if (typeof imageUrl === 'string') {
+          // Don't add cache busting to data URIs
+          if (imageUrl.startsWith('data:')) {
+            return imageUrl;
+          }
+          if (imageUrl.startsWith("http")) {
+            // Force HTTPS for production URLs
+            const httpsUrl = imageUrl.replace('http://', 'https://');
+            return httpsUrl + '?v=' + Date.now();
+          }
           const baseUrl = server.replace(/\/$/, "").replace('http://', 'https://');
           return `${baseUrl}${imageUrl}?v=${Date.now()}`;
         }
       }
       if (typeof imageObj === 'string') {
+        // Don't add cache busting to data URIs
+        if (imageObj.startsWith('data:')) {
+          return imageObj;
+        }
         if (imageObj.startsWith("http")) {
           // Force HTTPS for production URLs
           const httpsUrl = imageObj.replace('http://', 'https://');
