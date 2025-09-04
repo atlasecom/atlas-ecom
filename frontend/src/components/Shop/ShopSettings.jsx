@@ -244,6 +244,10 @@ const ShopSettings = () => {
                                         <img
                                             src={(() => {
                                                 console.log('Rendering uploaded avatar URL:', uploadedAvatarUrl);
+                                                // Don't add cache busting to data URIs
+                                                if (uploadedAvatarUrl.startsWith('data:')) {
+                                                    return uploadedAvatarUrl;
+                                                }
                                                 if (uploadedAvatarUrl.startsWith('http')) {
                                                     return uploadedAvatarUrl + '?v=' + Date.now();
                                                 } else {
@@ -310,6 +314,10 @@ const ShopSettings = () => {
                                         if (user.shop?.banner) {
                                             if (typeof user.shop.banner === 'object' && user.shop.banner.url) {
                                                 const bannerUrl = user.shop.banner.url;
+                                                // Don't add cache busting to data URIs
+                                                if (bannerUrl.startsWith('data:')) {
+                                                    return bannerUrl;
+                                                }
                                                 if (typeof bannerUrl === 'string' && bannerUrl.startsWith('http')) {
                                                     return bannerUrl + '?v=' + Date.now();
                                                 }
@@ -318,6 +326,10 @@ const ShopSettings = () => {
                                                 }
                                             }
                                             if (typeof user.shop.banner === 'string') {
+                                                // Don't add cache busting to data URIs
+                                                if (user.shop.banner.startsWith('data:')) {
+                                                    return user.shop.banner;
+                                                }
                                                 if (user.shop.banner.startsWith('http')) {
                                                     return user.shop.banner + '?v=' + Date.now();
                                                 }
@@ -329,6 +341,10 @@ const ShopSettings = () => {
                                         if (user?.avatar) {
                                             if (typeof user.avatar === 'object' && user.avatar.url) {
                                                 const avatarUrl = user.avatar.url;
+                                                // Don't add cache busting to data URIs
+                                                if (avatarUrl.startsWith('data:')) {
+                                                    return avatarUrl;
+                                                }
                                                 if (typeof avatarUrl === 'string' && avatarUrl.startsWith('http')) {
                                                     return avatarUrl + '?v=' + Date.now();
                                                 }
@@ -337,6 +353,10 @@ const ShopSettings = () => {
                                                 }
                                             }
                                             if (typeof user.avatar === 'string') {
+                                                // Don't add cache busting to data URIs
+                                                if (user.avatar.startsWith('data:')) {
+                                                    return user.avatar;
+                                                }
                                                 if (user.avatar.startsWith('http')) {
                                                     return user.avatar + '?v=' + Date.now();
                                                 }

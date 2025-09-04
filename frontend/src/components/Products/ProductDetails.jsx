@@ -141,7 +141,13 @@ const ProductDetails = ({ data, isEvent = false }) => {
       imageUrl = `${baseUrl}${imageUrl}`;
     }
 
-    // Add cache busting parameter
+    // Don't add cache busting to data URIs
+    if (imageUrl.startsWith('data:')) {
+      console.log("Generated image URL (data URI):", imageUrl);
+      return imageUrl;
+    }
+    
+    // Add cache busting parameter for regular URLs
     const finalUrl = `${imageUrl}?v=${Date.now()}`;
     console.log("Generated image URL:", finalUrl);
     return finalUrl;

@@ -359,6 +359,10 @@ const DashboardHero = () => {
                                                                     const imageObj = event.images[0];
                                                                     if (imageObj && typeof imageObj === 'object' && imageObj.url) {
                                                                         const imageUrl = imageObj.url;
+                                                                        // Don't add cache busting to data URIs
+                                                                        if (imageUrl.startsWith('data:')) {
+                                                                            return imageUrl;
+                                                                        }
                                                                         if (typeof imageUrl === 'string' && imageUrl.startsWith("http")) {
                                                                             return imageUrl + '?v=' + Date.now();
                                                                         }
@@ -367,6 +371,10 @@ const DashboardHero = () => {
                                                                         }
                                                                     }
                                                                     if (typeof imageObj === 'string') {
+                                                                        // Don't add cache busting to data URIs
+                                                                        if (imageObj.startsWith('data:')) {
+                                                                            return imageObj;
+                                                                        }
                                                                         if (imageObj.startsWith("http")) {
                                                                             return imageObj + '?v=' + Date.now();
                                                                         }
