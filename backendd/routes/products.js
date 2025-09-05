@@ -9,6 +9,26 @@ const { getImageUrlFromFile } = require('../utils/imageUtils');
 
 const router = express.Router();
 
+// Debug endpoint to check product images
+router.get('/debug/:id', async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+    
+    res.json({
+      success: true,
+      product: {
+        name: product.name,
+        images: product.images
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // @desc    Create product
 // @route   POST /api/products/:shopId
 // @access  Private (Shop owner)
@@ -77,10 +97,23 @@ router.post('/:shopId', protect, authorize('seller'), upload.array('images', 10)
     };
 
     // Add images (Cloudinary or local storage)
-    productData.images = req.files.map(file => ({
-      public_id: file.public_id || file.filename,
-      url: getImageUrlFromFile(req, file, 'products')
-    }));
+    productData.images = req.files.map(file => {
+      console.log('🔍 Processing file in product creation:', {
+        public_id: file.public_id,
+        secure_url: file.secure_url,
+        filename: file.filename,
+        originalname: file.originalname,
+        mimetype: file.mimetype
+      });
+      
+      const imageUrl = getImageUrlFromFile(req, file, 'products');
+      console.log('🔍 Generated image URL:', imageUrl);
+      
+      return {
+        public_id: file.public_id || file.filename,
+        url: imageUrl
+      };
+    });
 
     // Create product
     const product = await Product.create(productData);
