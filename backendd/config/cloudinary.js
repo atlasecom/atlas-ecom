@@ -31,7 +31,10 @@ if (isCloudinaryConfigured) {
         { width: 800, height: 600, crop: 'limit' }, // Auto-resize images
         { quality: 'auto' }, // Auto-optimize quality
         { fetch_format: 'auto' } // Auto-optimize format
-      ]
+      ],
+      // Ensure secure_url is generated
+      use_filename: true,
+      unique_filename: true
     }
   });
 
