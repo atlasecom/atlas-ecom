@@ -11,17 +11,29 @@ const getImageUrl = (req, filename, folder = 'products') => {
 };
 
 const getImageUrlFromFile = (req, file, folder = 'products') => {
+  console.log('🔍 getImageUrlFromFile called with:', {
+    hasSecureUrl: !!file.secure_url,
+    hasFilename: !!file.filename,
+    publicId: file.public_id,
+    folder: folder,
+    nodeEnv: process.env.NODE_ENV
+  });
+
   if (file.secure_url) {
     // Cloudinary URL
+    console.log('✅ Using Cloudinary URL:', file.secure_url);
     return file.secure_url;
   } else {
     // For Render production, use a data URI (base64 encoded image)
     if (process.env.NODE_ENV === 'production') {
+      console.log('⚠️ Using placeholder image for production (no Cloudinary)');
       // Use a base64 encoded placeholder image
       return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFM0U0RTYiLz4KPHN2ZyB4PSIxNzUiIHk9IjEyNSIgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgNTAgNTAiIGZpbGw9IiM5QzlDOTciPgo8cGF0aCBkPSJNMjUgMTBDMjcuNzYxNCAxMCAzMCAxMi4yMzg2IDMwIDE1QzMwIDE3Ljc2MTQgMjcuNzYxNCAyMCAyNSAyMEMyMi4yMzg2IDIwIDIwIDE3Ljc2MTQgMjAgMTVDMjAgMTIuMjM4NiAyMi4yMzg2IDEwIDI1IDEwWiIgZmlsbD0iIzlDOUM5NyIvPgo8cGF0aCBkPSJNMzUgMzBIMTVMMjUuMTggMjUuMTgyTDM1IDMwWiIgZmlsbD0iIzlDOUM5NyIvPgo8L3N2Zz4KPHRleHQgeD0iMjAwIiB5PSIyNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2QjcyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCI+UHJvZHVjdCBJbWFnZTwvdGV4dD4KPC9zdmc+';
     } else {
       // Local storage URL for development
-      return getImageUrl(req, file.filename, folder);
+      const localUrl = getImageUrl(req, file.filename, folder);
+      console.log('🔧 Using local storage URL:', localUrl);
+      return localUrl;
     }
   }
 };

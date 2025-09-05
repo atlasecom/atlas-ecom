@@ -361,6 +361,7 @@ router.get('/:id/products', async (req, res) => {
     }
 
     const products = await require('../models/Product').find(query)
+      .populate('shop', 'name avatar phoneNumber telegram')
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
