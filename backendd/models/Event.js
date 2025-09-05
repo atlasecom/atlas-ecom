@@ -115,6 +115,11 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  minOrderQuantity: {
+    type: Number,
+    default: 1,
+    min: [1, 'Minimum order quantity must be at least 1']
+  },
   isActive: {
     type: Boolean,
     default: true

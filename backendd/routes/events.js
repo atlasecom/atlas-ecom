@@ -134,6 +134,7 @@ router.post('/', protect, authorize('seller'), upload.array('images', 5), [
   body('originalPrice').isNumeric().withMessage('Original price must be numeric'),
   body('discountPrice').optional().isNumeric().withMessage('Discount price must be numeric'),
   body('stock').isInt({ min: 0 }).withMessage('Stock must be a non-negative integer'),
+  body('minOrderQuantity').optional().isInt({ min: 1 }).withMessage('Minimum order quantity must be at least 1'),
   body('tags').optional().isString().withMessage('Tags must be a string')
 ], async (req, res) => {
   try {
@@ -147,7 +148,7 @@ router.post('/', protect, authorize('seller'), upload.array('images', 5), [
       });
     }
 
-    const { name, description, category, start_Date, Finish_Date, originalPrice, discountPrice, stock, tags } = req.body;
+    const { name, description, category, start_Date, Finish_Date, originalPrice, discountPrice, stock, tags, minOrderQuantity } = req.body;
 
     // Check if user has a shop
     if (!req.user.shop) {
@@ -167,6 +168,7 @@ router.post('/', protect, authorize('seller'), upload.array('images', 5), [
       originalPrice: parseFloat(originalPrice),
       discountPrice: discountPrice ? parseFloat(discountPrice) : parseFloat(originalPrice),
       stock: parseInt(stock),
+      minOrderQuantity: parseInt(minOrderQuantity) || 1,
       tags: tags || "",
       shop: req.user.shop,
       status: 'Upcoming'
