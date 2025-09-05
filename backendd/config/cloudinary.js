@@ -34,7 +34,9 @@ if (isCloudinaryConfigured) {
       ],
       // Ensure secure_url is generated
       use_filename: true,
-      unique_filename: true
+      unique_filename: true,
+      // Force HTTPS URLs
+      secure: true
     }
   });
 

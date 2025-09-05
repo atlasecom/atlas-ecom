@@ -32,8 +32,11 @@ const getImageUrlFromFile = (req, file, folder = 'products') => {
     if (cloudName) {
       // Generate Cloudinary URL with transformations
       const cloudinaryUrl = `https://res.cloudinary.com/${cloudName}/image/upload/c_limit,h_600,q_auto,w_800,f_auto/${file.public_id}`;
-      console.log('🔧 Generated Cloudinary URL:', cloudinaryUrl);
+      console.log('🔧 Generated Cloudinary URL for public_id:', file.public_id);
+      console.log('🔧 Generated URL:', cloudinaryUrl);
       return cloudinaryUrl;
+    } else {
+      console.log('⚠️ Cloudinary cloud name not found, falling back to placeholder');
     }
   }
 
