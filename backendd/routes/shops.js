@@ -5,6 +5,7 @@ const Shop = require('../models/Shop');
 const User = require('../models/User');
 const { protect, authorize, checkOwnership } = require('../middleware/auth');
 const { upload } = require('../config/cloudinary');
+const { getImageUrlFromFile } = require('../utils/imageUtils');
 
 const router = express.Router();
 
@@ -84,9 +85,19 @@ router.post('/', protect, authorize('seller'), upload.single('image'), [
 
     // Add banner if uploaded
     if (req.file) {
-      shopData.banner = {
+      console.log('🔍 Processing shop banner:', {
         public_id: req.file.public_id,
-        url: req.file.secure_url
+        secure_url: req.file.secure_url,
+        filename: req.file.filename,
+        path: req.file.path
+      });
+      
+      const imageUrl = getImageUrlFromFile(req, req.file, 'shops');
+      console.log('🔍 Generated shop banner URL:', imageUrl);
+      
+      shopData.banner = {
+        public_id: req.file.public_id || req.file.filename,
+        url: imageUrl
       };
     }
 
@@ -168,9 +179,19 @@ router.post('/become-seller', protect, upload.single('image'), [
 
     // Add banner if uploaded
     if (req.file) {
-      shopData.banner = {
+      console.log('🔍 Processing shop banner:', {
         public_id: req.file.public_id,
-        url: req.file.secure_url
+        secure_url: req.file.secure_url,
+        filename: req.file.filename,
+        path: req.file.path
+      });
+      
+      const imageUrl = getImageUrlFromFile(req, req.file, 'shops');
+      console.log('🔍 Generated shop banner URL:', imageUrl);
+      
+      shopData.banner = {
+        public_id: req.file.public_id || req.file.filename,
+        url: imageUrl
       };
     }
 
@@ -316,9 +337,19 @@ router.put('/:id', protect, upload.single('image'), [
 
     // Add banner if uploaded
     if (req.file) {
-      updateData.banner = {
+      console.log('🔍 Processing shop update banner:', {
         public_id: req.file.public_id,
-        url: req.file.secure_url
+        secure_url: req.file.secure_url,
+        filename: req.file.filename,
+        path: req.file.path
+      });
+      
+      const imageUrl = getImageUrlFromFile(req, req.file, 'shops');
+      console.log('🔍 Generated shop update banner URL:', imageUrl);
+      
+      updateData.banner = {
+        public_id: req.file.public_id || req.file.filename,
+        url: imageUrl
       };
     }
 

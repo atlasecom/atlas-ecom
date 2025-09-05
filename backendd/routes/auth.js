@@ -8,6 +8,7 @@ const User = require('../models/User');
 const Shop = require('../models/Shop');
 const { protect, authorize } = require('../middleware/auth');
 const { upload } = require('../config/cloudinary');
+const { getImageUrlFromFile } = require('../utils/imageUtils');
 
 const router = express.Router();
 
@@ -568,9 +569,12 @@ router.put('/avatar', protect, upload.single('image'), async (req, res) => {
     if (req.file) {
       console.log('File upload detected:', req.file);
       // File upload case
+      const imageUrl = getImageUrlFromFile(req, req.file, 'avatars');
+      console.log('🔍 Generated avatar URL:', imageUrl);
+      
       avatarData = {
-        public_id: req.file.public_id,
-        url: req.file.secure_url
+        public_id: req.file.public_id || req.file.filename,
+        url: imageUrl
       };
     } else if (req.body.avatar) {
       console.log('JSON reset detected:', req.body.avatar);

@@ -5,6 +5,7 @@ const Event = require('../models/Event');
 const Shop = require('../models/Shop');
 const { protect, authorize } = require('../middleware/auth');
 const { upload } = require('../config/cloudinary');
+const { getImageUrlFromFile } = require('../utils/imageUtils');
 
 const router = express.Router();
 
@@ -173,10 +174,22 @@ router.post('/', protect, authorize('seller'), upload.array('images', 5), [
 
     // Add images if uploaded
     if (req.files && req.files.length > 0) {
-      eventData.images = req.files.map(file => ({
-        public_id: file.public_id,
-        url: file.secure_url
-      }));
+      eventData.images = req.files.map(file => {
+        console.log('🔍 Processing event image:', {
+          public_id: file.public_id,
+          secure_url: file.secure_url,
+          filename: file.filename,
+          path: file.path
+        });
+        
+        const imageUrl = getImageUrlFromFile(req, file, 'events');
+        console.log('🔍 Generated event image URL:', imageUrl);
+        
+        return {
+          public_id: file.public_id || file.filename,
+          url: imageUrl
+        };
+      });
     }
 
     // Create event
@@ -260,10 +273,22 @@ router.put('/:id', protect, upload.array('images', 5), [
 
     // Add new images if uploaded
     if (req.files && req.files.length > 0) {
-      const newImages = req.files.map(file => ({
-        public_id: file.public_id,
-        url: file.secure_url
-      }));
+      const newImages = req.files.map(file => {
+        console.log('🔍 Processing event update image:', {
+          public_id: file.public_id,
+          secure_url: file.secure_url,
+          filename: file.filename,
+          path: file.path
+        });
+        
+        const imageUrl = getImageUrlFromFile(req, file, 'events');
+        console.log('🔍 Generated event update image URL:', imageUrl);
+        
+        return {
+          public_id: file.public_id || file.filename,
+          url: imageUrl
+        };
+      });
       
       // Keep existing images and add new ones
       updateData.images = [...(event.images || []), ...newImages];
