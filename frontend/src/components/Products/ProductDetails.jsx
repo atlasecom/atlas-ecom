@@ -126,6 +126,12 @@ const ProductDetails = ({ data, isEvent = false }) => {
       return "/default-product.png";
     }
 
+    // Don't process data URIs - return them as-is
+    if (imageUrl.startsWith('data:')) {
+      console.log("Generated image URL (data URI):", imageUrl);
+      return imageUrl;
+    }
+
     // Force HTTPS for production URLs
     if (imageUrl && imageUrl.startsWith('http://')) {
       imageUrl = imageUrl.replace('http://', 'https://');
@@ -139,12 +145,6 @@ const ProductDetails = ({ data, isEvent = false }) => {
     if (imageUrl && imageUrl.startsWith('/') && !imageUrl.startsWith('//')) {
       const baseUrl = backend_url.replace(/\/$/, "").replace('http://', 'https://');
       imageUrl = `${baseUrl}${imageUrl}`;
-    }
-
-    // Don't add cache busting to data URIs
-    if (imageUrl.startsWith('data:')) {
-      console.log("Generated image URL (data URI):", imageUrl);
-      return imageUrl;
     }
     
     // Add cache busting parameter for regular URLs
