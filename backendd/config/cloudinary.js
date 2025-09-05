@@ -44,7 +44,9 @@ if (isCloudinaryConfigured) {
       use_filename: true,
       unique_filename: true,
       // Force HTTPS URLs
-      secure: true
+      secure: true,
+      // Ensure proper response format
+      resource_type: 'auto'
     }
   });
 

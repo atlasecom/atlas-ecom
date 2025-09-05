@@ -40,6 +40,12 @@ const getImageUrlFromFile = (req, file, folder = 'products') => {
     }
   }
 
+  // Check if we have a Cloudinary path but missing public_id and secure_url
+  if (file.path && file.path.includes('res.cloudinary.com') && !file.public_id && !file.secure_url) {
+    console.log('🔧 Using Cloudinary path directly:', file.path);
+    return file.path;
+  }
+
   // Fallback to local storage or placeholder
   if (file.filename) {
     // Local storage URL for development
