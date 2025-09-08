@@ -13,7 +13,7 @@ const createTransporter = () => {
     throw new Error('Email password not configured. Please set EMAIL_PASS or GMAIL_APP_PASSWORD environment variable.');
   }
   
-  const transporter = nodemailer.createTransporter({
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: emailUser,
@@ -33,12 +33,21 @@ const sendContactEmail = async (contactData) => {
   try {
     const { name, email, subject, message } = contactData;
     
+    console.log('📧 Attempting to send contact email...');
+    console.log('Contact data:', { name, email, subject, message: message.substring(0, 50) + '...' });
+    
     const transporter = createTransporter();
+    
+    // Test the connection first
+    console.log('🔌 Testing SMTP connection...');
+    await transporter.verify();
+    console.log('✅ SMTP connection verified successfully!');
     
     // Email content
     const mailOptions = {
       from: process.env.EMAIL_USER || 'atlasecom0@gmail.com',
       to: 'atlasecom0@gmail.com', // Your Gmail address
+      replyTo: email, // Add reply-to field
       subject: `Contact Form: ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -102,12 +111,23 @@ const sendContactEmail = async (contactData) => {
     };
 
     // Send email
+    console.log('📤 Sending email with options:', {
+      from: mailOptions.from,
+      to: mailOptions.to,
+      replyTo: mailOptions.replyTo,
+      subject: mailOptions.subject
+    });
+    
     const result = await transporter.sendMail(mailOptions);
     
-    console.log('📧 Contact email sent successfully:', result.messageId);
+    console.log('✅ Contact email sent successfully!');
+    console.log('Message ID:', result.messageId);
+    console.log('Response:', result.response);
+    
     return {
       success: true,
-      messageId: result.messageId
+      messageId: result.messageId,
+      response: result.response
     };
     
   } catch (error) {
