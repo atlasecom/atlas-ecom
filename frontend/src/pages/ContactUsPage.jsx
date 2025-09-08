@@ -121,7 +121,6 @@ const ContactUsPage = () => {
                   <h3 className="text-lg font-semibold text-slate-800 mb-1">
                     {t("contact.email", "Email")}
                   </h3>
-                  <p className="text-slate-600">support@atlasecom.com</p>
                   <p className="text-slate-600">atlasecom0@gmail.com</p>
                 </div>
               </div>
