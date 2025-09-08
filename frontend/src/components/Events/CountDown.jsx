@@ -79,13 +79,13 @@ const CountDown = ({ data, t, isRTL }) => {
       <div key={interval} className="flex flex-col items-center">
         <div className="relative">
           {/* Time Value */}
-          <div className="bg-orange-500 text-white font-semibold text-lg px-2 py-1 rounded-lg min-w-[40px] text-center">
+          <div className="bg-orange-500 text-white font-semibold text-sm sm:text-lg px-2 py-1 rounded-lg min-w-[35px] sm:min-w-[40px] text-center">
             {timeLeft[interval]}
           </div>
         </div>
         
         {/* Time Label */}
-        <span className="text-orange-600 text-xs mt-1 capitalize">
+        <span className="text-orange-600 text-xs mt-1 capitalize text-center">
           {t ? t(`countdown.${interval}`, interval) : interval}
         </span>
       </div>
@@ -99,7 +99,7 @@ const CountDown = ({ data, t, isRTL }) => {
   if (isExpired) {
     return (
       <div className={`${isRTL ? 'text-right' : 'text-left'}`} dir={isRTL ? 'rtl' : 'ltr'}>
-        <div className="bg-red-500 text-white font-semibold text-sm px-3 py-2 rounded-lg text-center">
+        <div className="bg-red-500 text-white font-semibold text-xs sm:text-sm px-2 sm:px-3 py-2 rounded-lg text-center">
           <span>{t ? t('countdown.timesUp', "Time's Up!") : "Time's Up!"}</span>
         </div>
       </div>
@@ -110,13 +110,13 @@ const CountDown = ({ data, t, isRTL }) => {
     <div className={`${isRTL ? 'text-right' : 'text-left'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Countdown Header */}
       <div className="mb-2">
-        <h3 className="text-sm font-semibold text-gray-700 mb-1">
+        <h3 className="text-xs sm:text-sm font-semibold text-gray-700 mb-1 text-center sm:text-left">
           {t ? t('countdown.eventEndsIn', 'Event Ends In:') : 'Event Ends In:'}
         </h3>
       </div>
 
       {/* Countdown Timer Grid */}
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
         {timerComponents}
       </div>
 
@@ -134,7 +134,7 @@ const CountDown = ({ data, t, isRTL }) => {
 
       {/* Simple Urgency Message */}
       {timeLeft.days <= 3 && timeLeft.days > 0 && (
-        <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded-lg">
+        <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded-lg text-center sm:text-left">
           <span className="text-orange-700 text-xs">
             {t ? t('countdown.endingSoon', 'Ending soon!') : 'Ending soon!'}
           </span>
