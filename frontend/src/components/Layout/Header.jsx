@@ -226,12 +226,10 @@ const Header = ({ activeHeading }) => {
                   >
                     <AiOutlineSearch size={20} />
                   </button>
-                </div>
-              </form>
-              
-                            {/* Search Results Dropdown */}
-              {(searchData || searchLoading) && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 max-h-80 overflow-y-auto z-50">
+                  
+                  {/* Search Results Dropdown */}
+                  {(searchData || searchLoading) && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 max-h-80 overflow-y-auto z-50 w-full">
                   {searchLoading ? (
                     <div className="px-4 py-4 text-center">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600 mx-auto mb-2"></div>
@@ -331,8 +329,10 @@ const Header = ({ activeHeading }) => {
                       <p className="text-slate-600 text-xs">Try searching with different keywords</p>
                     </div>
                   )}
+                    </div>
+                  )}
                 </div>
-              )}
+              </form>
             </div>
 
             {/* Right Side Actions */}
