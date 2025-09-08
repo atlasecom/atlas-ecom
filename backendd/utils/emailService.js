@@ -2,11 +2,18 @@ const nodemailer = require('nodemailer');
 
 // Create transporter for Gmail SMTP
 const createTransporter = () => {
+  const emailUser = process.env.EMAIL_USER || 'atlasecom0@gmail.com';
+  const emailPass = process.env.EMAIL_PASS || process.env.GMAIL_APP_PASSWORD;
+  
+  if (!emailPass) {
+    throw new Error('Email password not configured. Please set EMAIL_PASS or GMAIL_APP_PASSWORD environment variable.');
+  }
+  
   return nodemailer.createTransporter({
     service: 'gmail',
     auth: {
-      user: process.env.EMAIL_USER || 'atlasecom0@gmail.com',
-      pass: process.env.EMAIL_PASS || process.env.GMAIL_APP_PASSWORD // Use App Password for Gmail
+      user: emailUser,
+      pass: emailPass
     }
   });
 };
