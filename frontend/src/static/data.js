@@ -742,37 +742,10 @@ export const footercompanyLinks = [
 export const footerSupportLinks = [
   {
     name: {
-      en: "FAQ",
-      fr: "FAQ",
-      ar: "الأسئلة الشائعة",
-    },
-  },
-  {
-    name: {
-      en: "Reviews",
-      fr: "Avis",
-      ar: "التقييمات",
-    },
-  },
-  {
-    name: {
       en: "Contact Us",
       fr: "Contactez-nous",
       ar: "اتصل بنا",
     },
-  },
-  {
-    name: {
-      en: "Shipping",
-      fr: "Expédition",
-      ar: "الشحن",
-    },
-  },
-  {
-    name: {
-      en: "Live chat",
-      fr: "Chat en direct",
-      ar: "الدردشة المباشرة",
-    },
+    link: "/contact-us",
   },
 ];

@@ -25,6 +25,7 @@ import {
 } from "./routes/Routes";
 
 import MyShopPage from "./pages/MyShopPage";
+import ContactUsPage from "./pages/ContactUsPage";
 
 import {
   ShopDashboardPage,
@@ -100,6 +101,7 @@ const App = () => {
         <Route path="/best-selling" element={<BestSellingPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/faq" element={<FAQPage />} />
+        <Route path="/contact-us" element={<ContactUsPage />} />
         <Route path="/sellers" element={<SellersPage />} />
 
         <Route

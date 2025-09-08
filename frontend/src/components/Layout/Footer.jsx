@@ -2,8 +2,6 @@ import React from "react";
 import {
     AiFillFacebook,
     AiFillInstagram,
-    AiFillYoutube,
-    AiOutlineTwitter,
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -71,9 +69,6 @@ const Footer = () => {
                             >
                                 <AiFillFacebook size={20} />
                             </a>
-                            <a href="#" className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 hover:bg-orange-200 transition-all duration-300 transform hover:scale-110">
-                                <AiOutlineTwitter size={20} />
-                            </a>
                             <a 
                                 href="https://www.instagram.com/atlasecom_/profilecard/?igsh=MTcyZXMzbHAzYjhsYw==" 
                                 target="_blank" 
@@ -81,9 +76,6 @@ const Footer = () => {
                                 className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 hover:bg-orange-200 transition-all duration-300 transform hover:scale-110"
                             >
                                 <AiFillInstagram size={20} />
-                            </a>
-                            <a href="#" className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 hover:bg-orange-200 transition-all duration-300 transform hover:scale-110">
-                                <AiFillYoutube size={20} />
                             </a>
                         </div>
                     </div>
