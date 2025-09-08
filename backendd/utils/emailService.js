@@ -5,17 +5,27 @@ const createTransporter = () => {
   const emailUser = process.env.EMAIL_USER || 'atlasecom0@gmail.com';
   const emailPass = process.env.EMAIL_PASS || process.env.GMAIL_APP_PASSWORD;
   
+  console.log('🔧 Email Configuration:');
+  console.log('EMAIL_USER:', emailUser);
+  console.log('EMAIL_PASS:', emailPass ? 'SET' : 'NOT SET');
+  
   if (!emailPass) {
     throw new Error('Email password not configured. Please set EMAIL_PASS or GMAIL_APP_PASSWORD environment variable.');
   }
   
-  return nodemailer.createTransporter({
+  const transporter = nodemailer.createTransporter({
     service: 'gmail',
     auth: {
       user: emailUser,
       pass: emailPass
+    },
+    // Add additional options for better compatibility
+    tls: {
+      rejectUnauthorized: false
     }
   });
+  
+  return transporter;
 };
 
 // Send contact form email

@@ -109,6 +109,44 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Test email endpoint
+app.get('/test-email', async (req, res) => {
+  try {
+    console.log('🧪 Testing email service...');
+    console.log('EMAIL_USER:', process.env.EMAIL_USER);
+    console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'SET' : 'NOT SET');
+    
+    const emailService = require('./utils/emailService');
+    const testResult = await emailService.sendContactEmail({
+      name: 'Test User',
+      email: 'test@example.com',
+      subject: 'Test Email from Atlas Ecom',
+      message: 'This is a test email to verify the contact form email service is working properly.'
+    });
+    
+    if (testResult.success) {
+      res.json({
+        success: true,
+        message: 'Test email sent successfully! Check atlasecom0@gmail.com inbox.',
+        messageId: testResult.messageId
+      });
+    } else {
+      res.json({
+        success: false,
+        message: 'Test email failed',
+        error: testResult.error
+      });
+    }
+  } catch (error) {
+    console.error('Test email error:', error);
+    res.json({
+      success: false,
+      message: 'Test email error',
+      error: error.message
+    });
+  }
+});
+
 // Admin creation endpoint
 app.post('/create-admin', async (req, res) => {
   try {
