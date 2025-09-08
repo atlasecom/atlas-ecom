@@ -184,8 +184,6 @@ const Header = ({ activeHeading }) => {
           </div>
           <div className="flex items-center space-x-4">
             <LanguageChanger />
-            <span>|</span>
-            <span>Track Order</span>
           </div>
         </div>
       </div>
