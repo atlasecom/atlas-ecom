@@ -159,6 +159,60 @@ app.post('/create-admin', async (req, res) => {
   }
 });
 
+// Contact form endpoint
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+    
+    // Basic validation
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required'
+      });
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter a valid email address'
+      });
+    }
+
+    // For now, we'll just log the contact form submission
+    // In production, you would integrate with an email service like SendGrid, Nodemailer, etc.
+    console.log('📧 Contact Form Submission:');
+    console.log('Name:', name);
+    console.log('Email:', email);
+    console.log('Subject:', subject);
+    console.log('Message:', message);
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+    // TODO: Implement actual email sending to atlasecom0@gmail.com
+    // You can use services like:
+    // - Nodemailer with Gmail SMTP
+    // - SendGrid
+    // - AWS SES
+    // - EmailJS (client-side)
+
+    res.status(200).json({
+      success: true,
+      message: 'Thank you for your message! We will get back to you soon.'
+    });
+    
+  } catch (error) {
+    console.error('Contact form error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error processing contact form',
+      error: error.message
+    });
+  }
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/shops', shopRoutes);

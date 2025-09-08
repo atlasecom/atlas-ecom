@@ -887,15 +887,6 @@
     "fillAllFields": "Please fill in all fields",
     "invalidEmail": "Please enter a valid email address",
     "messageSent": "Thank you! Your message has been sent successfully. We'll get back to you soon.",
-    "faqTitle": "Frequently Asked Questions",
-    "faqSubtitle": "Quick answers to common questions",
-    "faq1Question": "How can I track my order?",
-    "faq1Answer": "You can track your order by logging into your account and visiting the 'My Orders' section. You'll receive tracking information via email once your order ships.",
-    "faq2Question": "What is your return policy?",
-    "faq2Answer": "We offer a 30-day return policy for most items. Items must be in original condition with tags attached. Contact us for specific return instructions.",
-    "faq3Question": "How long does shipping take?",
-    "faq3Answer": "Standard shipping takes 3-5 business days, while express shipping takes 1-2 business days. International shipping may take 7-14 business days.",
-    "faq4Question": "Do you offer customer support?",
-    "faq4Answer": "Yes! Our customer support team is available Monday-Friday 9AM-6PM EST. You can reach us via phone, email, or this contact form."
+    "messageError": "Sorry, there was an error sending your message. Please try again or contact us directly."
   }
 }

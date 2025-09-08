@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 import Header from "../components/Layout/Header";
 import Footer from "../components/Layout/Footer";
 import { toast } from "react-toastify";
-import { AiFillPhone, AiFillMail, AiFillEnvironment, AiFillClockCircle } from "react-icons/ai";
+import { AiFillPhone, AiFillMail } from "react-icons/ai";
+import { server } from "../server";
 
 const ContactUsPage = () => {
   const { t } = useTranslation();
@@ -21,7 +22,7 @@ const ContactUsPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Basic validation
@@ -37,16 +38,38 @@ const ContactUsPage = () => {
       return;
     }
 
-    // Simulate form submission
-    toast.success(t("contact.messageSent", "Thank you! Your message has been sent successfully. We'll get back to you soon."));
-    
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    });
+    try {
+      // Send email using the backend API
+      const response = await fetch(`${server}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success(t("contact.messageSent", "Thank you! Your message has been sent successfully. We'll get back to you soon."));
+        
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      } else {
+        throw new Error('Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast.error(t("contact.messageError", "Sorry, there was an error sending your message. Please try again or contact us directly."));
+    }
   };
 
   return (
@@ -86,8 +109,7 @@ const ContactUsPage = () => {
                   <h3 className="text-lg font-semibold text-slate-800 mb-1">
                     {t("contact.phone", "Phone")}
                   </h3>
-                  <p className="text-slate-600">+1 (555) 123-4567</p>
-                  <p className="text-slate-600">+1 (555) 987-6543</p>
+                  <p className="text-slate-600">0708000863</p>
                 </div>
               </div>
 
@@ -100,40 +122,7 @@ const ContactUsPage = () => {
                     {t("contact.email", "Email")}
                   </h3>
                   <p className="text-slate-600">support@atlasecom.com</p>
-                  <p className="text-slate-600">info@atlasecom.com</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <AiFillEnvironment className="text-orange-600 text-xl" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-800 mb-1">
-                    {t("contact.address", "Address")}
-                  </h3>
-                  <p className="text-slate-600">
-                    123 Business Street<br />
-                    Suite 100<br />
-                    New York, NY 10001<br />
-                    United States
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <AiFillClockCircle className="text-orange-600 text-xl" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-800 mb-1">
-                    {t("contact.hours", "Business Hours")}
-                  </h3>
-                  <p className="text-slate-600">
-                    {t("contact.weekdays", "Monday - Friday: 9:00 AM - 6:00 PM")}<br />
-                    {t("contact.saturday", "Saturday: 10:00 AM - 4:00 PM")}<br />
-                    {t("contact.sunday", "Sunday: Closed")}
-                  </p>
+                  <p className="text-slate-600">atlasecom0@gmail.com</p>
                 </div>
               </div>
             </div>
@@ -249,55 +238,6 @@ const ContactUsPage = () => {
           </div>
         </div>
 
-        {/* FAQ Section */}
-        <div className="mt-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-slate-800 mb-4">
-              {t("contact.faqTitle", "Frequently Asked Questions")}
-            </h2>
-            <p className="text-slate-600">
-              {t("contact.faqSubtitle", "Quick answers to common questions")}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg p-6 shadow-lg">
-              <h3 className="text-lg font-semibold text-slate-800 mb-3">
-                {t("contact.faq1Question", "How can I track my order?")}
-              </h3>
-              <p className="text-slate-600">
-                {t("contact.faq1Answer", "You can track your order by logging into your account and visiting the 'My Orders' section. You'll receive tracking information via email once your order ships.")}
-              </p>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-lg">
-              <h3 className="text-lg font-semibold text-slate-800 mb-3">
-                {t("contact.faq2Question", "What is your return policy?")}
-              </h3>
-              <p className="text-slate-600">
-                {t("contact.faq2Answer", "We offer a 30-day return policy for most items. Items must be in original condition with tags attached. Contact us for specific return instructions.")}
-              </p>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-lg">
-              <h3 className="text-lg font-semibold text-slate-800 mb-3">
-                {t("contact.faq3Question", "How long does shipping take?")}
-              </h3>
-              <p className="text-slate-600">
-                {t("contact.faq3Answer", "Standard shipping takes 3-5 business days, while express shipping takes 1-2 business days. International shipping may take 7-14 business days.")}
-              </p>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-lg">
-              <h3 className="text-lg font-semibold text-slate-800 mb-3">
-                {t("contact.faq4Question", "Do you offer customer support?")}
-              </h3>
-              <p className="text-slate-600">
-                {t("contact.faq4Answer", "Yes! Our customer support team is available Monday-Friday 9AM-6PM EST. You can reach us via phone, email, or this contact form.")}
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
 
       <Footer />
