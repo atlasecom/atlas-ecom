@@ -181,8 +181,7 @@ app.post('/api/contact', async (req, res) => {
       });
     }
 
-    // For now, we'll just log the contact form submission
-    // In production, you would integrate with an email service like SendGrid, Nodemailer, etc.
+    // Log the contact form submission
     console.log('📧 Contact Form Submission:');
     console.log('Name:', name);
     console.log('Email:', email);
@@ -191,17 +190,28 @@ app.post('/api/contact', async (req, res) => {
     console.log('Timestamp:', new Date().toISOString());
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
-    // TODO: Implement actual email sending to atlasecom0@gmail.com
-    // You can use services like:
-    // - Nodemailer with Gmail SMTP
-    // - SendGrid
-    // - AWS SES
-    // - EmailJS (client-side)
-
-    res.status(200).json({
-      success: true,
-      message: 'Thank you for your message! We will get back to you soon.'
+    // Send email using the email service
+    const emailService = require('./utils/emailService');
+    const emailResult = await emailService.sendContactEmail({
+      name,
+      email,
+      subject,
+      message
     });
+
+    if (emailResult.success) {
+      console.log('✅ Contact email sent successfully to atlasecom0@gmail.com');
+      res.status(200).json({
+        success: true,
+        message: 'Thank you for your message! We will get back to you soon.'
+      });
+    } else {
+      console.error('❌ Failed to send contact email:', emailResult.error);
+      res.status(500).json({
+        success: false,
+        message: 'Error sending your message. Please try again or contact us directly.'
+      });
+    }
     
   } catch (error) {
     console.error('Contact form error:', error);

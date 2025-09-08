@@ -1,66 +1,139 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter for Gmail
+// Create transporter for Gmail SMTP
 const createTransporter = () => {
-  return nodemailer.createTransport({
+  return nodemailer.createTransporter({
     service: 'gmail',
     auth: {
-      user: process.env.EMAIL_USER || 'your-email@gmail.com',
-      pass: process.env.EMAIL_PASS || 'your-app-password'
+      user: process.env.EMAIL_USER || 'atlasecom0@gmail.com',
+      pass: process.env.EMAIL_PASS || process.env.GMAIL_APP_PASSWORD // Use App Password for Gmail
     }
   });
 };
 
-// Send password reset email
+// Send contact form email
+const sendContactEmail = async (contactData) => {
+  try {
+    const { name, email, subject, message } = contactData;
+    
+    const transporter = createTransporter();
+    
+    // Email content
+    const mailOptions = {
+      from: process.env.EMAIL_USER || 'atlasecom0@gmail.com',
+      to: 'atlasecom0@gmail.com', // Your Gmail address
+      subject: `Contact Form: ${subject}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #f97316, #ea580c); padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">Atlas Ecom - Contact Form</h1>
+          </div>
+          
+          <div style="padding: 30px; background: #f8fafc;">
+            <h2 style="color: #1e293b; margin-bottom: 20px;">New Contact Form Submission</h2>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <div style="margin-bottom: 15px;">
+                <strong style="color: #374151;">Name:</strong>
+                <span style="color: #6b7280; margin-left: 10px;">${name}</span>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <strong style="color: #374151;">Email:</strong>
+                <span style="color: #6b7280; margin-left: 10px;">${email}</span>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <strong style="color: #374151;">Subject:</strong>
+                <span style="color: #6b7280; margin-left: 10px;">${subject}</span>
+              </div>
+              
+              <div style="margin-bottom: 20px;">
+                <strong style="color: #374151;">Message:</strong>
+                <div style="color: #6b7280; margin-top: 10px; padding: 15px; background: #f9fafb; border-radius: 4px; white-space: pre-wrap;">${message}</div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
+              <p style="margin: 0; color: #92400e; font-size: 14px;">
+                <strong>Reply to:</strong> ${email}
+              </p>
+            </div>
+          </div>
+          
+          <div style="background: #1e293b; padding: 20px; text-align: center;">
+            <p style="color: #94a3b8; margin: 0; font-size: 14px;">
+              This email was sent from the Atlas Ecom contact form at ${new Date().toLocaleString()}
+            </p>
+          </div>
+        </div>
+      `,
+      text: `
+        Atlas Ecom - Contact Form
+        
+        Name: ${name}
+        Email: ${email}
+        Subject: ${subject}
+        
+        Message:
+        ${message}
+        
+        Reply to: ${email}
+        
+        Sent at: ${new Date().toLocaleString()}
+      `
+    };
+
+    // Send email
+    const result = await transporter.sendMail(mailOptions);
+    
+    console.log('📧 Contact email sent successfully:', result.messageId);
+    return {
+      success: true,
+      messageId: result.messageId
+    };
+    
+  } catch (error) {
+    console.error('❌ Error sending contact email:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+};
+
+// Send password reset email (existing functionality)
 const sendPasswordResetEmail = async (email, resetUrl) => {
   try {
     const transporter = createTransporter();
     
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'your-email@gmail.com',
+      from: process.env.EMAIL_USER || 'atlasecom0@gmail.com',
       to: email,
-      subject: 'Atlas Ecom - Password Reset Request',
+      subject: 'Atlas Ecom - Password Reset',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #f97316, #ea580c); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0; font-size: 28px;">Atlas Ecom</h1>
-            <p style="color: #fed7aa; margin: 10px 0 0 0; font-size: 16px;">Password Reset Request</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #f97316, #ea580c); padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">Atlas Ecom</h1>
           </div>
           
-          <div style="background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #e2e8f0;">
-            <h2 style="color: #1e293b; margin: 0 0 20px 0;">Reset Your Password</h2>
-            
-            <p style="color: #475569; line-height: 1.6; margin: 0 0 20px 0;">
-              We received a request to reset your password for your Atlas Ecom account. 
-              If you made this request, click the button below to reset your password.
-            </p>
+          <div style="padding: 30px; background: #f8fafc;">
+            <h2 style="color: #1e293b;">Password Reset Request</h2>
+            <p style="color: #6b7280;">You requested to reset your password. Click the button below to reset it:</p>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetUrl}" 
-                 style="background: linear-gradient(135deg, #f97316, #ea580c); 
-                        color: white; 
-                        text-decoration: none; 
-                        padding: 15px 30px; 
-                        border-radius: 8px; 
-                        font-weight: bold; 
-                        font-size: 16px;
-                        display: inline-block;
-                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+              <a href="${resetUrl}" style="background: #f97316; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
                 Reset Password
               </a>
             </div>
             
-            <p style="color: #64748b; font-size: 14px; line-height: 1.5; margin: 20px 0 0 0;">
+            <p style="color: #6b7280; font-size: 14px;">
               If the button doesn't work, copy and paste this link into your browser:<br>
-              <a href="${resetUrl}" style="color: #f97316; word-break: break-all;">${resetUrl}</a>
+              <a href="${resetUrl}" style="color: #f97316;">${resetUrl}</a>
             </p>
             
-            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
-            
-            <p style="color: #64748b; font-size: 12px; line-height: 1.4; margin: 0;">
-              <strong>Security Note:</strong> This link will expire in 10 minutes for your security. 
-              If you didn't request this password reset, please ignore this email. 
-              Your password will remain unchanged.
+            <p style="color: #6b7280; font-size: 14px;">
+              This link will expire in 10 minutes. If you didn't request this, please ignore this email.
             </p>
           </div>
         </div>
@@ -68,71 +141,16 @@ const sendPasswordResetEmail = async (email, resetUrl) => {
     };
 
     const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Password reset email sent successfully:', result.messageId);
+    console.log('📧 Password reset email sent:', result.messageId);
     return { success: true, messageId: result.messageId };
+    
   } catch (error) {
     console.error('❌ Error sending password reset email:', error);
     return { success: false, error: error.message };
   }
 };
 
-// Send welcome email
-const sendWelcomeEmail = async (email, name) => {
-  try {
-    const transporter = createTransporter();
-    
-    const mailOptions = {
-      from: process.env.EMAIL_USER || 'your-email@gmail.com',
-      to: email,
-      subject: 'Welcome to Atlas Ecom!',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #f97316, #ea580c); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to Atlas Ecom!</h1>
-            <p style="color: #fed7aa; margin: 10px 0 0 0; font-size: 16px;">Your account has been created successfully</p>
-          </div>
-          
-          <div style="background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #e2e8f0;">
-            <h2 style="color: #1e293b; margin: 0 0 20px 0;">Hello ${name}!</h2>
-            
-            <p style="color: #475569; line-height: 1.6; margin: 0 0 20px 0;">
-              Thank you for joining Atlas Ecom! We're excited to have you as part of our community.
-            </p>
-            
-            <p style="color: #475569; line-height: 1.6; margin: 0 0 20px 0;">
-              You can now start exploring our amazing products and events. If you have any questions, 
-              feel free to contact our support team.
-            </p>
-            
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}" 
-                 style="background: linear-gradient(135deg, #f97316, #ea580c); 
-                        color: white; 
-                        text-decoration: none; 
-                        padding: 15px 30px; 
-                        border-radius: 8px; 
-                        font-weight: bold; 
-                        font-size: 16px;
-                        display: inline-block;
-                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                Start Shopping
-              </a>
-            </div>
-          </div>
-        </div>
-      `
-    };
-
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Welcome email sent successfully:', result.messageId);
-    return { success: true, messageId: result.messageId };
-  } catch (error) {
-    console.error('❌ Error sending welcome email:', error);
-    return { success: false, error: error.message };
-  }
-};
-
 module.exports = {
-  sendPasswordResetEmail,
-  sendWelcomeEmail
+  sendContactEmail,
+  sendPasswordResetEmail
 };
