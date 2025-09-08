@@ -231,26 +231,25 @@ const Header = ({ activeHeading }) => {
               
                             {/* Search Results Dropdown */}
               {(searchData || searchLoading) && (
-                <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-gray-100 max-h-96 overflow-y-auto z-50">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 max-h-80 overflow-y-auto z-50">
                   {searchLoading ? (
-                    <div className="px-6 py-8 text-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto mb-3"></div>
-                      <p className="text-slate-600 font-medium">Searching...</p>
-                      <p className="text-sm text-slate-400 mt-1">Looking for the best products</p>
+                    <div className="px-4 py-4 text-center">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600 mx-auto mb-2"></div>
+                      <p className="text-slate-600 text-sm">Searching...</p>
                     </div>
                   ) : searchData.length > 0 ? (
                     <>
-                      <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-red-50">
+                      <div className="px-4 py-2 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-red-50">
                         <div className="flex items-center justify-between">
-                          <p className="text-sm font-semibold text-orange-700">
+                          <p className="text-xs font-semibold text-orange-700">
                             Found {searchData.length} product{searchData.length !== 1 ? 's' : ''}
                           </p>
-                          <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                          <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
                         </div>
                       </div>
-                      <div className="p-2">
+                      <div className="p-1">
                         {searchData.map((i, index) => (
-                          <div key={index} className="group flex items-center p-4 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 transition-all duration-300 rounded-xl border border-transparent hover:border-orange-200 mb-2 last:mb-0">
+                          <div key={index} className="group flex items-center p-2 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 transition-all duration-300 rounded-lg border border-transparent hover:border-orange-200 mb-1 last:mb-0">
                             <Link to={`/product/${i._id}`} className="flex items-center flex-1">
                               <div className="relative">
                                 <img
@@ -276,28 +275,28 @@ const Header = ({ activeHeading }) => {
                                     return '/default-product.png';
                                   })()}
                                   alt="img"
-                                  className="w-16 h-16 object-cover rounded-xl shadow-md mr-4"
+                                  className="w-10 h-10 object-cover rounded-lg shadow-sm mr-3"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h3 className="font-semibold text-slate-800 truncate group-hover:text-orange-600 transition-colors">{i.name}</h3>
-                                <div className="flex items-center space-x-2 mt-2">
-                                  <span className="text-xs bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
+                                <h3 className="font-medium text-slate-800 truncate group-hover:text-orange-600 transition-colors text-sm">{i.name}</h3>
+                                <div className="flex items-center space-x-1 mt-1">
+                                  <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium">
                                     {i.category}
                                   </span>
                                   {i.tags && (
-                                    <span className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
+                                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
                                       {i.tags}
                                     </span>
                                   )}
                                 </div>
-                                <div className="flex items-center space-x-2 mt-2">
-                                  <span className="text-lg font-bold text-orange-600">
+                                <div className="flex items-center space-x-1 mt-1">
+                                  <span className="text-sm font-bold text-orange-600">
                                     ${i.discountPrice || i.originalPrice}
                                   </span>
                                   {i.discountPrice && i.originalPrice && i.discountPrice < i.originalPrice && (
-                                    <span className="text-sm text-gray-500 line-through">
+                                    <span className="text-xs text-gray-500 line-through">
                                       ${i.originalPrice}
                                     </span>
                                   )}
@@ -312,25 +311,24 @@ const Header = ({ activeHeading }) => {
                                 e.stopPropagation();
                                 addToWishlistHandler(i);
                               }}
-                              className="ml-4 p-3 text-orange-400 hover:text-orange-600 hover:bg-orange-100 rounded-full transition-all duration-300 hover:scale-110 group-hover:bg-orange-100"
+                              className="ml-2 p-2 text-orange-400 hover:text-orange-600 hover:bg-orange-100 rounded-full transition-all duration-300 hover:scale-110 group-hover:bg-orange-100"
                               title="Add to Wishlist"
                             >
-                              <AiOutlineHeart size={20} />
+                              <AiOutlineHeart size={16} />
                             </button>
                           </div>
                         ))}
                       </div>
                     </>
                   ) : (
-                    <div className="px-6 py-12 text-center">
-                      <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="px-4 py-6 text-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                       </div>
-                      <h4 className="text-lg font-semibold text-slate-700 mb-2">No products found</h4>
-                      <p className="text-slate-500 mb-2">Try different keywords or categories</p>
-                      <p className="text-sm text-slate-400">Make sure your search terms are specific</p>
+                      <h3 className="text-sm font-semibold text-slate-800 mb-1">No products found</h3>
+                      <p className="text-slate-600 text-xs">Try searching with different keywords</p>
                     </div>
                   )}
                 </div>
