@@ -746,6 +746,6 @@ export const footerSupportLinks = [
       fr: "Contactez-nous",
       ar: "اتصل بنا",
     },
-    link: "/contact-us",
+    link: "#contact-us",
   },
 ];

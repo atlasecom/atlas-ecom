@@ -126,12 +126,21 @@ const Footer = () => {
                         <ul className="space-y-3">
                             {footerSupportLinks.map((link, index) => (
                                 <li key={index}>
-                                    <Link
-                                        className="text-slate-600 hover:text-orange-600 duration-300 text-sm cursor-pointer leading-6 block py-1 hover:translate-x-1 transition-all duration-300"
-                                        to={link.link}
-                                    >
-                                        {link.name[i18n.language] || link.name.en}
-                                    </Link>
+                                    {link.link === "#contact-us" ? (
+                                        <button
+                                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                            className="text-slate-600 hover:text-orange-600 duration-300 text-sm cursor-pointer leading-6 block py-1 hover:translate-x-1 transition-all duration-300"
+                                        >
+                                            {link.name[i18n.language] || link.name.en}
+                                        </button>
+                                    ) : (
+                                        <Link
+                                            className="text-slate-600 hover:text-orange-600 duration-300 text-sm cursor-pointer leading-6 block py-1 hover:translate-x-1 transition-all duration-300"
+                                            to={link.link}
+                                        >
+                                            {link.name[i18n.language] || link.name.en}
+                                        </Link>
+                                    )}
                                 </li>
                             ))}
                         </ul>
