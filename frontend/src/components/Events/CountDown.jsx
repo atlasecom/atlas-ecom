@@ -79,7 +79,7 @@ const CountDown = ({ data, t, isRTL }) => {
       <div key={interval} className="flex flex-col items-center">
         <div className="relative">
           {/* Time Value */}
-          <div className="bg-orange-500 text-white font-semibold text-sm sm:text-lg px-2 py-1 rounded-lg min-w-[35px] sm:min-w-[40px] text-center">
+          <div className="bg-orange-500 text-white font-semibold text-xs sm:text-sm px-1 sm:px-2 py-1 rounded-md min-w-[30px] sm:min-w-[35px] text-center">
             {timeLeft[interval]}
           </div>
         </div>
@@ -109,14 +109,14 @@ const CountDown = ({ data, t, isRTL }) => {
   return (
     <div className={`${isRTL ? 'text-right' : 'text-left'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Countdown Header */}
-      <div className="mb-2">
-        <h3 className="text-xs sm:text-sm font-semibold text-gray-700 mb-1 text-center sm:text-left">
+      <div className="mb-1 sm:mb-2">
+        <h3 className="text-xs font-semibold text-gray-700 mb-1 text-center sm:text-left">
           {t ? t('countdown.eventEndsIn', 'Event Ends In:') : 'Event Ends In:'}
         </h3>
       </div>
 
       {/* Countdown Timer Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+      <div className="grid grid-cols-4 gap-1 sm:gap-2">
         {timerComponents}
       </div>
 
