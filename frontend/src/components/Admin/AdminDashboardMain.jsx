@@ -307,7 +307,7 @@ const AdminDashboardMain = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900">Content Management</h3>
-            <span className="text-green-600 text-base sm:text-lg lg:text-xl">📦</span>
+            <FiPackage className="text-green-600 text-base sm:text-lg lg:text-xl" />
           </div>
           <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-3 sm:mb-4">
             Monitor products, events, and manage content quality across all shops.

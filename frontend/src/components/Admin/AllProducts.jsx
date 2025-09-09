@@ -6,7 +6,7 @@ import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
 import Loader from "../Layout/Loader";
-import { FiPackage } from "react-icons/fi";
+import { FiPackage, FiDollarSign, FiStar, FiTrendingUp } from "react-icons/fi";
 import { backend_url } from "../../server";
 
 const AllProducts = () => {
@@ -128,7 +128,7 @@ const AllProducts = () => {
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{data.length}</p>
             </div>
             <div className="bg-blue-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <span className="text-blue-600 text-base sm:text-lg lg:text-xl">📦</span>
+              <FiPackage className="text-blue-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -142,7 +142,7 @@ const AllProducts = () => {
               </p>
             </div>
             <div className="bg-green-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <span className="text-green-600 text-base sm:text-lg lg:text-xl">💰</span>
+              <FiDollarSign className="text-green-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -170,7 +170,7 @@ const AllProducts = () => {
               </p>
             </div>
             <div className="bg-purple-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <span className="text-purple-600 text-base sm:text-lg lg:text-xl">⭐</span>
+              <FiStar className="text-purple-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -220,7 +220,7 @@ const AllProducts = () => {
                   )}
                 </div>
                 <div className="flex items-center space-x-1">
-                  <span className="text-yellow-400">⭐</span>
+                  <FiStar className="text-yellow-400" />
                   <span className="text-xs sm:text-sm text-gray-600">{product.ratings || 0}</span>
                   <span className="text-xs text-gray-400">({product.numOfReviews || 0})</span>
                 </div>
