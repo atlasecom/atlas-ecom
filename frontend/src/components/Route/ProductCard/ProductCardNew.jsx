@@ -348,7 +348,7 @@ const ProductCard = ({ data, isEvent }) => {
             {/* WhatsApp Button */}
             <button
               onClick={handleWhatsAppClick}
-              className="flex-1 font-bold py-1 sm:py-1.5 xl:py-2 2xl:py-2.5 px-1.5 sm:px-2.5 xl:px-3 2xl:px-4 rounded-md xl:rounded-lg 2xl:rounded-xl transition-all duration-300 hover:shadow-md xl:hover:shadow-lg 2xl:hover:shadow-xl active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group border-0 bg-gradient-to-br from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-white shadow-sm xl:shadow-lg 2xl:shadow-xl min-h-[28px] sm:min-h-[36px] touch-manipulation"
+              className="flex-1 font-bold py-1 sm:py-1.5 xl:py-2 2xl:py-2.5 px-2 sm:px-2.5 xl:px-3 2xl:px-4 rounded-md xl:rounded-lg 2xl:rounded-xl transition-all duration-300 hover:shadow-md xl:hover:shadow-lg 2xl:hover:shadow-xl active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group border-0 bg-gradient-to-br from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-white shadow-sm xl:shadow-lg 2xl:shadow-xl min-h-[28px] sm:min-h-[36px] touch-manipulation"
             >
               {/* Enhanced Shimmer Effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
@@ -365,7 +365,7 @@ const ProductCard = ({ data, isEvent }) => {
             {/* Telegram Button */}
             <button
               onClick={handleTelegramClick}
-              className="flex-1 font-bold py-1 sm:py-1.5 xl:py-2 2xl:py-2.5 px-1.5 sm:px-2.5 xl:px-3 2xl:px-4 rounded-md xl:rounded-lg 2xl:rounded-xl transition-all duration-300 hover:shadow-md xl:hover:shadow-lg 2xl:hover:shadow-xl active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group border-0 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 text-white shadow-sm xl:shadow-lg 2xl:shadow-xl min-h-[28px] sm:min-h-[36px] touch-manipulation"
+              className="flex-1 font-bold py-1 sm:py-1.5 xl:py-2 2xl:py-2.5 px-2 sm:px-2.5 xl:px-3 2xl:px-4 rounded-md xl:rounded-lg 2xl:rounded-xl transition-all duration-300 hover:shadow-md xl:hover:shadow-lg 2xl:hover:shadow-xl active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group border-0 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 text-white shadow-sm xl:shadow-lg 2xl:shadow-xl min-h-[28px] sm:min-h-[36px] touch-manipulation"
             >
               {/* Enhanced Shimmer Effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
