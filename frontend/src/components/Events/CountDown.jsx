@@ -79,13 +79,13 @@ const CountDown = ({ data, t, isRTL }) => {
       <div key={interval} className="flex flex-col items-center min-w-0">
         <div className="relative">
           {/* Time Value */}
-          <div className="bg-orange-500 text-white font-semibold text-xs sm:text-sm px-1 sm:px-2 py-1 rounded-md min-w-[32px] sm:min-w-[35px] text-center leading-none">
+          <div className="bg-orange-500 text-white font-semibold text-xs sm:text-sm px-1.5 sm:px-2 py-1 rounded-md min-w-[36px] sm:min-w-[40px] text-center leading-none">
             {timeLeft[interval]}
           </div>
         </div>
         
         {/* Time Label */}
-        <span className="text-orange-600 text-xs mt-1 capitalize text-center leading-tight">
+        <span className="text-orange-600 text-xs mt-1 capitalize text-center leading-tight truncate w-full">
           {t ? t(`countdown.${interval}`, interval) : interval}
         </span>
       </div>
@@ -116,7 +116,7 @@ const CountDown = ({ data, t, isRTL }) => {
       </div>
 
       {/* Countdown Timer Grid */}
-      <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+      <div className="grid grid-cols-4 gap-2 sm:gap-3">
         {timerComponents}
       </div>
 
