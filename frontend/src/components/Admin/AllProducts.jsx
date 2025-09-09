@@ -138,7 +138,7 @@ const AllProducts = () => {
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Value</p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">
-                ${data.reduce((acc, item) => acc + (item.discountPrice || 0), 0).toFixed(2)}
+                DH{data.reduce((acc, item) => acc + (item.discountPrice || 0), 0).toFixed(2)}
               </p>
             </div>
             <div className="bg-green-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
@@ -211,11 +211,11 @@ const AllProducts = () => {
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
                   <span className="text-base sm:text-lg font-bold text-green-600">
-                    ${product.discountPrice}
+                    DH{product.discountPrice}
                   </span>
                   {product.discountPrice < product.originalPrice && (
                     <span className="text-xs sm:text-sm text-gray-500 line-through">
-                      ${product.originalPrice}
+                      DH{product.originalPrice}
                     </span>
                   )}
                 </div>

@@ -61,7 +61,7 @@ const SearchResults = () => {
                 {product.description}
               </p>
               <div className={`mt-2 font-bold ${isRTL ? 'text-right' : 'text-left'}`}>
-                ${product.price}
+                DH{product.price}
               </div>
             </div>
           ))}

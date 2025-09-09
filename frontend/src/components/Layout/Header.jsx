@@ -291,11 +291,11 @@ const Header = ({ activeHeading }) => {
                                 </div>
                                 <div className="flex items-center space-x-1 mt-1">
                                   <span className="text-sm font-bold text-orange-600">
-                                    ${i.discountPrice || i.originalPrice}
+                                    DH{i.discountPrice || i.originalPrice}
                                   </span>
                                   {i.discountPrice && i.originalPrice && i.discountPrice < i.originalPrice && (
                                     <span className="text-xs text-gray-500 line-through">
-                                      ${i.originalPrice}
+                                      DH{i.originalPrice}
                                     </span>
                                   )}
                                 </div>
@@ -412,11 +412,11 @@ const Header = ({ activeHeading }) => {
                                   </Link>
                                   <div className="flex items-center space-x-1 sm:space-x-2 mt-0.5 sm:mt-1">
                                     <span className="text-sm sm:text-lg font-bold text-orange-600">
-                                      ${item.discountPrice || item.originalPrice}
+                                      DH{item.discountPrice || item.originalPrice}
                                     </span>
                                     {item.discountPrice && item.originalPrice && item.discountPrice < item.originalPrice && (
                                       <span className="text-xs sm:text-sm text-gray-500 line-through">
-                                        ${item.originalPrice}
+                                        DH{item.originalPrice}
                                       </span>
                                     )}
                                   </div>

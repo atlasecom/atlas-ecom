@@ -245,9 +245,9 @@ const AllProducts = () => {
                     
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2">
-                        <span className="text-lg font-bold text-green-600">${product.discountPrice}</span>
+                        <span className="text-lg font-bold text-green-600">DH{product.discountPrice}</span>
                         {product.originalPrice && product.originalPrice > product.discountPrice && (
-                          <span className="text-sm text-gray-500 line-through">${product.originalPrice}</span>
+                          <span className="text-sm text-gray-500 line-through">DH{product.originalPrice}</span>
                         )}
                       </div>
                       <div className="flex items-center space-x-1">
