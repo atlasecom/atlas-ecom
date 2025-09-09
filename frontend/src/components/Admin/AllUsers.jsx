@@ -288,24 +288,28 @@ const AllUsers = () => {
           {filteredUsers.map((user) => (
             <div key={user._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
               {/* User Header */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <Avatar 
-                    user={user} 
-                    size="lg" 
-                    className="w-12 h-12"
-                  />
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{user.name || "No Name"}</h3>
-                    <p className="text-sm text-gray-500">{user.email}</p>
+              <div className="mb-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center space-x-3 flex-1 min-w-0">
+                    <Avatar 
+                      user={user} 
+                      size="lg" 
+                      className="w-12 h-12 flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-semibold text-gray-900 truncate">{user.name || "No Name"}</h3>
+                    </div>
+                  </div>
+                  <div className={`px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ml-2 ${
+                    user.role === 'admin' ? 'bg-purple-100 text-purple-800' :
+                    user.role === 'seller' ? 'bg-orange-100 text-orange-800' :
+                    'bg-green-100 text-green-800'
+                  }`}>
+                    {user.role}
                   </div>
                 </div>
-                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  user.role === 'admin' ? 'bg-purple-100 text-purple-800' :
-                  user.role === 'seller' ? 'bg-orange-100 text-orange-800' :
-                  'bg-green-100 text-green-800'
-                }`}>
-                  {user.role}
+                <div className="pl-16">
+                  <p className="text-sm text-gray-500 break-all">{user.email}</p>
                 </div>
               </div>
 
