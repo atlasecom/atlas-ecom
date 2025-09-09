@@ -348,7 +348,7 @@ const ProductCard = ({ data, isEvent }) => {
             {/* WhatsApp Button */}
             <button
               onClick={handleWhatsAppClick}
-              className="flex-1 font-bold py-1.5 sm:py-2 xl:py-2 2xl:py-2.5 px-2 sm:px-3 xl:px-3 2xl:px-4 rounded-md xl:rounded-lg 2xl:rounded-xl transition-all duration-300 hover:shadow-md xl:hover:shadow-lg 2xl:hover:shadow-xl active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group border-0 bg-gradient-to-br from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-white shadow-sm xl:shadow-lg 2xl:shadow-xl min-h-[32px] sm:min-h-[40px] touch-manipulation"
+              className="flex-1 font-bold py-1 sm:py-1.5 xl:py-2 2xl:py-2.5 px-1.5 sm:px-2.5 xl:px-3 2xl:px-4 rounded-md xl:rounded-lg 2xl:rounded-xl transition-all duration-300 hover:shadow-md xl:hover:shadow-lg 2xl:hover:shadow-xl active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group border-0 bg-gradient-to-br from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-white shadow-sm xl:shadow-lg 2xl:shadow-xl min-h-[28px] sm:min-h-[36px] touch-manipulation"
             >
               {/* Enhanced Shimmer Effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
@@ -357,15 +357,15 @@ const ProductCard = ({ data, isEvent }) => {
               <div className="absolute inset-0 rounded-md xl:rounded-lg 2xl:rounded-xl blur-sm opacity-20 group-hover:opacity-30 transition-opacity duration-500 bg-green-400"></div>
               
               <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 w-full">
-                <FaWhatsapp size={12} className="sm:w-3 sm:h-3 xl:w-4 xl:h-4 2xl:w-5 2xl:h-5 text-green-100 drop-shadow-sm flex-shrink-0" />
-                <span className="font-semibold text-xs tracking-wide text-center">WhatsApp</span>
+                <FaWhatsapp size={10} className="sm:w-3 sm:h-3 xl:w-4 xl:h-4 2xl:w-5 2xl:h-5 text-green-100 drop-shadow-sm flex-shrink-0" />
+                <span className="font-medium text-xs tracking-wide text-center">WhatsApp</span>
               </div>
             </button>
 
             {/* Telegram Button */}
             <button
               onClick={handleTelegramClick}
-              className="flex-1 font-bold py-1.5 sm:py-2 xl:py-2 2xl:py-2.5 px-2 sm:px-3 xl:px-3 2xl:px-4 rounded-md xl:rounded-lg 2xl:rounded-xl transition-all duration-300 hover:shadow-md xl:hover:shadow-lg 2xl:hover:shadow-xl active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group border-0 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 text-white shadow-sm xl:shadow-lg 2xl:shadow-xl min-h-[32px] sm:min-h-[40px] touch-manipulation"
+              className="flex-1 font-bold py-1 sm:py-1.5 xl:py-2 2xl:py-2.5 px-1.5 sm:px-2.5 xl:px-3 2xl:px-4 rounded-md xl:rounded-lg 2xl:rounded-xl transition-all duration-300 hover:shadow-md xl:hover:shadow-lg 2xl:hover:shadow-xl active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group border-0 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 text-white shadow-sm xl:shadow-lg 2xl:shadow-xl min-h-[28px] sm:min-h-[36px] touch-manipulation"
             >
               {/* Enhanced Shimmer Effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
@@ -374,8 +374,8 @@ const ProductCard = ({ data, isEvent }) => {
               <div className="absolute inset-0 rounded-md xl:rounded-lg 2xl:rounded-xl blur-sm opacity-20 group-hover:opacity-30 transition-opacity duration-500 bg-blue-400"></div>
               
               <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 w-full">
-                <FaTelegram size={12} className="sm:w-3 sm:h-3 xl:w-4 xl:h-4 2xl:w-5 2xl:h-5 text-blue-100 drop-shadow-sm flex-shrink-0" />
-                <span className="font-semibold text-xs tracking-wide text-center">Telegram</span>
+                <FaTelegram size={10} className="sm:w-3 sm:h-3 xl:w-4 xl:h-4 2xl:w-5 2xl:h-5 text-blue-100 drop-shadow-sm flex-shrink-0" />
+                <span className="font-medium text-xs tracking-wide text-center">Telegram</span>
               </div>
             </button>
           </div>
