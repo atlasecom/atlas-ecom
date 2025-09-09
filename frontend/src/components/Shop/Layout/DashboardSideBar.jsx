@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiX, FiBarChart, FiPackage, FiPlus, FiSettings, FiShop } from "react-icons/fi";
+import { FiX, FiBarChart, FiPackage, FiPlus, FiSettings, FiHome } from "react-icons/fi";
 import { GrWorkshop } from "react-icons/gr";
 import { RxDashboard } from "react-icons/rx";
 
@@ -132,7 +132,7 @@ const DashboardSideBar = () => {
         { 
             id: 7, 
             path: "/shop/me", 
-            icon: FiShop, 
+            icon: FiHome, 
             label: "Shop Profile", 
             description: "Shop Information",
             color: 'text-indigo-600',
