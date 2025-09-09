@@ -373,7 +373,7 @@ const ProductCard = ({ data, isEvent }) => {
           >
             <Ratings rating={data.ratings || 0} />
             <span className="text-[10px] text-gray-500 sm:text-xs xs:text-xs">
-              {data.reviews?.length > 0 ? `(${data.reviews.length})` : "(No reviews yet)"}
+              {data.reviews?.length > 0 ? `(${data.reviews.length})` : "(0)"}
             </span>
           </div>
 

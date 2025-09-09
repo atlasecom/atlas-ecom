@@ -269,7 +269,7 @@ const ProductCard = ({ data, isEvent }) => {
             <div className="flex items-center gap-1 xl:gap-1.5 2xl:gap-2 mb-1.5 sm:mb-2 xl:mb-2 2xl:mb-3">
               <Ratings rating={ratings || 0} />
               <span className="text-xs sm:text-xs xl:text-xs 2xl:text-sm text-gray-500 font-medium">
-                {Array.isArray(reviews) && reviews.length > 0 ? `(${reviews.length})` : "(No reviews yet)"}
+                {Array.isArray(reviews) && reviews.length > 0 ? `(${reviews.length})` : "(0)"}
               </span>
             </div>
 
