@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiX } from "react-icons/fi";
+import { FiX, FiBarChart, FiPackage, FiPlus, FiSettings, FiShop } from "react-icons/fi";
+import { GrWorkshop } from "react-icons/gr";
+import { RxDashboard } from "react-icons/rx";
 
 const DashboardSideBar = () => {
     const location = useLocation();
@@ -67,13 +69,76 @@ const DashboardSideBar = () => {
     }, [isMobile, isMobileMenuOpen]);
 
     const menuItems = [
-        { id: 1, path: "/dashboard", icon: "📊", label: "Dashboard", description: "Overview & Analytics" },
-        { id: 2, path: "/dashboard-products", icon: "📦", label: "All Products", description: "Manage Products" },
-        { id: 3, path: "/dashboard-create-product", icon: "➕", label: "Create Product", description: "Add New Product" },
-        { id: 4, path: "/dashboard-events", icon: "🎉", label: "All Events", description: "Manage Events" },
-        { id: 5, path: "/dashboard-create-event", icon: "✨", label: "Create Event", description: "Launch Event" },
-        { id: 6, path: "/settings", icon: "⚙️", label: "Shop Settings", description: "Shop Configuration" },
-        { id: 7, path: "/shop/me", icon: "🏪", label: "Shop Profile", description: "Shop Information" }
+        { 
+            id: 1, 
+            path: "/dashboard", 
+            icon: RxDashboard, 
+            label: "Dashboard", 
+            description: "Overview & Analytics",
+            color: 'text-blue-600',
+            bgColor: 'bg-blue-50',
+            borderColor: 'border-blue-200'
+        },
+        { 
+            id: 2, 
+            path: "/dashboard-products", 
+            icon: FiPackage, 
+            label: "All Products", 
+            description: "Manage Products",
+            color: 'text-green-600',
+            bgColor: 'bg-green-50',
+            borderColor: 'border-green-200'
+        },
+        { 
+            id: 3, 
+            path: "/dashboard-create-product", 
+            icon: FiPlus, 
+            label: "Create Product", 
+            description: "Add New Product",
+            color: 'text-purple-600',
+            bgColor: 'bg-purple-50',
+            borderColor: 'border-purple-200'
+        },
+        { 
+            id: 4, 
+            path: "/dashboard-events", 
+            icon: FiBarChart, 
+            label: "All Events", 
+            description: "Manage Events",
+            color: 'text-pink-600',
+            bgColor: 'bg-pink-50',
+            borderColor: 'border-pink-200'
+        },
+        { 
+            id: 5, 
+            path: "/dashboard-create-event", 
+            icon: FiPlus, 
+            label: "Create Event", 
+            description: "Launch Event",
+            color: 'text-orange-600',
+            bgColor: 'bg-orange-50',
+            borderColor: 'border-orange-200'
+        },
+        { 
+            id: 6, 
+            path: "/settings", 
+            icon: FiSettings, 
+            label: "Shop Settings", 
+            description: "Shop Configuration",
+            color: 'text-gray-600',
+            bgColor: 'bg-gray-50',
+            borderColor: 'border-gray-200'
+        },
+        { 
+            id: 7, 
+            path: "/shop/me", 
+            icon: FiShop, 
+            label: "Shop Profile", 
+            description: "Shop Information",
+            color: 'text-indigo-600',
+            bgColor: 'bg-indigo-50',
+            borderColor: 'border-indigo-200'
+        }
     ];
 
     // Function to determine which menu item should be active based on current location
@@ -109,64 +174,55 @@ const DashboardSideBar = () => {
 
             {/* Navigation Menu */}
             <nav className="relative p-2 sm:p-3 lg:p-4 space-y-1 sm:space-y-2 lg:space-y-3">
-                {menuItems.map((item) => (
-                    <Link
-                        key={item.id}
-                        to={item.path}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`group relative block w-full p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl transition-all duration-300 transform hover:scale-105 ${
-                            active === item.id
-                                ? 'bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600 text-white shadow-2xl transform scale-105 border border-blue-300/50'
-                                : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:via-indigo-50 hover:to-purple-50 hover:text-blue-700 hover:shadow-lg border border-transparent hover:border-blue-200/50'
-                        }`}
-                    >
-                        {/* Active Indicator with Animation */}
-                        {active === item.id && (
-                            <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-6 sm:h-8 lg:h-10 bg-white rounded-r-full shadow-lg animate-pulse"></div>
-                        )}
-                        
-                        {/* Hover Background Effect */}
-                        <div className={`absolute inset-0 rounded-lg sm:rounded-xl transition-all duration-300 ${
-                            active === item.id 
-                                ? 'bg-gradient-to-r from-white/20 to-transparent' 
-                                : 'group-hover:bg-gradient-to-r group-hover:from-blue-100/50 group-hover:to-transparent'
-                        }`}></div>
-                        
-                        <div className="relative flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
-                            {/* Icon with Enhanced Animation */}
-                            <div className={`flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-lg sm:rounded-xl flex items-center justify-center text-lg sm:text-xl lg:text-2xl transition-all duration-300 transform group-hover:scale-110 ${
-                                active === item.id
-                                    ? 'bg-white/20 backdrop-blur-sm shadow-lg'
-                                    : 'bg-gradient-to-br from-gray-100 to-gray-200 group-hover:from-blue-100 group-hover:to-indigo-100 shadow-md group-hover:shadow-lg'
-                            }`}>
-                                {item.icon}
-                            </div>
-                            
-                            {/* Text Content */}
-                            <div className="hidden 800px:block flex-1 min-w-0">
-                                <h3 className={`font-semibold text-xs sm:text-sm lg:text-base transition-all duration-300 truncate ${
-                                    active === item.id ? 'text-white' : 'text-gray-900 group-hover:text-blue-700'
+                {menuItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = active === item.id;
+                    
+                    return (
+                        <Link
+                            key={item.id}
+                            to={item.path}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`group relative block w-full p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl transition-all duration-300 transform hover:scale-105 ${
+                                isActive
+                                    ? `${item.bgColor} ${item.borderColor} border-2 ${item.color} shadow-md`
+                                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900 hover:shadow-sm border border-transparent hover:border-gray-200'
+                            }`}
+                        >
+                            <div className="relative flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
+                                {/* Icon with Admin-style Design */}
+                                <div className={`p-2 rounded-lg transition-colors ${
+                                    isActive ? item.bgColor : 'group-hover:bg-gray-100'
                                 }`}>
-                                    {item.label}
-                                </h3>
-                                <p className={`text-xs lg:text-sm transition-all duration-300 truncate ${
-                                    active === item.id ? 'text-blue-100' : 'text-gray-500 group-hover:text-blue-600'
+                                    <Icon size={20} className={isActive ? item.color : 'text-gray-500'} />
+                                </div>
+                                
+                                {/* Text Content */}
+                                <div className="hidden 800px:block flex-1 min-w-0">
+                                    <h3 className={`font-semibold text-xs sm:text-sm lg:text-base transition-all duration-300 truncate ${
+                                        isActive ? item.color : 'text-gray-900'
+                                    }`}>
+                                        {item.label}
+                                    </h3>
+                                    <p className={`text-xs lg:text-sm transition-all duration-300 truncate ${
+                                        isActive ? 'text-gray-600' : 'text-gray-500'
+                                    }`}>
+                                        {item.description}
+                                    </p>
+                                </div>
+                                
+                                {/* Arrow Icon with Animation */}
+                                <div className={`hidden 800px:block transition-all duration-300 flex-shrink-0 transform group-hover:translate-x-1 ${
+                                    isActive ? item.color : 'text-gray-400 group-hover:text-gray-600'
                                 }`}>
-                                    {item.description}
-                                </p>
+                                    <svg className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
                             </div>
-                            
-                            {/* Arrow Icon with Animation */}
-                            <div className={`hidden 800px:block transition-all duration-300 flex-shrink-0 transform group-hover:translate-x-1 ${
-                                active === item.id ? 'text-white' : 'text-gray-400 group-hover:text-blue-500'
-                            }`}>
-                                <svg className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </div>
-                        </div>
-                    </Link>
-                ))}
+                        </Link>
+                    );
+                })}
             </nav>
 
             {/* Bottom Section with Enhanced Design */}
@@ -224,6 +280,7 @@ const DashboardSideBar = () => {
                 {/* Mobile Menu Items */}
                 <div className="p-4 space-y-2">
                     {menuItems.map((item) => {
+                        const Icon = item.icon;
                         const isActive = active === item.id;
                         
                         return (
@@ -233,18 +290,18 @@ const DashboardSideBar = () => {
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 group ${
                                     isActive 
-                                        ? 'bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600 text-white shadow-md' 
+                                        ? `${item.bgColor} ${item.borderColor} border-2 ${item.color} shadow-md` 
                                         : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900 hover:shadow-sm'
                                 }`}
                             >
                                 <div className={`p-2 rounded-lg transition-colors ${
-                                    isActive ? 'bg-white/20' : 'group-hover:bg-gray-100'
+                                    isActive ? item.bgColor : 'group-hover:bg-gray-100'
                                 }`}>
-                                    <span className="text-xl">{item.icon}</span>
+                                    <Icon size={20} className={isActive ? item.color : 'text-gray-500'} />
                                 </div>
                                 
                                 <span className="pl-3 font-medium transition-colors flex-1 min-w-0 truncate ${
-                                    isActive ? 'text-white' : 'text-gray-700'
+                                    isActive ? item.color : 'text-gray-700'
                                 }">
                                     {item.label}
                                 </span>

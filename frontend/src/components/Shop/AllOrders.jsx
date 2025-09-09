@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Loader from "../Layout/Loader";
 import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { toast } from "react-toastify";
+import { FiPackage, FiBarChart } from "react-icons/fi";
 
 const AllOrders = () => {
     const { orders, isLoading } = useSelector((state) => state.order);
@@ -93,7 +94,7 @@ const AllOrders = () => {
     if (!orders || orders.length === 0) {
         return (
             <div className="w-full p-8 text-center">
-                <span className="text-6xl mb-4 block">📦</span>
+                <FiPackage className="text-6xl mb-4 block text-gray-400" />
                 <h3 className="text-xl font-semibold text-gray-600 mb-2">No Orders Found</h3>
                 <p className="text-gray-500">Orders will appear here when customers make purchases</p>
             </div>
@@ -115,7 +116,7 @@ const AllOrders = () => {
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                             <div className="flex items-center">
                                 <div className="bg-blue-100 p-3 rounded-full mr-4">
-                                    <span className="text-blue-600 text-xl">📊</span>
+                                    <FiBarChart className="text-blue-600 text-xl" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium text-gray-600">Total Orders</p>

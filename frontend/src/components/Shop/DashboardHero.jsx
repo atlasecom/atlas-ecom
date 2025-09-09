@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
+import { FiPackage, FiBarChart, FiPlus, FiAlertTriangle, FiSmartphone } from "react-icons/fi";
 
 const DashboardHero = () => {
     const { user } = useSelector((state) => state.user);
@@ -157,8 +158,9 @@ const DashboardHero = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
             {/* Mobile Menu Indicator */}
-            <div className="lg:hidden bg-blue-600 text-white px-4 py-2 text-center text-sm font-medium">
-                📱 Seller Dashboard - Swipe or use menu button to navigate
+            <div className="lg:hidden bg-blue-600 text-white px-4 py-2 text-center text-sm font-medium flex items-center justify-center gap-2">
+                <FiSmartphone size={16} />
+                Seller Dashboard - Swipe or use menu button to navigate
             </div>
 
             {/* Main Content */}
@@ -172,7 +174,7 @@ const DashboardHero = () => {
                             <div className="relative bg-white rounded-xl shadow-xl border border-gray-100 p-4 sm:p-5 lg:p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-3 rounded-xl">
-                                        <span className="text-2xl sm:text-3xl text-white">📦</span>
+                                        <FiPackage className="text-2xl sm:text-3xl text-white" />
                                     </div>
                                     <div className="text-right">
                                         <p className="text-sm font-medium text-gray-600 mb-1">Total Products</p>
@@ -181,8 +183,9 @@ const DashboardHero = () => {
                                 </div>
                                 {stats.lowStockProducts > 0 && (
                                     <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-3">
-                                        <p className="text-sm text-red-700 font-medium">
-                                            ⚠️ {stats.lowStockProducts} products low on stock
+                                        <p className="text-sm text-red-700 font-medium flex items-center gap-2">
+                                            <FiAlertTriangle size={16} />
+                                            {stats.lowStockProducts} products low on stock
                                         </p>
                                     </div>
                                 )}
@@ -204,7 +207,7 @@ const DashboardHero = () => {
                             <div className="relative bg-white rounded-xl shadow-xl border border-gray-100 p-4 sm:p-5 lg:p-6 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="bg-gradient-to-r from-green-500 to-green-600 p-3 rounded-xl">
-                                        <span className="text-2xl sm:text-3xl text-white">🎉</span>
+                                        <FiBarChart className="text-2xl sm:text-3xl text-white" />
                                     </div>
                                     <div className="text-right">
                                         <p className="text-sm font-medium text-gray-600 mb-1">Total Events</p>
@@ -311,7 +314,7 @@ const DashboardHero = () => {
                                 ) : (
                                     <div className="text-center py-8 sm:py-12">
                                         <div className="w-20 h-20 sm:w-24 sm:h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <span className="text-3xl sm:text-4xl">📦</span>
+                                            <FiPackage className="text-3xl sm:text-4xl text-blue-600" />
                                         </div>
                                         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">No Products Yet</h3>
                                         <p className="text-sm sm:text-base text-gray-600 mb-4 max-w-md mx-auto px-4">Start building your shop by creating your first product</p>
@@ -319,7 +322,7 @@ const DashboardHero = () => {
                                             to="/dashboard-create-product"
                                             className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-sm sm:text-base"
                                         >
-                                            <span className="mr-2">➕</span>
+                                            <FiPlus className="mr-2" size={16} />
                                             Create Your First Product
                                         </Link>
                                     </div>
@@ -417,7 +420,7 @@ const DashboardHero = () => {
                                 ) : (
                                     <div className="text-center py-8 sm:py-12">
                                         <div className="w-20 h-20 sm:w-24 sm:h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <span className="text-3xl sm:text-4xl">🎉</span>
+                                            <FiBarChart className="text-3xl sm:text-4xl text-green-600" />
                                         </div>
                                         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">No Events Yet</h3>
                                         <p className="text-sm sm:text-base text-gray-600 mb-4 max-w-md mx-auto px-4">Create exciting events to promote your products and attract customers</p>
@@ -425,7 +428,7 @@ const DashboardHero = () => {
                                             to="/dashboard-create-event"
                                             className="inline-flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-sm sm:text-base"
                                         >
-                                            <span className="mr-2">✨</span>
+                                            <FiPlus className="mr-2" size={16} />
                                             Create Your First Event
                                         </Link>
                                     </div>

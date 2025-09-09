@@ -7,6 +7,7 @@ import Loader from "../Layout/Loader";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { getAuthToken } from "../../utils/auth";
+import { FiPackage } from "react-icons/fi";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -161,7 +162,7 @@ const AllProducts = () => {
 
           {products.length === 0 ? (
             <div className="text-center py-12">
-              <span className="text-6xl mb-4 block">📦</span>
+              <FiPackage className="text-6xl mb-4 block text-gray-400" />
               <h3 className="text-xl font-semibold text-gray-600 mb-2">No Products Found</h3>
               <p className="text-gray-500 mb-4">Start by creating your first product</p>
               <Link
