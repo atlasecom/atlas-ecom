@@ -6,7 +6,7 @@ import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
 import Loader from "../Layout/Loader";
-import { FiPackage, FiDollarSign, FiStar, FiTrendingUp } from "react-icons/fi";
+import { FiPackage, FiDollarSign, FiStar, FiTrendingUp, FiAlertTriangle, FiEye, FiTrash2 } from "react-icons/fi";
 import { backend_url } from "../../server";
 
 const AllProducts = () => {
@@ -156,7 +156,7 @@ const AllProducts = () => {
               </p>
             </div>
             <div className="bg-orange-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <span className="text-orange-600 text-base sm:text-lg lg:text-xl">⚠️</span>
+              <FiAlertTriangle className="text-orange-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -251,7 +251,7 @@ const AllProducts = () => {
                 to={`/product/${product._id}`}
                 className="w-full sm:flex-1 bg-blue-600 text-white text-xs sm:text-sm py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
               >
-                <span className="mr-1">👁️</span>
+                <FiEye className="mr-1" size={14} />
                 Preview
               </Link>
               <button
@@ -261,7 +261,7 @@ const AllProducts = () => {
                 }}
                 className="w-full sm:flex-1 bg-red-600 text-white text-xs sm:text-sm py-2 px-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center"
               >
-                <span className="mr-1">🗑️</span>
+                <FiTrash2 className="mr-1" size={14} />
                 Delete
               </button>
             </div>
