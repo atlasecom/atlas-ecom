@@ -356,9 +356,9 @@ const ProductCard = ({ data, isEvent }) => {
               {/* Subtle Glow Effect */}
               <div className="absolute inset-0 rounded-md xl:rounded-lg 2xl:rounded-xl blur-sm opacity-20 group-hover:opacity-30 transition-opacity duration-500 bg-green-400"></div>
               
-              <div className="relative z-10 flex items-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2">
-                <FaWhatsapp size={12} className="sm:w-3 sm:h-3 xl:w-4 xl:h-4 2xl:w-5 2xl:h-5 text-green-100 drop-shadow-sm" />
-                <span className="font-bold text-xs sm:text-xs xl:text-xs 2xl:text-sm tracking-wide">WhatsApp</span>
+              <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 w-full">
+                <FaWhatsapp size={12} className="sm:w-3 sm:h-3 xl:w-4 xl:h-4 2xl:w-5 2xl:h-5 text-green-100 drop-shadow-sm flex-shrink-0" />
+                <span className="font-bold text-xs sm:text-xs xl:text-xs 2xl:text-sm tracking-wide text-center">WhatsApp</span>
               </div>
             </button>
 
@@ -373,9 +373,9 @@ const ProductCard = ({ data, isEvent }) => {
               {/* Subtle Glow Effect */}
               <div className="absolute inset-0 rounded-md xl:rounded-lg 2xl:rounded-xl blur-sm opacity-20 group-hover:opacity-30 transition-opacity duration-500 bg-blue-400"></div>
               
-              <div className="relative z-10 flex items-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2">
-                <FaTelegram size={12} className="sm:w-3 sm:h-3 xl:w-4 xl:h-4 2xl:w-5 2xl:h-5 text-blue-100 drop-shadow-sm" />
-                <span className="font-bold text-xs sm:text-xs xl:text-xs 2xl:text-sm tracking-wide">Telegram</span>
+              <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 w-full">
+                <FaTelegram size={12} className="sm:w-3 sm:h-3 xl:w-4 xl:h-4 2xl:w-5 2xl:h-5 text-blue-100 drop-shadow-sm flex-shrink-0" />
+                <span className="font-bold text-xs sm:text-xs xl:text-xs 2xl:text-sm tracking-wide text-center">Telegram</span>
               </div>
             </button>
           </div>
