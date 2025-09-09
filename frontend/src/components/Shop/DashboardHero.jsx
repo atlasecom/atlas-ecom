@@ -291,7 +291,7 @@ const DashboardHero = () => {
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <h4 className="font-semibold text-gray-900 truncate mb-1 text-sm sm:text-base">{product.name}</h4>
-                                                        <p className="text-base sm:text-lg font-bold text-blue-600 mb-2">DH{product.price}</p>
+                                                        <p className="text-base sm:text-lg font-bold text-blue-600 mb-2">{product.price} DH</p>
                                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                                                             <div className="flex items-center space-x-1">
                                                                 <span className="text-yellow-400">⭐</span>
@@ -406,7 +406,7 @@ const DashboardHero = () => {
                                                                  event.status === 'Ended' ? '⚫ Ended' : '🟡 Upcoming'}
                                                             </span>
                                                             <span className="text-sm text-gray-500 font-medium">
-                                                                DH{event.discountPrice}
+                                                                {event.discountPrice} DH
                                                             </span>
                                                         </div>
                                                     </div>
