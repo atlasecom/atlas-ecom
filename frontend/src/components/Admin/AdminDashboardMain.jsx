@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSellers } from "../../redux/actions/sellers";
-import { FiTrendingUp, FiMenu, FiUser, FiPackage, FiBarChart, FiShoppingCart, FiCheckCircle, FiClock } from "react-icons/fi";
+import { FiTrendingUp, FiMenu, FiUser, FiPackage, FiBarChart, FiShoppingCart, FiCheckCircle, FiClock, FiArrowRight } from "react-icons/fi";
 import { GrWorkshop } from "react-icons/gr";
 import { RxDashboard } from "react-icons/rx";
 import axios from "axios";
@@ -258,7 +258,7 @@ const AdminDashboardMain = () => {
             className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-center hover:bg-blue-100 transition-colors"
           >
             <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-              <AiOutlineUser className="text-blue-600 text-xl" />
+              <FiUser className="text-blue-600 text-xl" />
             </div>
             <p className="text-sm font-medium text-blue-900">Users</p>
           </Link>
@@ -280,7 +280,7 @@ const AdminDashboardMain = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900">User Management</h3>
-            <AiOutlineUser className="text-blue-600 text-base sm:text-lg lg:text-xl" />
+            <FiUser className="text-blue-600 text-base sm:text-lg lg:text-xl" />
           </div>
           <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-3 sm:mb-4">
             Manage user accounts, permissions, and monitor user activity across the platform.
@@ -291,14 +291,14 @@ const AdminDashboardMain = () => {
               className="flex items-center justify-between p-2 sm:p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
             >
               <span className="text-blue-700 font-medium text-xs sm:text-sm lg:text-base">View All Users</span>
-              <AiOutlineArrowRight className="text-blue-600 text-sm sm:text-base" />
+              <FiArrowRight className="text-blue-600 text-sm sm:text-base" />
             </Link>
             <Link
               to="/admin-sellers"
               className="flex items-center justify-between p-2 sm:p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
             >
               <span className="text-purple-700 font-medium text-xs sm:text-sm lg:text-base">Manage Sellers</span>
-              <AiOutlineArrowRight className="text-purple-600 text-sm sm:text-base" />
+              <FiArrowRight className="text-purple-600 text-sm sm:text-base" />
             </Link>
           </div>
         </div>
@@ -318,14 +318,14 @@ const AdminDashboardMain = () => {
               className="flex items-center justify-between p-2 sm:p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
             >
               <span className="text-green-700 font-medium text-xs sm:text-sm lg:text-base">View All Products</span>
-              <AiOutlineArrowRight className="text-green-600 text-sm sm:text-base" />
+              <FiArrowRight className="text-green-600 text-sm sm:text-base" />
             </Link>
             <Link
               to="/admin-events"
               className="flex items-center justify-between p-2 sm:p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors"
             >
               <span className="text-orange-700 font-medium text-xs sm:text-sm lg:text-base">Manage Events</span>
-              <AiOutlineArrowRight className="text-orange-600 text-sm sm:text-base" />
+              <FiArrowRight className="text-orange-600 text-sm sm:text-base" />
             </Link>
           </div>
         </div>
