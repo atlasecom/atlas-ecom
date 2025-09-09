@@ -358,7 +358,7 @@ const ProductCard = ({ data, isEvent }) => {
               
               <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 w-full">
                 <FaWhatsapp size={12} className="sm:w-3 sm:h-3 xl:w-4 xl:h-4 2xl:w-5 2xl:h-5 text-green-100 drop-shadow-sm flex-shrink-0" />
-                <span className="font-bold text-xs sm:text-xs xl:text-xs 2xl:text-sm tracking-wide text-center">WhatsApp</span>
+                <span className="font-semibold text-xs tracking-wide text-center">WhatsApp</span>
               </div>
             </button>
 
@@ -375,7 +375,7 @@ const ProductCard = ({ data, isEvent }) => {
               
               <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 w-full">
                 <FaTelegram size={12} className="sm:w-3 sm:h-3 xl:w-4 xl:h-4 2xl:w-5 2xl:h-5 text-blue-100 drop-shadow-sm flex-shrink-0" />
-                <span className="font-bold text-xs sm:text-xs xl:text-xs 2xl:text-sm tracking-wide text-center">Telegram</span>
+                <span className="font-semibold text-xs tracking-wide text-center">Telegram</span>
               </div>
             </button>
           </div>
