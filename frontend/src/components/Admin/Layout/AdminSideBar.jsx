@@ -100,7 +100,7 @@ const AdminSideBar = () => {
           {/* Header */}
           <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
                 <RxDashboard className="text-white text-xl" />
               </div>
               <div className="flex-1 min-w-0">
@@ -171,7 +171,7 @@ const AdminSideBar = () => {
         <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
                 <RxDashboard className="text-white text-xl" />
               </div>
               <div className="flex-1 min-w-0">
