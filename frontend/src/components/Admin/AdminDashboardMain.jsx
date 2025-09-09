@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlineArrowRight, AiOutlineUser, AiOutlineShop } from "react-icons/ai";
-import { MdOutlinePendingActions } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSellers } from "../../redux/actions/sellers";
-import { FiTrendingUp, FiMenu } from "react-icons/fi";
+import { FiTrendingUp, FiMenu, FiUser, FiPackage, FiBarChart, FiShoppingCart, FiCheckCircle, FiClock } from "react-icons/fi";
 import { GrWorkshop } from "react-icons/gr";
+import { RxDashboard } from "react-icons/rx";
 import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
@@ -149,7 +148,7 @@ const AdminDashboardMain = () => {
               </div>
             </div>
             <div className="bg-blue-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <AiOutlineUser className="text-blue-600 text-base sm:text-lg lg:text-xl" />
+              <FiUser className="text-blue-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -168,7 +167,7 @@ const AdminDashboardMain = () => {
               </div>
             </div>
             <div className="bg-purple-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <AiOutlineShop className="text-purple-600 text-base sm:text-lg lg:text-xl" />
+              <GrWorkshop className="text-purple-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -187,7 +186,7 @@ const AdminDashboardMain = () => {
               </div>
             </div>
             <div className="bg-green-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <span className="text-green-600 text-base sm:text-lg lg:text-xl">📦</span>
+              <FiPackage className="text-green-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -206,7 +205,7 @@ const AdminDashboardMain = () => {
               </div>
             </div>
             <div className="bg-indigo-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <span className="text-indigo-600 text-base sm:text-lg lg:text-xl">🛒</span>
+              <FiShoppingCart className="text-indigo-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -225,7 +224,7 @@ const AdminDashboardMain = () => {
               </div>
             </div>
             <div className="bg-green-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <AiOutlineShop className="text-green-600 text-base sm:text-lg lg:text-xl" />
+              <FiCheckCircle className="text-green-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -239,12 +238,12 @@ const AdminDashboardMain = () => {
               </p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-orange-600">{stats.pendingSellers}</p>
               <div className="flex items-center mt-1 sm:mt-2">
-                <MdOutlinePendingActions className="text-orange-500 mr-1 text-xs sm:text-sm" />
+                <FiClock className="text-orange-500 mr-1 text-xs sm:text-sm" />
                 <span className="text-xs lg:text-sm text-orange-600 truncate">Requires attention</span>
               </div>
             </div>
             <div className="bg-orange-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <MdOutlinePendingActions className="text-orange-600 text-base sm:text-lg lg:text-xl" />
+              <FiClock className="text-orange-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>

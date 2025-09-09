@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { AiOutlineDelete, AiOutlineEye, AiOutlineCheck, AiOutlineClose, AiOutlineUser, AiOutlineShop, AiOutlineMail, AiOutlinePhone, AiOutlineCalendar, AiOutlineClockCircle, AiOutlineFilter } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
 import { server } from "../../server";
@@ -9,7 +8,8 @@ import { toast } from "react-toastify";
 import { getAllSellers } from "../../redux/actions/sellers";
 import { Link } from "react-router-dom";
 import { getAuthToken } from "../../utils/auth";
-import { FiSearch, FiX, FiMenu } from "react-icons/fi";
+import { FiSearch, FiX, FiMenu, FiUser, FiShop, FiMail, FiPhone, FiCalendar, FiClock, FiFilter, FiEye, FiCheck, FiTrash2 } from "react-icons/fi";
+import { GrWorkshop } from "react-icons/gr";
 import Loader from "../Layout/Loader";
 import Avatar from "../Common/Avatar";
 
@@ -188,7 +188,7 @@ const AllSellers = () => {
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{sellers.length}</p>
             </div>
             <div className="bg-blue-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <AiOutlineShop className="text-blue-600 text-base sm:text-lg lg:text-xl" />
+              <GrWorkshop className="text-blue-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -202,7 +202,7 @@ const AllSellers = () => {
               </p>
             </div>
             <div className="bg-green-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <AiOutlineCheck className="text-green-600 text-base sm:text-lg lg:text-xl" />
+              <FiCheck className="text-green-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -216,7 +216,7 @@ const AllSellers = () => {
               </p>
             </div>
             <div className="bg-orange-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <AiOutlineClockCircle className="text-orange-600 text-base sm:text-lg lg:text-xl" />
+              <FiClock className="text-orange-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -230,7 +230,7 @@ const AllSellers = () => {
               </p>
             </div>
             <div className="bg-purple-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
-              <AiOutlineShop className="text-purple-600 text-base sm:text-lg lg:text-xl" />
+              <GrWorkshop className="text-purple-600 text-base sm:text-lg lg:text-xl" />
             </div>
           </div>
         </div>
@@ -311,7 +311,7 @@ const AllSellers = () => {
       {filteredSellers.length === 0 ? (
         <div className="text-center py-12">
           <div className="text-gray-400 mb-4">
-            <AiOutlineShop size={64} className="mx-auto" />
+            <GrWorkshop size={64} className="mx-auto" />
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No sellers found</h3>
           <p className="text-gray-500">
@@ -351,7 +351,7 @@ const AllSellers = () => {
               {seller.shop && (
                 <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-2 mb-1 sm:mb-2">
-                    <AiOutlineShop className="text-blue-600 text-sm sm:text-base" />
+                    <GrWorkshop className="text-blue-600 text-sm sm:text-base" />
                     <span className="font-medium text-gray-900 text-sm sm:text-base truncate">{seller.shop.name}</span>
                   </div>
                   {seller.shop.description && (
@@ -364,18 +364,18 @@ const AllSellers = () => {
               <div className="space-y-1 sm:space-y-2 mb-3 sm:mb-4">
                 {seller.phoneNumber && (
                   <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600">
-                    <AiOutlinePhone className="text-xs sm:text-sm" />
+                    <FiPhone className="text-xs sm:text-sm" />
                     <span className="truncate">{seller.phoneNumber}</span>
                   </div>
                 )}
                 {seller.address && (
                   <div className="flex items-start space-x-2 text-xs sm:text-sm text-gray-600">
-                    <AiOutlineUser className="mt-0.5 text-xs sm:text-sm" />
+                    <FiUser className="mt-0.5 text-xs sm:text-sm" />
                     <span className="truncate">{seller.address}</span>
                   </div>
                 )}
                 <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600">
-                  <AiOutlineCalendar className="text-xs sm:text-sm" />
+                  <FiCalendar className="text-xs sm:text-sm" />
                   <span className="truncate">Joined: {new Date(seller.createdAt).toLocaleDateString()}</span>
                 </div>
               </div>
@@ -387,7 +387,7 @@ const AllSellers = () => {
                     onClick={() => handleApprove(seller._id)}
                     className="w-full sm:flex-1 bg-green-600 text-white text-xs sm:text-sm py-2 px-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center"
                   >
-                    <AiOutlineCheck className="mr-1 text-xs sm:text-sm" />
+                    <FiCheck className="mr-1 text-xs sm:text-sm" />
                     <span className="truncate">Approve</span>
                   </button>
                 ) : (
@@ -395,7 +395,7 @@ const AllSellers = () => {
                     onClick={() => handleReject(seller._id)}
                     className="w-full sm:flex-1 bg-orange-600 text-white text-xs sm:text-sm py-2 px-3 rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center"
                   >
-                    <AiOutlineClose className="mr-1 text-xs sm:text-sm" />
+                    <FiX className="mr-1 text-xs sm:text-sm" />
                     <span className="truncate">Reject</span>
                   </button>
                 )}
@@ -407,7 +407,7 @@ const AllSellers = () => {
                   className="w-full sm:w-auto bg-red-600 text-white text-xs sm:text-sm py-2 px-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center"
                   title="Delete Seller"
                 >
-                  <AiOutlineDelete className="text-xs sm:text-sm" />
+                  <FiTrash2 className="text-xs sm:text-sm" />
                 </button>
               </div>
             </div>
