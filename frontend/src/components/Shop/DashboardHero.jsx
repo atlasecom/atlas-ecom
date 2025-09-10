@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
-import { FiPackage, FiBarChart, FiPlus, FiAlertTriangle, FiSmartphone } from "react-icons/fi";
+import { FiPackage, FiBarChart, FiPlus, FiAlertTriangle, FiSmartphone, FiCamera, FiStar } from "react-icons/fi";
 
 const DashboardHero = () => {
     const { user } = useSelector((state) => state.user);
@@ -289,7 +289,7 @@ const DashboardHero = () => {
                                                                 }}
                                                             />
                                                         ) : (
-                                                            <span className="text-xl sm:text-2xl text-gray-400">📷</span>
+                                                            <FiCamera className="text-xl sm:text-2xl text-gray-400" />
                                                         )}
                                                     </div>
                                                     <div className="flex-1 min-w-0">
@@ -297,7 +297,7 @@ const DashboardHero = () => {
                                                         <p className="text-base sm:text-lg font-bold text-blue-600 mb-2">{product.price} DH</p>
                                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                                                             <div className="flex items-center space-x-1">
-                                                                <span className="text-yellow-400">⭐</span>
+                                                                <FiStar className="text-yellow-400" size={14} />
                                                                 <span className="text-sm text-gray-600 font-medium">{product.ratings || 0}</span>
                                                             </div>
                                                             <span className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${

@@ -11,7 +11,7 @@ import { removeAuthToken } from "../../utils/auth";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/actions/user";
 import Avatar from "../Common/Avatar";
-import { FiPackage, FiSettings } from "react-icons/fi";
+import { FiPackage, FiSettings, FiStar, FiMapPin, FiPhone, FiCalendar } from "react-icons/fi";
 
 const MyShopInfo = () => {
   const { user } = useSelector((state) => state.user);
@@ -124,12 +124,12 @@ const MyShopInfo = () => {
             </div>
 
             {/* Rating */}
-            <div className="flex items-center p-4 bg-orange-50 rounded-xl">
-              <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center mr-4">
-                <span className="text-white text-lg">⭐</span>
+            <div className="flex items-center p-4 bg-yellow-50 rounded-xl">
+              <div className="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center mr-4">
+                <FiStar className="text-white text-lg" />
               </div>
               <div>
-                <p className="text-sm text-orange-600 font-medium">{t("myShop.shopRatings", "Shop Rating")}</p>
+                <p className="text-sm text-yellow-600 font-medium">{t("myShop.shopRatings", "Shop Rating")}</p>
                 <p className="text-2xl font-bold text-gray-900">{averageRating.toFixed(1)}/5</p>
                 <p className="text-xs text-gray-500">{totalReviewsLength} {t("myShop.reviews", "reviews")}</p>
               </div>
@@ -142,35 +142,35 @@ const MyShopInfo = () => {
               </h4>
               
               {shopData.address || user?.shop?.address ? (
-                <div className="flex items-start p-3 bg-orange-50 rounded-lg">
-                  <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center mr-3 mt-1">
-                    <span className="text-white text-sm">📍</span>
+                <div className="flex items-start p-3 bg-blue-50 rounded-lg">
+                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3 mt-1">
+                    <FiMapPin className="text-white text-sm" />
                   </div>
                   <div>
-                    <p className="text-sm text-orange-600 font-medium">{t("myShop.address", "Address")}</p>
+                    <p className="text-sm text-blue-600 font-medium">{t("myShop.address", "Address")}</p>
                     <p className="text-gray-900">{shopData.address || user?.shop?.address}</p>
                   </div>
                 </div>
               ) : null}
 
               {shopData.phoneNumber || user?.shop?.phoneNumber ? (
-                <div className="flex items-start p-3 bg-orange-50 rounded-lg">
-                  <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center mr-3 mt-1">
-                    <span className="text-white text-sm">📞</span>
+                <div className="flex items-start p-3 bg-green-50 rounded-lg">
+                  <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center mr-3 mt-1">
+                    <FiPhone className="text-white text-sm" />
                   </div>
                   <div>
-                    <p className="text-sm text-orange-600 font-medium">{t("myShop.phoneNumber", "Phone Number")}</p>
+                    <p className="text-sm text-green-600 font-medium">{t("myShop.phoneNumber", "Phone Number")}</p>
                     <p className="text-gray-900">{shopData.phoneNumber || user?.shop?.phoneNumber}</p>
                   </div>
                 </div>
               ) : null}
 
-              <div className="flex items-start p-3 bg-gray-50 rounded-lg">
-                <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center mr-3 mt-1">
-                  <span className="text-white text-sm">📅</span>
+              <div className="flex items-start p-3 bg-purple-50 rounded-lg">
+                <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center mr-3 mt-1">
+                  <FiCalendar className="text-white text-sm" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 font-medium">{t("myShop.joinedOn", "Joined On")}</p>
+                  <p className="text-sm text-purple-600 font-medium">{t("myShop.joinedOn", "Joined On")}</p>
                   <p className="text-gray-900">
                     {shopData?.createdAt?.slice(0, 10) ||
                       user?.shop?.createdAt?.slice(0, 10)}
