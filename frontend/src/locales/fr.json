@@ -98,6 +98,30 @@
     "ended": "⚫ Terminé",
     "upcoming": "🟡 À venir"
   },
+  "productsPage": {
+    "totalProducts": "Total des produits",
+    "sellers": "Vendeurs",
+    "categories": "Catégories"
+  },
+  "eventsPage": {
+    "totalEvents": "Total des événements",
+    "categories": "Catégories",
+    "locations": "Lieux"
+  },
+  "allProducts": {
+    "title": "Tous les produits",
+    "addNewProduct": "Ajouter un nouveau produit",
+    "noProductsFound": "Aucun produit trouvé",
+    "startCreating": "Commencez par créer votre premier produit",
+    "createProduct": "Créer un produit"
+  },
+  "allEvents": {
+    "title": "Tous les événements",
+    "addNewEvent": "Ajouter un nouvel événement",
+    "noEventsFound": "Aucun événement trouvé",
+    "startCreating": "Commencez par créer votre premier événement",
+    "createEvent": "Créer un événement"
+  },
   "features": {
     "delivery": {
       "title": "Livraison",

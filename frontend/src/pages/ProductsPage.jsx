@@ -157,15 +157,15 @@ const ProductsPage = () => {
                 <div className="flex flex-wrap justify-center gap-3 sm:gap-4 lg:gap-6">
                   <div className="text-center px-2">
                     <div className="text-lg sm:text-xl font-bold text-white">{allProducts.length}</div>
-                    <div className="text-orange-200 text-xs font-medium">Total Products</div>
+                    <div className="text-orange-200 text-xs font-medium">{t("productsPage.totalProducts", "Total Products")}</div>
                   </div>
                   <div className="text-center px-2">
                     <div className="text-lg sm:text-xl font-bold text-white">{sellers.length}</div>
-                    <div className="text-orange-200 text-xs font-medium">Sellers</div>
+                    <div className="text-orange-200 text-xs font-medium">{t("productsPage.sellers", "Sellers")}</div>
                   </div>
                   <div className="text-center px-2">
                     <div className="text-lg sm:text-xl font-bold text-white">{categoriesData.length}</div>
-                    <div className="text-orange-200 text-xs font-medium">Categories</div>
+                    <div className="text-orange-200 text-xs font-medium">{t("productsPage.categories", "Categories")}</div>
                   </div>
                 </div>
               </div>

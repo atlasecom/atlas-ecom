@@ -95,15 +95,15 @@ const EventsPage = () => {
                 <div className="flex flex-wrap justify-center gap-3 sm:gap-4 lg:gap-6">
                   <div className="text-center px-2">
                     <div className="text-lg sm:text-xl font-bold text-white">{allEvents.length}</div>
-                    <div className="text-orange-200 text-xs font-medium">Total Events</div>
+                    <div className="text-orange-200 text-xs font-medium">{t("eventsPage.totalEvents", "Total Events")}</div>
                   </div>
                   <div className="text-center px-2">
                     <div className="text-lg sm:text-xl font-bold text-white">{categories.length}</div>
-                    <div className="text-orange-200 text-xs font-medium">Categories</div>
+                    <div className="text-orange-200 text-xs font-medium">{t("eventsPage.categories", "Categories")}</div>
                   </div>
                   <div className="text-center px-2">
                     <div className="text-lg sm:text-xl font-bold text-white">{locations.length}</div>
-                    <div className="text-orange-200 text-xs font-medium">Locations</div>
+                    <div className="text-orange-200 text-xs font-medium">{t("eventsPage.locations", "Locations")}</div>
                   </div>
                 </div>
               </div>

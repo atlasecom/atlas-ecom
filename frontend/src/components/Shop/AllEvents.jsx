@@ -8,8 +8,10 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { getAuthToken } from "../../utils/auth";
 import { FiBarChart, FiEye, FiTrash2, FiPlus, FiCamera, FiStar, FiCalendar } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 const AllEvents = () => {
+  const { t } = useTranslation();
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useSelector((state) => state.user);
@@ -165,13 +167,13 @@ const AllEvents = () => {
   return (
     <div className="w-full p-4">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">All Events</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t("allEvents.title", "All Events")}</h1>
         <Link
           to="/dashboard-create-event"
           className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center"
         >
           <FiPlus className="mr-2" size={16} />
-          Add New Event
+{t("allEvents.addNewEvent", "Add New Event")}
         </Link>
       </div>
 

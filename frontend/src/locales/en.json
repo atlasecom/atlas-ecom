@@ -98,6 +98,30 @@
     "ended": "⚫ Ended",
     "upcoming": "🟡 Upcoming"
   },
+  "productsPage": {
+    "totalProducts": "Total Products",
+    "sellers": "Sellers",
+    "categories": "Categories"
+  },
+  "eventsPage": {
+    "totalEvents": "Total Events",
+    "categories": "Categories",
+    "locations": "Locations"
+  },
+  "allProducts": {
+    "title": "All Products",
+    "addNewProduct": "Add New Product",
+    "noProductsFound": "No Products Found",
+    "startCreating": "Start by creating your first product",
+    "createProduct": "Create Product"
+  },
+  "allEvents": {
+    "title": "All Events",
+    "addNewEvent": "Add New Event",
+    "noEventsFound": "No Events Found",
+    "startCreating": "Start by creating your first event",
+    "createEvent": "Create Event"
+  },
   "features": {
     "delivery": {
       "title": "Delivery",

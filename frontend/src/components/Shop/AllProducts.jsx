@@ -8,8 +8,10 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { getAuthToken } from "../../utils/auth";
 import { FiPackage, FiEye, FiTrash2, FiPlus, FiCamera, FiStar } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 const AllProducts = () => {
+  const { t } = useTranslation();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useSelector((state) => state.user);
@@ -151,27 +153,27 @@ const AllProducts = () => {
       <div className="w-full px-0 sm:px-4 lg:px-6 py-2 sm:py-4 lg:py-6">
         <div className="max-w-7xl mx-auto px-2 sm:px-0">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">All Products</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t("allProducts.title", "All Products")}</h1>
             <Link
               to="/dashboard-create-product"
               className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center"
             >
               <FiPlus className="mr-2" size={16} />
-              Add New Product
+{t("allProducts.addNewProduct", "Add New Product")}
             </Link>
           </div>
 
           {products.length === 0 ? (
             <div className="text-center py-12">
               <FiPackage className="text-6xl mb-4 block text-gray-400" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Products Found</h3>
-              <p className="text-gray-500 mb-4">Start by creating your first product</p>
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">{t("allProducts.noProductsFound", "No Products Found")}</h3>
+              <p className="text-gray-500 mb-4">{t("allProducts.startCreating", "Start by creating your first product")}</p>
               <Link
                 to="/dashboard-create-product"
                 className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center mx-auto w-fit"
               >
                 <FiPlus className="mr-2" size={16} />
-                Create Product
+{t("allProducts.createProduct", "Create Product")}
               </Link>
             </div>
           ) : (
