@@ -218,11 +218,11 @@ const CreateProduct = () => {
                                             maxLength="100"
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
                                             onChange={(e) => setName(e.target.value)}
-                                            placeholder="Enter your product name..."
+                                            placeholder={t("createProduct.namePlaceholder", "Enter your product name...")}
                                         />
                                         <div className="flex justify-between text-xs text-gray-500">
-                                            <span>{name.length}/100 characters</span>
-                                            <span>Minimum 2 required</span>
+                                            <span>{t("createProduct.charactersCount", "{{count}}/100 characters", { count: name.length })}</span>
+                                            <span>{t("createProduct.minCharacters", "Minimum 2 required")}</span>
                                         </div>
                                     </div>
 
@@ -239,17 +239,17 @@ const CreateProduct = () => {
                                             required
                                             onChange={(e) => setCategory(e.target.value)}
                                         >
-                                            <option value="Electronics">Electronics</option>
-                                            <option value="Fashion & Apparel">Fashion & Apparel</option>
-                                            <option value="Home & Garden">Home & Garden</option>
-                                            <option value="Sports & Outdoors">Sports & Outdoors</option>
-                                            <option value="Health & Beauty">Health & Beauty</option>
-                                            <option value="Books & Media">Books & Media</option>
-                                            <option value="Automotive">Automotive</option>
-                                            <option value="Toys & Games">Toys & Games</option>
-                                            <option value="Food & Beverages">Food & Beverages</option>
-                                            <option value="Jewelry & Accessories">Jewelry & Accessories</option>
-                                            <option value="Pet Supplies">Pet Supplies</option>
+                                            <option value="Electronics">{t("createProduct.categories.electronics", "Electronics")}</option>
+                                            <option value="Fashion & Apparel">{t("createProduct.categories.fashion", "Fashion & Apparel")}</option>
+                                            <option value="Home & Garden">{t("createProduct.categories.home", "Home & Garden")}</option>
+                                            <option value="Sports & Outdoors">{t("createProduct.categories.sports", "Sports & Outdoors")}</option>
+                                            <option value="Health & Beauty">{t("createProduct.categories.health", "Health & Beauty")}</option>
+                                            <option value="Books & Media">{t("createProduct.categories.books", "Books & Media")}</option>
+                                            <option value="Automotive">{t("createProduct.categories.automotive", "Automotive")}</option>
+                                            <option value="Toys & Games">{t("createProduct.categories.toys", "Toys & Games")}</option>
+                                            <option value="Food & Beverages">{t("createProduct.categories.food", "Food & Beverages")}</option>
+                                            <option value="Jewelry & Accessories">{t("createProduct.categories.jewelry", "Jewelry & Accessories")}</option>
+                                            <option value="Pet Supplies">{t("createProduct.categories.pet", "Pet Supplies")}</option>
                                         </select>
                                     </div>
 
@@ -266,10 +266,10 @@ const CreateProduct = () => {
                                             maxLength="200"
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
                                             onChange={(e) => setTags(e.target.value)}
-                                            placeholder="Enter tags separated by commas..."
+                                            placeholder={t("createProduct.tagsPlaceholder", "Enter tags separated by commas...")}
                                         />
                                         <div className="text-xs text-gray-500 text-right">
-                                            {tags.length}/200 characters
+{t("createProduct.charactersCount", "{{count}}/200 characters", { count: tags.length })}
                                         </div>
                                     </div>
                                 </div>
@@ -280,13 +280,13 @@ const CreateProduct = () => {
                                     <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200">
                                         <div className="flex items-center mb-4">
                                             <FiDollarSign className="mr-2 text-orange-600" size={20} />
-                                            <h3 className="text-lg font-semibold text-orange-800">Pricing Range</h3>
+                                            <h3 className="text-lg font-semibold text-orange-800">{t("createProduct.pricingRange", "Pricing Range")}</h3>
                                         </div>
                                         
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
                                                 <label className="text-sm font-medium text-orange-800">
-                                                    Minimum Price (DH) <span className="text-red-500">*</span>
+{t("createProduct.minPrice", "Minimum Price (DH)")} <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
                                                     type="number"
@@ -296,12 +296,12 @@ const CreateProduct = () => {
                                                     step="0.01"
                                                     className="w-full px-3 py-2 border border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                                     onChange={(e) => setMinPrice(e.target.value)}
-                                                    placeholder="0.00"
+                                                    placeholder={t("createProduct.minPricePlaceholder", "0.00")}
                                                 />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-sm font-medium text-orange-800">
-                                                    Maximum Price (DH) <span className="text-red-500">*</span>
+{t("createProduct.maxPrice", "Maximum Price (DH)")} <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
                                                     type="number"
@@ -311,7 +311,7 @@ const CreateProduct = () => {
                                                     step="0.01"
                                                     className="w-full px-3 py-2 border border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                                     onChange={(e) => setMaxPrice(e.target.value)}
-                                                    placeholder="0.00"
+                                                    placeholder={t("createProduct.maxPricePlaceholder", "0.00")}
                                                 />
                                             </div>
                                         </div>
