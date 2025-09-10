@@ -184,13 +184,8 @@ const CartSingle = ({ data, removeFromWishlistHandler }) => {
           {/* Price */}
           <div className="mt-2 sm:mt-3 flex items-center gap-2 sm:gap-3">
             <span className="text-lg sm:text-xl md:text-2xl font-bold text-orange-600">
-              {formatCurrency(totalPrice)}
+              {formatCurrency(data.originalPrice)} - {formatCurrency(data.discountPrice)}
             </span>
-            {data.originalPrice > data.discountPrice && (
-              <span className="text-sm sm:text-base md:text-lg text-gray-400 line-through">
-                {formatCurrency(data.originalPrice)}
-              </span>
-            )}
           </div>
 
           {/* Stock Status */}

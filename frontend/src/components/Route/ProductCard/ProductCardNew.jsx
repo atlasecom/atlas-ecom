@@ -275,14 +275,9 @@ const ProductCard = ({ data, isEvent }) => {
 
             {/* Price */}
             <div className="flex items-center gap-1 sm:gap-1.5 xl:gap-2 2xl:gap-3 mb-1.5 sm:mb-2 xl:mb-2 2xl:mb-3">
-              <h5 className="text-lg sm:text-xl xl:text-xl 2xl:text-2xl font-bold text-gray-900">
-                {discountPrice} {getCurrency()}
+              <h5 className="text-lg sm:text-xl xl:text-xl 2xl:text-2xl font-bold text-orange-600">
+                {originalPrice} - {discountPrice} {getCurrency()}
               </h5>
-              {originalPrice > 0 && originalPrice > discountPrice && (
-                <h4 className="text-sm sm:text-base xl:text-base 2xl:text-lg text-gray-400 line-through font-medium">
-                  {originalPrice} {getCurrency()}
-                </h4>
-              )}
             </div>
 
             {/* Stock Indicator */}

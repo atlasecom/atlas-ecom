@@ -414,14 +414,9 @@ const AllEvents = () => {
 
                   {/* Price */}
                   <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                    <span className="text-lg sm:text-xl font-bold text-gray-900">
-                      {event.discountPrice || event.originalPrice || 0} dh
+                    <span className="text-lg sm:text-xl font-bold text-orange-600">
+                      {event.originalPrice} - {event.discountPrice} DH
                     </span>
-                    {event.originalPrice && event.originalPrice > (event.discountPrice || 0) && (
-                      <span className="text-xs sm:text-sm text-gray-500 line-through">
-                        {event.originalPrice} dh
-                      </span>
-                    )}
                   </div>
 
                   {/* Action Buttons */}

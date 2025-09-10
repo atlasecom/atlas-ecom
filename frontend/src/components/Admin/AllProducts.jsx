@@ -210,14 +210,9 @@ const AllProducts = () => {
               
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
-                  <span className="text-base sm:text-lg font-bold text-green-600">
-                    {product.discountPrice} DH
+                  <span className="text-base sm:text-lg font-bold text-orange-600">
+                    {product.originalPrice} - {product.discountPrice} DH
                   </span>
-                  {product.discountPrice < product.originalPrice && (
-                    <span className="text-xs sm:text-sm text-gray-500 line-through">
-                      {product.originalPrice} DH
-                    </span>
-                  )}
                 </div>
                 <div className="flex items-center space-x-1">
                   <FiStar className="text-yellow-400" />

@@ -388,26 +388,9 @@ const ProductCard = ({ data, isEvent }) => {
                 isRTL ? "flex-row-reverse" : "flex-row"
               } sm:gap-2 xs:gap-1`}
             >
-              <h5 className="text-lg font-bold text-black-600 sm:text-xl md:text-2xl xs:text-base">
-                {data.discountPrice} {getCurrency()}
+              <h5 className="text-lg font-bold text-orange-600 sm:text-xl md:text-2xl xs:text-base">
+                {data.originalPrice} - {data.discountPrice} {getCurrency()}
               </h5>
-              {data.originalPrice > 0 &&
-                data.originalPrice > data.discountPrice && (
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-xs text-gray-400 line-through sm:text-sm xs:text-xs">
-                      {data.originalPrice} {getCurrency()}
-                    </h4>
-                    <span className="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full font-medium sm:text-xs sm:px-2 sm:py-1 xs:text-xs xs:px-1 xs:py-0.5">
-                      -
-                      {Math.round(
-                        ((data.originalPrice - data.discountPrice) /
-                          data.originalPrice) *
-                          100
-                      )}
-                      %
-                    </span>
-                  </div>
-                )}
             </div>
           </div>
 

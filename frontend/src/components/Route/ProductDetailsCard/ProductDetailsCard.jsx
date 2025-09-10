@@ -270,26 +270,9 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                       isRTL ? "flex-row-reverse" : "flex-row"
                     }`}
                   >
-                    <h4 className="text-2xl sm:text-3xl font-bold text-red-600">
-                      {data.discountPrice}dh
+                    <h4 className="text-2xl sm:text-3xl font-bold text-orange-600">
+                      {data.originalPrice} - {data.discountPrice} DH
                     </h4>
-                    {data.originalPrice > 0 &&
-                      data.originalPrice > data.discountPrice && (
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-xs text-gray-400 line-through sm:text-sm xs:text-xs">
-                            {data.originalPrice} dh
-                          </h4>
-                          <span className="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full font-medium sm:text-xs sm:px-2 sm:py-1 xs:text-xs xs:px-1 xs:py-0.5">
-                            -
-                            {Math.round(
-                              ((data.originalPrice - data.discountPrice) /
-                                data.originalPrice) *
-                                100
-                            )}
-                            %
-                          </span>
-                        </div>
-                      )}
                   </div>
 
                   {/* Quantity and wishlist section */}

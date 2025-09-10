@@ -157,14 +157,9 @@ const ShopProductCard = ({ data, isEvent, onDelete, onUpdate }) => {
 
         {/* Price Section */}
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-base sm:text-lg font-bold text-gray-900">
-            {data.discountPrice} {t("common.currency", "dh")}
+          <span className="text-base sm:text-lg font-bold text-orange-600">
+            {data.originalPrice} - {data.discountPrice} {t("common.currency", "dh")}
           </span>
-          {data.originalPrice > 0 && data.originalPrice > data.discountPrice && (
-            <span className="text-xs sm:text-sm text-gray-500 line-through">
-              {data.originalPrice} {t("common.currency", "dh")}
-            </span>
-          )}
         </div>
 
         {/* Stats Row */}
