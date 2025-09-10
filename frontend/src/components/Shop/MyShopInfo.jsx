@@ -11,6 +11,7 @@ import { removeAuthToken } from "../../utils/auth";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/actions/user";
 import Avatar from "../Common/Avatar";
+import { FiPackage, FiSettings } from "react-icons/fi";
 
 const MyShopInfo = () => {
   const { user } = useSelector((state) => state.user);
@@ -114,7 +115,7 @@ const MyShopInfo = () => {
             {/* Products Count */}
             <div className="flex items-center p-4 bg-orange-50 rounded-xl">
               <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center mr-4">
-                <span className="text-white text-lg">📦</span>
+                <FiPackage className="text-white text-lg" />
               </div>
               <div>
                 <p className="text-sm text-orange-600 font-medium">{t("myShop.totalProducts", "Total Products")}</p>
@@ -183,7 +184,7 @@ const MyShopInfo = () => {
               <Link to="/settings" className="block">
                 <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg">
                   <span className="flex items-center justify-center">
-                    <span className="mr-2">⚙️</span>
+                    <FiSettings className="mr-2" size={16} />
                     {t("myShop.editShop", "Edit Shop")}
                   </span>
                 </button>

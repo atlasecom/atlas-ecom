@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import DashboardHeader from "./Layout/DashboardHeader";
+import DashboardSideBar from "./Layout/DashboardSideBar";
 import MyShopInfo from "./MyShopInfo";
 import MyShopProfileData from "./MyShopProfileData";
 
@@ -22,29 +23,36 @@ const MyShopProfile = () => {
     }
 
     return (
-        <div className={`w-full bg-gradient-to-br from-gray-50 via-white to-gray-50 min-h-screen ${i18n.language === 'ar' ? 'rtl' : 'ltr'}`}>
-            {/* Dashboard Header */}
+        <div className="min-h-screen bg-gray-50">
             <DashboardHeader />
-            
-            {/* Main Content - Full Width */}
-            <div className="w-full py-6 px-0">
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
-                    {/* Shop Info Section - Sidebar */}
-                    <div className="lg:col-span-1">
-                        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden sticky top-8">
-                            <MyShopInfo />
-                        </div>
-                    </div>
-                    
-                    {/* Shop Profile Data Section - Main Content */}
-                    <div className="lg:col-span-4">
-                        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                            <MyShopProfileData />
+            <div className="flex flex-col lg:flex-row w-full">
+                {/* Sidebar - Always rendered, manages own visibility */}
+                <DashboardSideBar />
+                
+                {/* Main Content */}
+                <div className="flex-1 w-full">
+                    <div className={`w-full bg-gradient-to-br from-gray-50 via-white to-gray-50 min-h-screen ${i18n.language === 'ar' ? 'rtl' : 'ltr'}`}>
+                        {/* Main Content - Full Width */}
+                        <div className="w-full py-6 px-0">
+                            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
+                                {/* Shop Info Section - Sidebar */}
+                                <div className="lg:col-span-1">
+                                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden sticky top-8">
+                                        <MyShopInfo />
+                                    </div>
+                                </div>
+                                
+                                {/* Shop Profile Data Section - Main Content */}
+                                <div className="lg:col-span-4">
+                                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                                        <MyShopProfileData />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     );
 };

@@ -9,6 +9,7 @@ import Ratings from "../Products/Ratings";
 import axios from "axios";
 import { getAuthToken } from "../../utils/auth";
 import Avatar from "../Common/Avatar";
+import { FiPackage, FiPlus, FiBarChart } from "react-icons/fi";
 
 const MyShopProfileData = () => {
     const { user } = useSelector((state) => state.user);
@@ -200,7 +201,7 @@ const MyShopProfileData = () => {
                     ) : (
                         <div className="w-full text-center py-20">
                             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <span className="text-2xl">📦</span>
+                                <FiPackage className="text-2xl text-blue-600" />
                             </div>
                             <h5 className="text-lg font-semibold text-gray-900 mb-2">
                                 {t("myShop.noProducts", "No Products Available")}
@@ -209,7 +210,7 @@ const MyShopProfileData = () => {
                                 {t("myShop.noProductsDesc", "You haven't added any products to your shop yet.")}
                             </p>
                             <Link to="/dashboard-create-product" className="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                                <span className="mr-2">➕</span>
+                                <FiPlus className="mr-2" size={16} />
                                 {t("myShop.createFirstProduct", "Create Your First Product")}
                             </Link>
                         </div>
@@ -233,7 +234,7 @@ const MyShopProfileData = () => {
                     ) : (
                         <div className="w-full text-center py-20">
                             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <span className="text-2xl">🎉</span>
+                                <FiBarChart className="text-2xl text-green-600" />
                             </div>
                             <h5 className="text-lg font-semibold text-gray-900 mb-2">
                                 {t("myShop.noEvents", "No Events Available")}
@@ -242,7 +243,7 @@ const MyShopProfileData = () => {
                                 {t("myShop.noEventsDesc", "You haven't created any events for your shop yet.")}
                             </p>
                             <Link to="/dashboard-create-event" className="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                                <span className="mr-2">✨</span>
+                                <FiPlus className="mr-2" size={16} />
                                 {t("myShop.createFirstEvent", "Create Your First Event")}
                             </Link>
                         </div>
@@ -307,7 +308,17 @@ const MyShopProfileData = () => {
                                                         ? 'bg-blue-100 text-blue-700' 
                                                         : 'bg-green-100 text-green-700'
                                                 }`}>
-                                                    {item.source === 'product' ? '📦 Product Review' : '🎉 Event Review'}
+                                                    {item.source === 'product' ? (
+                                                        <span className="flex items-center gap-2">
+                                                            <FiPackage size={14} />
+                                                            Product Review
+                                                        </span>
+                                                    ) : (
+                                                        <span className="flex items-center gap-2">
+                                                            <FiBarChart size={14} />
+                                                            Event Review
+                                                        </span>
+                                                    )}
                                                 </span>
                                                 {item.createdAt && (
                                                     <span className="text-xs text-gray-500">
