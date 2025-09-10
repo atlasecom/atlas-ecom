@@ -224,7 +224,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                           )}
                         >
                           <FaWhatsapp size={18} />
-                          <span className="hidden sm:inline">
+                          <span className="hidden sm:inline text-xs">
                             {t("productCard.chatWhatsApp", "WhatsApp")}
                           </span>
                         </button>
@@ -238,7 +238,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                         )}
                       >
                         <FaTelegram size={18} />
-                        <span className="hidden sm:inline">
+                        <span className="hidden sm:inline text-xs">
                           {t("productCard.chatTelegram", "Telegram")}
                         </span>
                       </button>
