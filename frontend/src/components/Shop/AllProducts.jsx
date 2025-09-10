@@ -7,7 +7,7 @@ import Loader from "../Layout/Loader";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { getAuthToken } from "../../utils/auth";
-import { FiPackage } from "react-icons/fi";
+import { FiPackage, FiEye, FiTrash2, FiPlus, FiCamera, FiStar } from "react-icons/fi";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -154,9 +154,10 @@ const AllProducts = () => {
             <h1 className="text-2xl font-bold text-gray-900">All Products</h1>
             <Link
               to="/dashboard-create-product"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center"
             >
-              + Add New Product
+              <FiPlus className="mr-2" size={16} />
+              Add New Product
             </Link>
           </div>
 
@@ -167,8 +168,9 @@ const AllProducts = () => {
               <p className="text-gray-500 mb-4">Start by creating your first product</p>
               <Link
                 to="/dashboard-create-product"
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center mx-auto w-fit"
               >
+                <FiPlus className="mr-2" size={16} />
                 Create Product
               </Link>
             </div>
@@ -228,12 +230,15 @@ const AllProducts = () => {
                         }}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-4xl text-gray-400">📷</span>
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+                        <div className="text-center">
+                          <FiCamera className="text-gray-400 mx-auto mb-2" size={48} />
+                          <p className="text-gray-500 text-sm font-medium">No Image</p>
+                        </div>
                       </div>
                     )}
                     <div className="absolute top-2 right-2">
-                      <span className="px-2 py-1 bg-blue-500 text-white text-xs rounded-full">
+                      <span className="px-2 py-1 bg-orange-500 text-white text-xs rounded-full">
                         {product.category}
                       </span>
                     </div>
@@ -246,13 +251,12 @@ const AllProducts = () => {
                     
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2">
-                        <span className="text-lg font-bold text-green-600">{product.discountPrice} DH</span>
-                        {product.originalPrice && product.originalPrice > product.discountPrice && (
-                          <span className="text-sm text-gray-500 line-through">{product.originalPrice} DH</span>
-                        )}
+                        <span className="text-lg font-bold text-orange-600">
+                          {product.originalPrice} - {product.discountPrice} DH
+                        </span>
                       </div>
                       <div className="flex items-center space-x-1">
-                        <span className="text-yellow-400">⭐</span>
+                        <FiStar className="text-yellow-400" size={16} />
                         <span className="text-sm text-gray-600">{product.ratings || 0}</span>
                       </div>
                     </div>
@@ -274,16 +278,16 @@ const AllProducts = () => {
                     <div className="flex space-x-2">
                       <Link
                         to={`/product/${product._id}`}
-                        className="flex-1 bg-blue-600 text-white text-sm py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+                        className="flex-1 bg-orange-500 text-white text-sm py-2 px-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center"
                       >
-                        <span className="mr-1">👁️</span>
+                        <FiEye className="mr-1" size={14} />
                         Preview
                       </Link>
                       <button
                         onClick={() => handleDelete(product._id)}
-                        className="flex-1 bg-red-600 text-white text-sm py-2 px-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center"
+                        className="flex-1 bg-red-500 text-white text-sm py-2 px-3 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center"
                       >
-                        <span className="mr-1">🗑️</span>
+                        <FiTrash2 className="mr-1" size={14} />
                         Delete
                       </button>
                     </div>

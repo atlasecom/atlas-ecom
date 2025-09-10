@@ -7,7 +7,7 @@ import Loader from "../Layout/Loader";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { getAuthToken } from "../../utils/auth";
-import { FiBarChart } from "react-icons/fi";
+import { FiBarChart, FiEye, FiTrash2, FiPlus, FiCamera, FiStar, FiCalendar } from "react-icons/fi";
 
 const AllEvents = () => {
   const [events, setEvents] = useState([]);
@@ -168,9 +168,10 @@ const AllEvents = () => {
         <h1 className="text-2xl font-bold text-gray-900">All Events</h1>
         <Link
           to="/dashboard-create-event"
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center"
         >
-          + Add New Event
+          <FiPlus className="mr-2" size={16} />
+          Add New Event
         </Link>
       </div>
 
@@ -181,8 +182,9 @@ const AllEvents = () => {
           <p className="text-gray-500 mb-4">Start by creating your first event</p>
           <Link
             to="/dashboard-create-event"
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center mx-auto w-fit"
           >
+            <FiPlus className="mr-2" size={16} />
             Create Event
           </Link>
         </div>
@@ -192,28 +194,37 @@ const AllEvents = () => {
             <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
               {/* Event Image */}
               <div className="relative h-48 bg-gray-200">
-                                 <img
-                   src={getImageUrl(event)}
-                   alt={event.name}
-                   className="w-full h-full object-cover cursor-pointer"
-                   onClick={() => openImageModal(getImageUrl(event))}
-                   onError={(e) => {
-                     console.error('Image load error for event:', event.name, 'URL:', e.target.src);
-                     // Try alternative loading methods
-                     const imageObj = event.images?.[0];
-                     if (imageObj && typeof imageObj === 'object' && imageObj.url) {
-                       // Try without cache busting
-                       e.target.src = imageObj.url;
-                     } else {
-                       e.target.src = '/default-event.png';
-                     }
-                   }}
-                   onLoad={() => {
-                     console.log('Image loaded successfully for event:', event.name);
-                   }}
-                 />
+                {event.images && event.images.length > 0 ? (
+                  <img
+                    src={getImageUrl(event)}
+                    alt={event.name}
+                    className="w-full h-full object-cover cursor-pointer"
+                    onClick={() => openImageModal(getImageUrl(event))}
+                    onError={(e) => {
+                      console.error('Image load error for event:', event.name, 'URL:', e.target.src);
+                      // Try alternative loading methods
+                      const imageObj = event.images?.[0];
+                      if (imageObj && typeof imageObj === 'object' && imageObj.url) {
+                        // Try without cache busting
+                        e.target.src = imageObj.url;
+                      } else {
+                        e.target.src = '/default-event.png';
+                      }
+                    }}
+                    onLoad={() => {
+                      console.log('Image loaded successfully for event:', event.name);
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+                    <div className="text-center">
+                      <FiCalendar className="text-gray-400 mx-auto mb-2" size={48} />
+                      <p className="text-gray-500 text-sm font-medium">No Image</p>
+                    </div>
+                  </div>
+                )}
                 <div className="absolute top-2 right-2">
-                  <span className="px-2 py-1 bg-purple-500 text-white text-xs rounded-full">
+                  <span className="px-2 py-1 bg-orange-500 text-white text-xs rounded-full">
                     {event.category}
                   </span>
                 </div>
@@ -252,13 +263,12 @@ const AllEvents = () => {
                 
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
-                    <span className="text-lg font-bold text-green-600">{event.discountPrice} DH</span>
-                    {event.originalPrice && event.originalPrice > event.discountPrice && (
-                      <span className="text-sm text-gray-500 line-through">{event.originalPrice} DH</span>
-                    )}
+                    <span className="text-lg font-bold text-orange-600">
+                      {event.originalPrice} - {event.discountPrice} DH
+                    </span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <span className="text-yellow-400">⭐</span>
+                    <FiStar className="text-yellow-400" size={16} />
                     <span className="text-sm text-gray-600">{event.ratings || 0}</span>
                   </div>
                 </div>
@@ -287,16 +297,16 @@ const AllEvents = () => {
                 <div className="flex space-x-2">
                   <Link
                     to={`/product/${event._id}?isEvent=true`}
-                    className="flex-1 bg-blue-600 text-white text-sm py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+                    className="flex-1 bg-orange-500 text-white text-sm py-2 px-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center"
                   >
-                    <span className="mr-1">👁️</span>
+                    <FiEye className="mr-1" size={14} />
                     Preview
                   </Link>
                   <button
                     onClick={() => handleDelete(event._id)}
-                    className="flex-1 bg-red-600 text-white text-sm py-2 px-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center"
+                    className="flex-1 bg-red-500 text-white text-sm py-2 px-3 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center"
                   >
-                    <span className="mr-1">🗑️</span>
+                    <FiTrash2 className="mr-1" size={14} />
                     Delete
                   </button>
                 </div>
