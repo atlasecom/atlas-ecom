@@ -11,7 +11,7 @@ import { removeAuthToken } from "../../utils/auth";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/actions/user";
 import Avatar from "../Common/Avatar";
-import { FiPackage, FiSettings, FiStar, FiMapPin, FiPhone, FiCalendar } from "react-icons/fi";
+import { FiPackage, FiSettings, FiStar, FiMapPin, FiPhone, FiCalendar, FiLogOut } from "react-icons/fi";
 
 const MyShopInfo = () => {
   const { user } = useSelector((state) => state.user);
@@ -195,7 +195,7 @@ const MyShopInfo = () => {
                 onClick={logoutHandler}
               >
                 <span className="flex items-center justify-center">
-                  <span className="mr-2">🚪</span>
+                  <FiLogOut className="mr-2" size={16} />
                   {t("myShop.logOut", "Log Out")}
                 </span>
               </button>

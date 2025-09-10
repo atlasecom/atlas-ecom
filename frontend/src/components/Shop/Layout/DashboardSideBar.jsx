@@ -162,7 +162,7 @@ const DashboardSideBar = () => {
             {/* Logo Section */}
             <div className="relative p-3 sm:p-4 lg:p-6 border-b border-blue-200/50 bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 backdrop-blur-sm">
                 <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-orange-400 to-orange-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
                         <span className="text-white text-sm sm:text-lg lg:text-xl font-bold">A</span>
                     </div>
                     <div className="hidden 800px:block min-w-0">
@@ -228,7 +228,7 @@ const DashboardSideBar = () => {
             {/* Bottom Section with Enhanced Design */}
             <div className="relative absolute bottom-0 left-0 right-0 p-2 sm:p-3 lg:p-4 border-t border-blue-200/50 bg-gradient-to-r from-gray-50 via-blue-50/30 to-indigo-50/30 backdrop-blur-sm">
                 <div className="hidden 800px:block text-center">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 rounded-full mx-auto mb-1 sm:mb-2 lg:mb-3 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full mx-auto mb-1 sm:mb-2 lg:mb-3 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
                         <span className="text-white text-xs sm:text-sm lg:text-base">🚀</span>
                     </div>
                     <p className="text-xs lg:text-sm text-gray-600 font-medium">Seller Portal v2.0</p>
@@ -313,7 +313,7 @@ const DashboardSideBar = () => {
                 {/* Mobile Footer */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50">
                     <div className="text-center">
-                        <div className="w-8 h-8 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 rounded-full mx-auto mb-2 flex items-center justify-center shadow-lg">
+                        <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full mx-auto mb-2 flex items-center justify-center shadow-lg">
                             <span className="text-white text-sm">🚀</span>
                         </div>
                         <p className="text-sm text-gray-600 font-medium">Seller Portal v2.0</p>
