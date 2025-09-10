@@ -5,11 +5,13 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
+import { useTranslation } from "react-i18next";
 import Loader from "../Layout/Loader";
 import { FiPackage, FiDollarSign, FiStar, FiTrendingUp, FiAlertTriangle, FiEye, FiTrash2 } from "react-icons/fi";
 import { backend_url } from "../../server";
 
 const AllProducts = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteOpen, setDeleteOpen] = useState(false);

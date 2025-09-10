@@ -8,11 +8,13 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
+import { useTranslation } from "react-i18next";
 import { FiSearch, FiX } from "react-icons/fi";
 import Loader from "../Layout/Loader";
 import Avatar from "../Common/Avatar";
 
 const AllUsers = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
