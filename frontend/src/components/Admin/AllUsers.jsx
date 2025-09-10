@@ -146,7 +146,7 @@ const AllUsers = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Total Users</p>
+              <p className="text-sm font-medium text-gray-600 mb-1">{t("admin.allUsers.totalUsers", "Total Users")}</p>
               <p className="text-2xl font-bold text-gray-900">{users.length}</p>
             </div>
             <div className="bg-blue-100 p-3 rounded-full">
@@ -158,7 +158,7 @@ const AllUsers = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Customers</p>
+              <p className="text-sm font-medium text-gray-600 mb-1">{t("admin.allUsers.customers", "Customers")}</p>
               <p className="text-2xl font-bold text-green-600">
                 {users.filter(u => u.role === 'user').length}
               </p>
@@ -172,7 +172,7 @@ const AllUsers = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Sellers</p>
+              <p className="text-sm font-medium text-gray-600 mb-1">{t("admin.allUsers.sellers", "Sellers")}</p>
               <p className="text-2xl font-bold text-orange-600">
                 {users.filter(u => u.role === 'seller').length}
               </p>
@@ -186,7 +186,7 @@ const AllUsers = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Admins</p>
+              <p className="text-sm font-medium text-gray-600 mb-1">{t("admin.allUsers.admins", "Admins")}</p>
               <p className="text-2xl font-bold text-purple-600">
                 {users.filter(u => u.role === 'admin').length}
               </p>
@@ -277,11 +277,11 @@ const AllUsers = () => {
           <div className="text-gray-400 mb-4">
             <AiOutlineUser size={64} className="mx-auto" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No users found</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">{t("admin.allUsers.noUsersFound", "No users found")}</h3>
           <p className="text-gray-500">
             {searchTerm || roleFilter !== "all" 
-              ? "Try adjusting your search criteria or filters"
-              : "No users have been registered yet"
+              ? t("admin.allUsers.tryAdjustingFilters", "Try adjusting your search criteria or filters")
+              : t("admin.allUsers.noUsersRegistered", "No users have been registered yet")
             }
           </p>
         </div>
@@ -299,7 +299,7 @@ const AllUsers = () => {
                       className="w-12 h-12 flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-semibold text-gray-900 truncate">{user.name || "No Name"}</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 truncate">{user.name || t("admin.allUsers.noName", "No Name")}</h3>
                     </div>
                   </div>
                   <div className={`px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ml-2 ${
@@ -335,7 +335,7 @@ const AllUsers = () => {
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
                   <AiOutlineMail />
-                  <span>Verified: {user.isVerified ? "Yes" : "No"}</span>
+                  <span>{t("admin.allUsers.verified", "Verified")}: {user.isVerified ? t("common.yes", "Yes") : t("common.no", "No")}</span>
                 </div>
               </div>
 
@@ -354,7 +354,7 @@ const AllUsers = () => {
                     setOpen(true);
                   }}
                   className="bg-red-600 text-white text-sm py-2 px-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center"
-                  title="Delete User"
+                  title={t("admin.allUsers.deleteUser", "Delete User")}
                 >
                   <AiOutlineDelete />
                 </button>
@@ -368,7 +368,7 @@ const AllUsers = () => {
       {open && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Delete User</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t("admin.allUsers.deleteUser", "Delete User")}</h3>
             <p className="text-gray-600 mb-6">
               Are you sure you want to delete this user? This action will permanently remove:
             </p>
@@ -405,7 +405,7 @@ const AllUsers = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-gray-900">User Profile</h3>
+              <h3 className="text-xl font-semibold text-gray-900">{t("admin.allUsers.userProfile", "User Profile")}</h3>
               <button
                 onClick={() => setShowProfileModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -424,7 +424,7 @@ const AllUsers = () => {
                     className="w-24 h-24"
                   />
                 </div>
-                <h4 className="text-xl font-semibold text-gray-900 mb-2">{selectedUser.name || "No Name"}</h4>
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">{selectedUser.name || t("admin.allUsers.noName", "No Name")}</h4>
                 <p className="text-gray-600 mb-1">{selectedUser.email}</p>
                 <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium mt-2 ${
                   selectedUser.role === 'admin' ? 'bg-purple-100 text-purple-800' :
@@ -438,7 +438,7 @@ const AllUsers = () => {
               {/* User Details */}
               <div className="space-y-4">
                 <div>
-                  <h5 className="font-medium text-gray-900 mb-2">Contact Information</h5>
+                  <h5 className="font-medium text-gray-900 mb-2">{t("admin.allUsers.contactInformation", "Contact Information")}</h5>
                   <div className="space-y-2 text-sm text-gray-600">
                     {selectedUser.phoneNumber && (
                       <div className="flex items-center space-x-2">
@@ -456,7 +456,7 @@ const AllUsers = () => {
                 </div>
 
                 <div>
-                  <h5 className="font-medium text-gray-900 mb-2">Account Information</h5>
+                  <h5 className="font-medium text-gray-900 mb-2">{t("admin.allUsers.accountInformation", "Account Information")}</h5>
                   <div className="space-y-2 text-sm text-gray-600">
                     <div className="flex items-center space-x-2">
                       <AiOutlineCalendar />
@@ -464,7 +464,7 @@ const AllUsers = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <AiOutlineMail />
-                      <span>Verified: {selectedUser.isVerified ? "Yes" : "No"}</span>
+                      <span>{t("admin.allUsers.verified", "Verified")}: {selectedUser.isVerified ? t("common.yes", "Yes") : t("common.no", "No")}</span>
                     </div>
                   </div>
                 </div>

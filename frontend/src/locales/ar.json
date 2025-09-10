@@ -49,7 +49,9 @@
     "atlasEcom": "أطلس إيكوم",
     "sellerPortal": "بوابة البائع",
     "shopName": "اسم المتجر",
-    "closeModal": "إغلاق النافذة"
+    "closeModal": "إغلاق النافذة",
+    "yes": "نعم",
+    "no": "لا"
   },
   "header": {
     "welcome": "مرحبا",
@@ -715,7 +717,19 @@
       "deleteConfirmation": "هل أنت متأكد من أنك تريد حذف هذا المستخدم؟",
       "cancel": "إلغاء",
       "confirm": "تأكيد",
-      "fetchError": "فشل في جلب المستخدمين"
+      "fetchError": "فشل في جلب المستخدمين",
+      "totalUsers": "إجمالي المستخدمين",
+      "customers": "العملاء",
+      "sellers": "البائعين",
+      "admins": "المشرفين",
+      "noUsersFound": "لم يتم العثور على مستخدمين",
+      "tryAdjustingFilters": "جرب تعديل معايير البحث أو المرشحات",
+      "noUsersRegistered": "لم يتم تسجيل أي مستخدمين بعد",
+      "noName": "بدون اسم",
+      "verified": "موثق",
+      "userProfile": "ملف المستخدم الشخصي",
+      "contactInformation": "معلومات الاتصال",
+      "accountInformation": "معلومات الحساب"
     },
     "allSellers": {
       "sellerId": "معرف البائع",

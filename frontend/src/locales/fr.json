@@ -49,7 +49,9 @@
     "atlasEcom": "Atlas Ecom",
     "sellerPortal": "Portail Vendeur",
     "shopName": "Nom du Magasin",
-    "closeModal": "Fermer la fenêtre"
+    "closeModal": "Fermer la fenêtre",
+    "yes": "Oui",
+    "no": "Non"
   },
   "features": {
     "delivery": {
@@ -729,7 +731,19 @@
       "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
       "cancel": "Annuler",
       "confirm": "Confirmer",
-      "fetchError": "Échec de la récupération des utilisateurs"
+      "fetchError": "Échec de la récupération des utilisateurs",
+      "totalUsers": "Total des utilisateurs",
+      "customers": "Clients",
+      "sellers": "Vendeurs",
+      "admins": "Administrateurs",
+      "noUsersFound": "Aucun utilisateur trouvé",
+      "tryAdjustingFilters": "Essayez d'ajuster vos critères de recherche ou filtres",
+      "noUsersRegistered": "Aucun utilisateur n'a été enregistré pour le moment",
+      "noName": "Aucun nom",
+      "verified": "Vérifié",
+      "userProfile": "Profil utilisateur",
+      "contactInformation": "Informations de contact",
+      "accountInformation": "Informations du compte"
     },
     "allSellers": {
       "sellerId": "ID vendeur",

@@ -49,7 +49,9 @@
     "atlasEcom": "Atlas Ecom",
     "sellerPortal": "Seller Portal",
     "shopName": "Shop Name",
-    "closeModal": "Close modal"
+    "closeModal": "Close modal",
+    "yes": "Yes",
+    "no": "No"
   },
   "features": {
     "delivery": {
@@ -747,7 +749,19 @@
       "deleteConfirmation": "Are you sure you wanna delete this user?",
       "cancel": "Cancel",
       "confirm": "Confirm",
-      "fetchError": "Failed to fetch users"
+      "fetchError": "Failed to fetch users",
+      "totalUsers": "Total Users",
+      "customers": "Customers",
+      "sellers": "Sellers",
+      "admins": "Admins",
+      "noUsersFound": "No users found",
+      "tryAdjustingFilters": "Try adjusting your search criteria or filters",
+      "noUsersRegistered": "No users have been registered yet",
+      "noName": "No Name",
+      "verified": "Verified",
+      "userProfile": "User Profile",
+      "contactInformation": "Contact Information",
+      "accountInformation": "Account Information"
     },
     "allSellers": {
       "sellerId": "Seller ID",
