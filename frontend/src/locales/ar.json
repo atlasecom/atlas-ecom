@@ -12,7 +12,40 @@
     "admin": "مشرف",
     "seller": "بائع",
     "item": "عنصر",
-    "items": "عناصر"
+    "items": "عناصر",
+    "pleaseLogin": "يرجى تسجيل الدخول أولاً!",
+    "productNotFound": "المنتج غير موجود!",
+    "removedFromWishlist": "تم إزالته من قائمة الأمنيات!",
+    "addedToWishlist": "تم إضافته إلى قائمة الأمنيات!",
+    "addedToCart": "تم إضافته إلى السلة!",
+    "commentTooShort": "يجب أن يكون التعليق 10 أحرف على الأقل!",
+    "commentTooLong": "يجب أن يكون التعليق أقل من 500 حرف!",
+    "reviewSubmitted": "تم إرسال التقييم بنجاح!",
+    "reviewSubmissionError": "فشل في إرسال التقييم!",
+    "events": "الأحداث",
+    "inStock": "متوفر",
+    "outOfStock": "نفد المخزون",
+    "eventDescription": "وصف الحدث",
+    "eventCountdown": "العد التنازلي للحدث",
+    "eventEnded": "انتهى الحدث",
+    "days": "أيام",
+    "hours": "ساعات",
+    "minutes": "دقائق",
+    "seconds": "ثواني",
+    "sold": "مباع",
+    "minimumQuantity": "الحد الأدنى للكمية المطلوبة",
+    "unknownShop": "متجر غير معروف",
+    "verified": "موثق",
+    "rating": "التقييم",
+    "viewShop": "عرض المتجر",
+    "whatsappError": "فشل في فتح واتساب",
+    "whatsapp": "واتساب",
+    "telegramError": "فشل في فتح تليجرام",
+    "telegram": "تليجرام",
+    "removeFromEventFavorites": "إزالة من مفضلات الأحداث",
+    "removeFromFavorites": "إزالة من المفضلة",
+    "addToEventFavorites": "إضافة إلى مفضلات الأحداث",
+    "addToFavorites": "إضافة إلى المفضلة"
   },
   "header": {
     "welcome": "مرحبا",
@@ -857,5 +890,58 @@
     "invalidEmail": "يرجى إدخال عنوان بريد إلكتروني صحيح",
     "messageSent": "شكراً لك! تم إرسال رسالتك بنجاح. سنرد عليك قريباً.",
     "messageError": "عذراً، حدث خطأ في إرسال رسالتك. يرجى المحاولة مرة أخرى أو الاتصال بنا مباشرة."
+  },
+  "login": {
+    "title": "تسجيل الدخول",
+    "subtitle": "مرحباً بعودتك! يرجى تسجيل الدخول إلى حسابك",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "rememberMe": "تذكرني",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "loginButton": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "loginSuccess": "تم تسجيل الدخول بنجاح!",
+    "loginError": "فشل في تسجيل الدخول. يرجى المحاولة مرة أخرى.",
+    "dontHaveAccount": "ليس لديك حساب؟",
+    "signUp": "إنشاء حساب",
+    "orContinueWith": "أو متابعة مع",
+    "googleLogin": "تسجيل الدخول مع جوجل"
+  },
+  "activation": {
+    "tokenExpired": "انتهت صلاحية الرمز المميز!",
+    "accountCreatedSuccessfully": "تم إنشاء حسابك بنجاح!"
+  },
+  "wishlist": {
+    "empty": "قائمة أمنياتك فارغة!",
+    "remove": "إزالة من المفضلة"
+  },
+  "reviews": {
+    "writeReview": "كتابة تقييم",
+    "rating": "التقييم",
+    "comment": "التعليق",
+    "commentPlaceholder": "شارك تجربتك مع هذا المنتج...",
+    "submitting": "جاري الإرسال...",
+    "submitReview": "إرسال التقييم"
+  },
+  "product": {
+    "noReviews": "لا توجد تقييمات لهذا المنتج!",
+    "beFirstToReview": "كن أول من يقيم هذا المنتج!"
+  },
+  "eventCard": {
+    "quickView": "عرض سريع",
+    "outOfStock": "نفد المخزون",
+    "onlyLeft": "بقي {{count}} فقط",
+    "removeFromFavorites": "إزالة من المفضلة",
+    "addToFavorites": "إضافة إلى المفضلة"
+  },
+  "shopProductCard": {
+    "confirmDelete": "هل أنت متأكد من حذف هذا المنتج؟",
+    "deleteSuccess": "تم حذف المنتج بنجاح!",
+    "deleteError": "فشل في حذف المنتج. يرجى المحاولة مرة أخرى.",
+    "statusUpdated": "تم تحديث الحالة بنجاح!",
+    "statusUpdateError": "فشل في تحديث الحالة. يرجى المحاولة مرة أخرى.",
+    "lowStock": "مخزون منخفض",
+    "outOfStock": "نفد المخزون",
+    "event": "حدث"
   }
 }

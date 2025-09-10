@@ -12,7 +12,40 @@
     "admin": "Admin",
     "seller": "Seller",
     "item": "item",
-    "items": "items"
+    "items": "items",
+    "pleaseLogin": "Please login first!",
+    "productNotFound": "Product not found!",
+    "removedFromWishlist": "Removed from wishlist!",
+    "addedToWishlist": "Added to wishlist!",
+    "addedToCart": "Added to cart!",
+    "commentTooShort": "Comment must be at least 10 characters long!",
+    "commentTooLong": "Comment must be less than 500 characters!",
+    "reviewSubmitted": "Review submitted successfully!",
+    "reviewSubmissionError": "Failed to submit review!",
+    "events": "Events",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "eventDescription": "Event Description",
+    "eventCountdown": "Event Countdown",
+    "eventEnded": "Event Ended",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "sold": "sold",
+    "minimumQuantity": "Minimum quantity to order",
+    "unknownShop": "Unknown Shop",
+    "verified": "Verified",
+    "rating": "Rating",
+    "viewShop": "View Shop",
+    "whatsappError": "Failed to open WhatsApp",
+    "whatsapp": "WhatsApp",
+    "telegramError": "Failed to open Telegram",
+    "telegram": "Telegram",
+    "removeFromEventFavorites": "Remove from Event Favorites",
+    "removeFromFavorites": "Remove from Favorites",
+    "addToEventFavorites": "Add to Event Favorites",
+    "addToFavorites": "Add to Favorites"
   },
   "features": {
     "delivery": {
@@ -889,5 +922,58 @@
     "invalidEmail": "Please enter a valid email address",
     "messageSent": "Thank you! Your message has been sent successfully. We'll get back to you soon.",
     "messageError": "Sorry, there was an error sending your message. Please try again or contact us directly."
+  },
+  "login": {
+    "title": "Login",
+    "subtitle": "Welcome back! Please sign in to your account",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "loginButton": "Login",
+    "loggingIn": "Logging in...",
+    "loginSuccess": "Login Success!",
+    "loginError": "Login failed. Please try again.",
+    "dontHaveAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "orContinueWith": "Or continue with",
+    "googleLogin": "Login with Google"
+  },
+  "activation": {
+    "tokenExpired": "Your token is expired!",
+    "accountCreatedSuccessfully": "Your account has been created successfully!"
+  },
+  "wishlist": {
+    "empty": "Your wishlist is empty!",
+    "remove": "Remove from favorites"
+  },
+  "reviews": {
+    "writeReview": "Write a Review",
+    "rating": "Rating",
+    "comment": "Comment",
+    "commentPlaceholder": "Share your experience with this product...",
+    "submitting": "Submitting...",
+    "submitReview": "Submit Review"
+  },
+  "product": {
+    "noReviews": "No reviews for this product!",
+    "beFirstToReview": "Be the first to review this product!"
+  },
+  "eventCard": {
+    "quickView": "Quick view",
+    "outOfStock": "Out of Stock",
+    "onlyLeft": "Only {{count}} left",
+    "removeFromFavorites": "Remove from Favorites",
+    "addToFavorites": "Add to Favorites"
+  },
+  "shopProductCard": {
+    "confirmDelete": "Are you sure you want to delete this product?",
+    "deleteSuccess": "Product deleted successfully!",
+    "deleteError": "Failed to delete product. Please try again.",
+    "statusUpdated": "Status updated successfully!",
+    "statusUpdateError": "Failed to update status. Please try again.",
+    "lowStock": "Low Stock",
+    "outOfStock": "Out of Stock",
+    "event": "Event"
   }
 }

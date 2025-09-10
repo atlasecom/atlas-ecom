@@ -12,7 +12,40 @@
     "admin": "Administrateur",
     "seller": "Vendeur",
     "item": "article",
-    "items": "articles"
+    "items": "articles",
+    "pleaseLogin": "Veuillez vous connecter d'abord !",
+    "productNotFound": "Produit non trouvé !",
+    "removedFromWishlist": "Retiré de la liste de souhaits !",
+    "addedToWishlist": "Ajouté à la liste de souhaits !",
+    "addedToCart": "Ajouté au panier !",
+    "commentTooShort": "Le commentaire doit contenir au moins 10 caractères !",
+    "commentTooLong": "Le commentaire doit contenir moins de 500 caractères !",
+    "reviewSubmitted": "Avis soumis avec succès !",
+    "reviewSubmissionError": "Échec de la soumission de l'avis !",
+    "events": "Événements",
+    "inStock": "En stock",
+    "outOfStock": "Rupture de stock",
+    "eventDescription": "Description de l'événement",
+    "eventCountdown": "Compte à rebours de l'événement",
+    "eventEnded": "Événement terminé",
+    "days": "Jours",
+    "hours": "Heures",
+    "minutes": "Minutes",
+    "seconds": "Secondes",
+    "sold": "vendu",
+    "minimumQuantity": "Quantité minimale à commander",
+    "unknownShop": "Boutique inconnue",
+    "verified": "Vérifié",
+    "rating": "Note",
+    "viewShop": "Voir la boutique",
+    "whatsappError": "Échec de l'ouverture de WhatsApp",
+    "whatsapp": "WhatsApp",
+    "telegramError": "Échec de l'ouverture de Telegram",
+    "telegram": "Telegram",
+    "removeFromEventFavorites": "Retirer des favoris d'événement",
+    "removeFromFavorites": "Retirer des favoris",
+    "addToEventFavorites": "Ajouter aux favoris d'événement",
+    "addToFavorites": "Ajouter aux favoris"
   },
   "features": {
     "delivery": {
@@ -871,5 +904,58 @@
     "invalidEmail": "Veuillez entrer une adresse email valide",
     "messageSent": "Merci! Votre message a été envoyé avec succès. Nous vous répondrons bientôt.",
     "messageError": "Désolé, il y a eu une erreur lors de l'envoi de votre message. Veuillez réessayer ou nous contacter directement."
+  },
+  "login": {
+    "title": "Connexion",
+    "subtitle": "Bon retour ! Veuillez vous connecter à votre compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié ?",
+    "loginButton": "Se connecter",
+    "loggingIn": "Connexion...",
+    "loginSuccess": "Connexion réussie !",
+    "loginError": "Échec de la connexion. Veuillez réessayer.",
+    "dontHaveAccount": "Vous n'avez pas de compte ?",
+    "signUp": "S'inscrire",
+    "orContinueWith": "Ou continuer avec",
+    "googleLogin": "Se connecter avec Google"
+  },
+  "activation": {
+    "tokenExpired": "Votre token a expiré !",
+    "accountCreatedSuccessfully": "Votre compte a été créé avec succès !"
+  },
+  "wishlist": {
+    "empty": "Votre liste de souhaits est vide !",
+    "remove": "Retirer des favoris"
+  },
+  "reviews": {
+    "writeReview": "Écrire un avis",
+    "rating": "Note",
+    "comment": "Commentaire",
+    "commentPlaceholder": "Partagez votre expérience avec ce produit...",
+    "submitting": "Soumission...",
+    "submitReview": "Soumettre l'avis"
+  },
+  "product": {
+    "noReviews": "Aucun avis pour ce produit !",
+    "beFirstToReview": "Soyez le premier à évaluer ce produit !"
+  },
+  "eventCard": {
+    "quickView": "Aperçu rapide",
+    "outOfStock": "Rupture de stock",
+    "onlyLeft": "Il ne reste que {{count}}",
+    "removeFromFavorites": "Retirer des favoris",
+    "addToFavorites": "Ajouter aux favoris"
+  },
+  "shopProductCard": {
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce produit ?",
+    "deleteSuccess": "Produit supprimé avec succès !",
+    "deleteError": "Échec de la suppression du produit. Veuillez réessayer.",
+    "statusUpdated": "Statut mis à jour avec succès !",
+    "statusUpdateError": "Échec de la mise à jour du statut. Veuillez réessayer.",
+    "lowStock": "Stock faible",
+    "outOfStock": "Rupture de stock",
+    "event": "Événement"
   }
 }
