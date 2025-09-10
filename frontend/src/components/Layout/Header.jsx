@@ -619,7 +619,60 @@ const Header = ({ activeHeading }) => {
                       {t("header.language", "Language")}
                     </h3>
                   </div>
-                  <LanguageChanger />
+                  <div className="space-y-2">
+                    {[
+                      { 
+                        code: 'en', 
+                        name: 'English', 
+                        flag: (
+                          <img 
+                            src="https://flagcdn.com/w20/us.png" 
+                            alt="US Flag" 
+                            className="w-5 h-3 object-cover"
+                          />
+                        )
+                      },
+                      { 
+                        code: 'fr', 
+                        name: 'Français', 
+                        flag: (
+                          <img 
+                            src="https://flagcdn.com/w20/fr.png" 
+                            alt="France Flag" 
+                            className="w-5 h-3 object-cover"
+                          />
+                        )
+                      },
+                      { 
+                        code: 'ar', 
+                        name: 'العربية', 
+                        flag: (
+                          <img 
+                            src="https://flagcdn.com/w20/ma.png" 
+                            alt="Morocco Flag" 
+                            className="w-5 h-3 object-cover"
+                          />
+                        )
+                      }
+                    ].map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          i18n.changeLanguage(lang.code);
+                          document.dir = lang.code === "ar" ? "rtl" : "ltr";
+                        }}
+                        className={`w-full flex items-center ${i18n.language === 'ar' ? 'space-x-reverse' : ''} space-x-3 px-4 py-3 rounded-lg text-left hover:bg-gray-50 transition-colors duration-150 ${
+                          i18n.language === lang.code ? 'bg-orange-50 text-orange-600 border border-orange-200' : 'text-gray-700 border border-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center">{lang.flag}</div>
+                        <span className="text-sm font-medium">{lang.name}</span>
+                        {i18n.language === lang.code && (
+                          <span className={`${i18n.language === 'ar' ? 'mr-auto' : 'ml-auto'} text-orange-500`}>✓</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-orange-200">
