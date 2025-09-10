@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FiMenu, FiX, FiBell, FiSearch } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 import atlasEcom from "../../../Assests/images/atlasEcom.png";
 import Avatar from "../../Common/Avatar";
 
 const DashboardHeader = () => {
     const { user } = useSelector((state) => state.user);
+    const { t } = useTranslation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -77,8 +79,8 @@ const DashboardHeader = () => {
                                 className="h-12 w-auto sm:h-14 lg:h-16"
                             />
                             <div className="hidden md:block min-w-0">
-                                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">Atlas Ecom</h1>
-                                <p className="text-xs sm:text-sm lg:text-base text-gray-600 truncate">Seller Portal</p>
+                                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">{t("common.atlasEcom", "Atlas Ecom")}</h1>
+                                <p className="text-xs sm:text-sm lg:text-base text-gray-600 truncate">{t("common.sellerPortal", "Seller Portal")}</p>
                             </div>
                         </Link>
                     </div>
@@ -88,8 +90,8 @@ const DashboardHeader = () => {
                         {/* User Profile */}
                         <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
                             <div className="hidden md:block text-right min-w-0">
-                                <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-900 truncate">{user?.name || 'Seller'}</p>
-                                <p className="text-xs lg:text-sm text-gray-500 truncate">{user?.shop?.name || 'Shop Name'}</p>
+                                <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-900 truncate">{user?.name || t("common.seller", "Seller")}</p>
+                                <p className="text-xs lg:text-sm text-gray-500 truncate">{user?.shop?.name || t("common.shopName", "Shop Name")}</p>
                             </div>
                             <Link to="/shop/me" className="group">
                                 <div className="relative">
@@ -127,8 +129,8 @@ const DashboardHeader = () => {
                                     className="w-12 h-12 border-2 border-gray-200"
                                 />
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-gray-900 truncate">{user?.name || 'Seller'}</p>
-                                    <p className="text-xs text-gray-500 truncate">{user?.shop?.name || 'Shop Name'}</p>
+                                    <p className="text-sm font-medium text-gray-900 truncate">{user?.name || t("common.seller", "Seller")}</p>
+                                    <p className="text-xs text-gray-500 truncate">{user?.shop?.name || t("common.shopName", "Shop Name")}</p>
                                 </div>
                             </div>
                         </div>

@@ -45,7 +45,11 @@
     "removeFromEventFavorites": "Retirer des favoris d'événement",
     "removeFromFavorites": "Retirer des favoris",
     "addToEventFavorites": "Ajouter aux favoris d'événement",
-    "addToFavorites": "Ajouter aux favoris"
+    "addToFavorites": "Ajouter aux favoris",
+    "atlasEcom": "Atlas Ecom",
+    "sellerPortal": "Portail Vendeur",
+    "shopName": "Nom du Magasin",
+    "closeModal": "Fermer la fenêtre"
   },
   "features": {
     "delivery": {
@@ -74,7 +78,17 @@
     "language": "Langue",
     "searchBar": {
       "placeholder": "Rechercher des produits..."
-    }
+    },
+    "searching": "Recherche...",
+    "foundProducts": "{{count}} produit trouvé",
+    "noProductsFound": "Aucun produit trouvé",
+    "tryDifferentKeywords": "Essayez avec d'autres mots-clés",
+    "wishlist": "Liste de souhaits",
+    "empty": "Vide",
+    "emptyWishlist": "Liste de souhaits vide",
+    "addProductsYouLove": "Ajoutez les produits que vous aimez !",
+    "startShopping": "Commencer à magasiner",
+    "menu": "Menu"
   },
   "navbar": {
     "allCategories": "Toutes les catégories"
@@ -185,7 +199,11 @@
     "title": "Produits",
     "noProducts": "Aucun produit disponible.",
     "prev": "Précédent",
-    "next": "Suivant"
+    "next": "Suivant",
+    "prevShort": "Préc",
+    "nextShort": "Suiv",
+    "loading": "Chargement des produits...",
+    "error": "Échec du chargement des produits"
   },
   "bestDeals": {
     "title": "Meilleures offres"

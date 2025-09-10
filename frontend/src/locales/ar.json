@@ -45,7 +45,11 @@
     "removeFromEventFavorites": "إزالة من مفضلات الأحداث",
     "removeFromFavorites": "إزالة من المفضلة",
     "addToEventFavorites": "إضافة إلى مفضلات الأحداث",
-    "addToFavorites": "إضافة إلى المفضلة"
+    "addToFavorites": "إضافة إلى المفضلة",
+    "atlasEcom": "أطلس إيكوم",
+    "sellerPortal": "بوابة البائع",
+    "shopName": "اسم المتجر",
+    "closeModal": "إغلاق النافذة"
   },
   "header": {
     "welcome": "مرحبا",
@@ -60,7 +64,17 @@
     "language": "اللغة",
     "searchBar": {
       "placeholder": "البحث عن المنتجات..."
-    }
+    },
+    "searching": "جاري البحث...",
+    "foundProducts": "تم العثور على {{count}} منتج",
+    "noProductsFound": "لم يتم العثور على منتجات",
+    "tryDifferentKeywords": "جرب البحث بكلمات مختلفة",
+    "wishlist": "قائمة الأمنيات",
+    "empty": "فارغ",
+    "emptyWishlist": "قائمة أمنيات فارغة",
+    "addProductsYouLove": "أضف المنتجات التي تحبها!",
+    "startShopping": "ابدأ التسوق",
+    "menu": "القائمة"
   },
   "navbar": {
     "allCategories": "جميع الفئات"
@@ -171,7 +185,11 @@
     "title": "المنتجات",
     "noProducts": "لا توجد منتجات متاحة.",
     "prev": "السابق",
-    "next": "التالي"
+    "next": "التالي",
+    "prevShort": "سابق",
+    "nextShort": "التالي",
+    "loading": "جاري تحميل المنتجات...",
+    "error": "فشل في تحميل المنتجات"
   },
   "bestDeals": {
     "title": "أفضل العروض"

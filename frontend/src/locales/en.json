@@ -45,7 +45,11 @@
     "removeFromEventFavorites": "Remove from Event Favorites",
     "removeFromFavorites": "Remove from Favorites",
     "addToEventFavorites": "Add to Event Favorites",
-    "addToFavorites": "Add to Favorites"
+    "addToFavorites": "Add to Favorites",
+    "atlasEcom": "Atlas Ecom",
+    "sellerPortal": "Seller Portal",
+    "shopName": "Shop Name",
+    "closeModal": "Close modal"
   },
   "features": {
     "delivery": {
@@ -74,7 +78,17 @@
     "language": "Language",
     "searchBar": {
       "placeholder": "Search for products..."
-    }
+    },
+    "searching": "Searching...",
+    "foundProducts": "Found {{count}} product",
+    "noProductsFound": "No products found",
+    "tryDifferentKeywords": "Try searching with different keywords",
+    "wishlist": "Wishlist",
+    "empty": "Empty",
+    "emptyWishlist": "Empty wishlist",
+    "addProductsYouLove": "Add products you love!",
+    "startShopping": "Start Shopping",
+    "menu": "Menu"
   },
   "navbar": {
     "allCategories": "All Categories"
@@ -192,8 +206,12 @@
   "featuredProduct": {
     "title": "Products",
     "noProducts": "No products available.",
-    "prev": "Prev",
-    "next": "Next"
+    "prev": "Previous",
+    "next": "Next",
+    "prevShort": "Prev",
+    "nextShort": "Next",
+    "loading": "Loading products...",
+    "error": "Failed to load products"
   },
   "bestDeals": {
     "title": "Best Deals"

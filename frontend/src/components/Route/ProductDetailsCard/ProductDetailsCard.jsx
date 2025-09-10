@@ -139,7 +139,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                 isRTL ? "left-3 sm:left-4" : "right-3 sm:right-4"
               }`}
               onClick={() => setOpen(false)}
-              aria-label="Close modal"
+              aria-label={t("common.closeModal", "Close modal")}
             >
               <RxCross1 size={20} className="text-gray-600" />
             </button>
@@ -218,10 +218,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                         <button
                           className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
                           onClick={handleWhatsAppClick}
-                          aria-label={t(
-                            "productCard.chatWhatsApp",
-                            "Chat on WhatsApp"
-                          )}
+                          aria-label={t("productCard.chatWhatsApp", "Chat on WhatsApp")}
                         >
                           <FaWhatsapp size={18} />
                           <span className="hidden sm:inline text-xs">
@@ -232,10 +229,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                       <button
                         className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
                         onClick={handleTelegramClick}
-                        aria-label={t(
-                          "productCard.chatTelegram",
-                          "Chat on Telegram"
-                        )}
+                        aria-label={t("productCard.chatTelegram", "Chat on Telegram")}
                       >
                         <FaTelegram size={18} />
                         <span className="hidden sm:inline text-xs">
@@ -309,10 +303,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                       className="p-3 rounded-full hover:bg-gray-100 transition-colors duration-200"
                       aria-label={
                         click
-                          ? t(
-                              "productCard.removeFromWishlist",
-                              "Remove from wishlist"
-                            )
+                          ? t("productCard.removeFromWishlist", "Remove from wishlist")
                           : t("productCard.addToWishlist", "Add to wishlist")
                       }
                     >

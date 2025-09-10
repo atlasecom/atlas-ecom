@@ -95,7 +95,7 @@ const FeaturedProduct = () => {
               className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             >
               <span className="hidden sm:inline">{t('featuredProduct.prev', 'Previous')}</span>
-              <span className="sm:hidden">Prev</span>
+              <span className="sm:hidden">{t('featuredProduct.prevShort', 'Prev')}</span>
             </button>
 
             {Array.from({ length: Math.min(totalPages, window.innerWidth < 640 ? 5 : window.innerWidth < 1280 ? 7 : 9) }, (_, i) => {
@@ -132,7 +132,7 @@ const FeaturedProduct = () => {
               className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             >
               <span className="hidden sm:inline">{t('featuredProduct.next', 'Next')}</span>
-              <span className="sm:hidden">Next</span>
+              <span className="sm:hidden">{t('featuredProduct.nextShort', 'Next')}</span>
             </button>
           </div>
         </div>
