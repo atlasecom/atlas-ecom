@@ -3,8 +3,10 @@ import { Link, useLocation } from "react-router-dom";
 import { FiX, FiBarChart, FiPackage, FiPlus, FiSettings, FiHome } from "react-icons/fi";
 import { GrWorkshop } from "react-icons/gr";
 import { RxDashboard } from "react-icons/rx";
+import { useTranslation } from "react-i18next";
 
 const DashboardSideBar = () => {
+    const { t } = useTranslation();
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -73,8 +75,8 @@ const DashboardSideBar = () => {
             id: 1, 
             path: "/dashboard", 
             icon: RxDashboard, 
-            label: "Dashboard", 
-            description: "Overview & Analytics",
+            label: t("sidebar.dashboard", "Dashboard"), 
+            description: t("sidebar.dashboardDesc", "Overview & Analytics"),
             color: 'text-blue-600',
             bgColor: 'bg-blue-50',
             borderColor: 'border-blue-200'
@@ -83,8 +85,8 @@ const DashboardSideBar = () => {
             id: 2, 
             path: "/dashboard-products", 
             icon: FiPackage, 
-            label: "All Products", 
-            description: "Manage Products",
+            label: t("sidebar.allProducts", "All Products"), 
+            description: t("sidebar.manageProducts", "Manage Products"),
             color: 'text-green-600',
             bgColor: 'bg-green-50',
             borderColor: 'border-green-200'
@@ -93,8 +95,8 @@ const DashboardSideBar = () => {
             id: 3, 
             path: "/dashboard-create-product", 
             icon: FiPlus, 
-            label: "Create Product", 
-            description: "Add New Product",
+            label: t("sidebar.createProduct", "Create Product"), 
+            description: t("sidebar.addNewProduct", "Add New Product"),
             color: 'text-purple-600',
             bgColor: 'bg-purple-50',
             borderColor: 'border-purple-200'
@@ -103,8 +105,8 @@ const DashboardSideBar = () => {
             id: 4, 
             path: "/dashboard-events", 
             icon: FiBarChart, 
-            label: "All Events", 
-            description: "Manage Events",
+            label: t("sidebar.allEvents", "All Events"), 
+            description: t("sidebar.manageEvents", "Manage Events"),
             color: 'text-pink-600',
             bgColor: 'bg-pink-50',
             borderColor: 'border-pink-200'
@@ -113,8 +115,8 @@ const DashboardSideBar = () => {
             id: 5, 
             path: "/dashboard-create-event", 
             icon: FiPlus, 
-            label: "Create Event", 
-            description: "Launch Event",
+            label: t("sidebar.createEvent", "Create Event"), 
+            description: t("sidebar.launchEvent", "Launch Event"),
             color: 'text-orange-600',
             bgColor: 'bg-orange-50',
             borderColor: 'border-orange-200'
@@ -123,8 +125,8 @@ const DashboardSideBar = () => {
             id: 6, 
             path: "/settings", 
             icon: FiSettings, 
-            label: "Shop Settings", 
-            description: "Shop Configuration",
+            label: t("sidebar.shopSettings", "Shop Settings"), 
+            description: t("sidebar.shopConfiguration", "Shop Configuration"),
             color: 'text-gray-600',
             bgColor: 'bg-gray-50',
             borderColor: 'border-gray-200'
@@ -133,8 +135,8 @@ const DashboardSideBar = () => {
             id: 7, 
             path: "/shop/me", 
             icon: FiHome, 
-            label: "Shop Profile", 
-            description: "Shop Information",
+            label: t("sidebar.shopProfile", "Shop Profile"), 
+            description: t("sidebar.shopInformation", "Shop Information"),
             color: 'text-indigo-600',
             bgColor: 'bg-indigo-50',
             borderColor: 'border-indigo-200'
@@ -166,8 +168,8 @@ const DashboardSideBar = () => {
                         <span className="text-white text-sm sm:text-lg lg:text-xl font-bold">A</span>
                     </div>
                     <div className="hidden 800px:block min-w-0">
-                        <h2 className="text-sm sm:text-base lg:text-lg font-bold text-gray-900 truncate">Seller Portal</h2>
-                        <p className="text-xs sm:text-sm lg:text-base text-gray-600 truncate">Manage your business</p>
+                        <h2 className="text-sm sm:text-base lg:text-lg font-bold text-gray-900 truncate">{t("common.sellerPortal", "Seller Portal")}</h2>
+                        <p className="text-xs sm:text-sm lg:text-base text-gray-600 truncate">{t("sidebar.manageYourBusiness", "Manage your business")}</p>
                     </div>
                 </div>
             </div>
@@ -231,7 +233,7 @@ const DashboardSideBar = () => {
                     <div className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full mx-auto mb-1 sm:mb-2 lg:mb-3 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
                         <span className="text-white text-xs sm:text-sm lg:text-base">🚀</span>
                     </div>
-                    <p className="text-xs lg:text-sm text-gray-600 font-medium">Seller Portal v2.0</p>
+                    <p className="text-xs lg:text-sm text-gray-600 font-medium">{t("sidebar.sellerPortalVersion", "Seller Portal v2.0")}</p>
                 </div>
             </div>
         </div>
@@ -264,8 +266,8 @@ const DashboardSideBar = () => {
                                 <span className="text-white text-xl font-bold">A</span>
                             </div>
                             <div className="flex-1 min-w-0">
-                                <h2 className="text-lg font-bold text-gray-900 truncate">Seller Portal</h2>
-                                <p className="text-sm text-gray-600 truncate">Mobile Navigation</p>
+                                <h2 className="text-lg font-bold text-gray-900 truncate">{t("common.sellerPortal", "Seller Portal")}</h2>
+                                <p className="text-sm text-gray-600 truncate">{t("sidebar.mobileNavigation", "Mobile Navigation")}</p>
                             </div>
                         </div>
                         <button
@@ -316,7 +318,7 @@ const DashboardSideBar = () => {
                         <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full mx-auto mb-2 flex items-center justify-center shadow-lg">
                             <span className="text-white text-sm">🚀</span>
                         </div>
-                        <p className="text-sm text-gray-600 font-medium">Seller Portal v2.0</p>
+                        <p className="text-sm text-gray-600 font-medium">{t("sidebar.sellerPortalVersion", "Seller Portal v2.0")}</p>
                     </div>
                 </div>
             </div>

@@ -5,8 +5,10 @@ import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
 import { FiPackage, FiBarChart, FiPlus, FiAlertTriangle, FiSmartphone, FiCamera, FiStar } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 const DashboardHero = () => {
+    const { t } = useTranslation();
     const { user } = useSelector((state) => state.user);
     const [products, setProducts] = useState([]);
     const [events, setEvents] = useState([]);
@@ -121,7 +123,7 @@ const DashboardHero = () => {
             <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading dashboard...</p>
+                    <p className="text-gray-600">{t("dashboard.loading", "Loading dashboard...")}</p>
                 </div>
             </div>
         );
@@ -133,7 +135,7 @@ const DashboardHero = () => {
             <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
                 <div className="text-center">
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                        <p className="font-bold">Error</p>
+                        <p className="font-bold">{t("common.error", "Error")}</p>
                         <p>{error}</p>
                     </div>
                     <button 
@@ -148,7 +150,7 @@ const DashboardHero = () => {
                         }}
                         className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
                     >
-                        Retry
+{t("common.retry", "Retry")}
                     </button>
                 </div>
             </div>
@@ -160,7 +162,7 @@ const DashboardHero = () => {
             {/* Mobile Menu Indicator */}
             <div className="lg:hidden bg-blue-600 text-white px-4 py-2 text-center text-sm font-medium flex items-center justify-center gap-2">
                 <FiSmartphone size={16} />
-                Seller Dashboard - Swipe or use menu button to navigate
+{t("dashboard.mobileIndicator", "Seller Dashboard - Swipe or use menu button to navigate")}
             </div>
 
             {/* Main Content */}
@@ -177,7 +179,7 @@ const DashboardHero = () => {
                                         <FiPackage className="text-2xl sm:text-3xl text-white" />
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-sm font-medium text-gray-600 mb-1">Total Products</p>
+                                        <p className="text-sm font-medium text-gray-600 mb-1">{t("dashboard.totalProducts", "Total Products")}</p>
                                         <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">{stats.totalProducts}</p>
                                     </div>
                                 </div>
@@ -185,7 +187,7 @@ const DashboardHero = () => {
                                     <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-3">
                                         <p className="text-sm text-red-700 font-medium flex items-center gap-2">
                                             <FiAlertTriangle size={16} />
-                                            {stats.lowStockProducts} products low on stock
+{t("dashboard.lowStockProducts", "{{count}} products low on stock", { count: stats.lowStockProducts })}
                                         </p>
                                     </div>
                                 )}
@@ -193,7 +195,7 @@ const DashboardHero = () => {
                                     to="/dashboard-products"
                                     className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold text-sm transition-colors duration-200"
                                 >
-                                    View Products
+{t("dashboard.viewProducts", "View Products")}
                                     <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
@@ -210,14 +212,14 @@ const DashboardHero = () => {
                                         <FiBarChart className="text-2xl sm:text-3xl text-white" />
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-sm font-medium text-gray-600 mb-1">Total Events</p>
+                                        <p className="text-sm font-medium text-gray-600 mb-1">{t("dashboard.totalEvents", "Total Events")}</p>
                                         <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">{stats.totalEvents}</p>
                                     </div>
                                 </div>
                                 {stats.activeEvents > 0 && (
                                     <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
                                         <p className="text-sm text-green-700 font-medium">
-                                            🎯 {stats.activeEvents} active events running
+{t("dashboard.activeEvents", "🎯 {{count}} active events running", { count: stats.activeEvents })}
                                         </p>
                                     </div>
                                 )}
@@ -225,7 +227,7 @@ const DashboardHero = () => {
                                     to="/dashboard-events"
                                     className="inline-flex items-center text-green-600 hover:text-green-700 font-semibold text-sm transition-colors duration-200"
                                 >
-                                    View Events
+{t("dashboard.viewEvents", "View Events")}
                                     <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
@@ -239,12 +241,12 @@ const DashboardHero = () => {
                         <div className="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
                             <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-4 sm:px-5 lg:px-6 py-4 border-b border-blue-200">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
-                                    <h2 className="text-xl sm:text-2xl font-bold text-blue-900">Recent Products</h2>
+                                    <h2 className="text-xl sm:text-2xl font-bold text-blue-900">{t("dashboard.recentProducts", "Recent Products")}</h2>
                                     <Link
                                         to="/dashboard-products"
                                         className="inline-flex items-center text-blue-700 hover:text-blue-800 font-semibold transition-colors duration-200 text-sm sm:text-base"
                                     >
-                                        View All Products
+{t("dashboard.viewAllProducts", "View All Products")}
                                         <svg className="ml-2 w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                         </svg>
@@ -303,7 +305,7 @@ const DashboardHero = () => {
                                                             <span className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${
                                                                 product.stock < 10 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
                                                             }`}>
-                                                                Stock: {product.stock}
+                                                                {t("dashboard.stock", "Stock")}: {product.stock}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -316,14 +318,14 @@ const DashboardHero = () => {
                                         <div className="w-20 h-20 sm:w-24 sm:h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <FiPackage className="text-3xl sm:text-4xl text-blue-600" />
                                         </div>
-                                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">No Products Yet</h3>
-                                        <p className="text-sm sm:text-base text-gray-600 mb-4 max-w-md mx-auto px-4">Start building your shop by creating your first product</p>
+                                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">{t("dashboard.noProductsYet", "No Products Yet")}</h3>
+                                        <p className="text-sm sm:text-base text-gray-600 mb-4 max-w-md mx-auto px-4">{t("dashboard.startBuildingShop", "Start building your shop by creating your first product")}</p>
                                         <Link
                                             to="/dashboard-create-product"
                                             className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-sm sm:text-base"
                                         >
                                             <FiPlus className="mr-2" size={16} />
-                                            Create Your First Product
+{t("dashboard.createFirstProduct", "Create Your First Product")}
                                         </Link>
                                     </div>
                                 )}
@@ -336,12 +338,12 @@ const DashboardHero = () => {
                         <div className="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
                             <div className="bg-gradient-to-r from-green-50 to-green-100 px-4 sm:px-5 lg:px-6 py-4 border-b border-green-200">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
-                                    <h2 className="text-xl sm:text-2xl font-bold text-green-900">Recent Events</h2>
+                                    <h2 className="text-xl sm:text-2xl font-bold text-green-900">{t("dashboard.recentEvents", "Recent Events")}</h2>
                                     <Link
                                         to="/dashboard-events"
                                         className="inline-flex items-center text-green-700 hover:text-green-800 font-semibold transition-colors duration-200 text-sm sm:text-base"
                                     >
-                                        View All Events
+{t("dashboard.viewAllEvents", "View All Events")}
                                         <svg className="ml-2 w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                         </svg>
@@ -405,8 +407,8 @@ const DashboardHero = () => {
                                                                 event.status === 'Running' ? 'bg-green-100 text-green-700' :
                                                                 event.status === 'Ended' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
                                                             }`}>
-                                                                {event.status === 'Running' ? '🟢 Running' : 
-                                                                 event.status === 'Ended' ? '⚫ Ended' : '🟡 Upcoming'}
+                                                                {event.status === 'Running' ? t("dashboard.running", "🟢 Running") : 
+                                                                 event.status === 'Ended' ? t("dashboard.ended", "⚫ Ended") : t("dashboard.upcoming", "🟡 Upcoming")}
                                                             </span>
                                                             <span className="text-sm text-orange-600 font-medium">
                                                                 {event.originalPrice} - {event.discountPrice} DH
@@ -422,14 +424,14 @@ const DashboardHero = () => {
                                         <div className="w-20 h-20 sm:w-24 sm:h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <FiBarChart className="text-3xl sm:text-4xl text-green-600" />
                                         </div>
-                                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">No Events Yet</h3>
-                                        <p className="text-sm sm:text-base text-gray-600 mb-4 max-w-md mx-auto px-4">Create exciting events to promote your products and attract customers</p>
+                                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">{t("dashboard.noEventsYet", "No Events Yet")}</h3>
+                                        <p className="text-sm sm:text-base text-gray-600 mb-4 max-w-md mx-auto px-4">{t("dashboard.createExcitingEvents", "Create exciting events to promote your products and attract customers")}</p>
                                         <Link
                                             to="/dashboard-create-event"
                                             className="inline-flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-sm sm:text-base"
                                         >
                                             <FiPlus className="mr-2" size={16} />
-                                            Create Your First Event
+{t("dashboard.createFirstEvent", "Create Your First Event")}
                                         </Link>
                                     </div>
                                 )}
