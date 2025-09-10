@@ -74,7 +74,7 @@ const DashboardHeader = () => {
                             <img
                                 src={atlasEcom}
                                 alt="Atlas Ecom Logo"
-                                className="h-8 w-auto sm:h-10 lg:h-12"
+                                className="h-12 w-auto sm:h-14 lg:h-16"
                             />
                             <div className="hidden md:block min-w-0">
                                 <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">Atlas Ecom</h1>
