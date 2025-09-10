@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import ScrollToTop from "./components/Common/ScrollToTop";
 import VerifyEmail from "./pages/VerifyEmail";
 import {
   LoginPage,
@@ -82,6 +83,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/oauth-callback" element={<GoogleAuthHandler />} />

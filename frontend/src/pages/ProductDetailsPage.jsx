@@ -47,11 +47,7 @@ const ProductDetailsPage = () => {
             console.log("Product images:", data?.images);
             setData(data);
         }
-        /* `window.scrollTo(0, 0)` is a JavaScript method that scrolls the window to the top of the page.
-        In this code, it is used inside the `useEffect` hook to scroll the window to the top whenever
-        the component is rendered. This ensures that when the user navigates to the
-        `ProductDetailsPage`, the page starts at the top rather than at the previous scroll position. */
-        window.scrollTo(0, 0)
+        // Scroll to top is now handled globally by ScrollToTop component
         }, [id, eventData, allProducts, allEvents]);
 
 
