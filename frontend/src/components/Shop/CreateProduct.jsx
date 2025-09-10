@@ -282,9 +282,6 @@ const CreateProduct = () => {
                                             <FiDollarSign className="mr-2 text-orange-600" size={20} />
                                             <h3 className="text-lg font-semibold text-orange-800">Pricing Range</h3>
                                         </div>
-                                        <p className="text-sm text-orange-700 mb-4">
-                                            Set your price range like Alibaba - customers will see the range and contact you for specific pricing.
-                                        </p>
                                         
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
