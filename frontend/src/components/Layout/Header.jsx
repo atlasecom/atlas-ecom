@@ -612,6 +612,16 @@ const Header = ({ activeHeading }) => {
 
                 <Navbar active={activeHeading} />
 
+                {/* Language Switcher for Mobile */}
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-slate-700">
+                      {t("header.language", "Language")}
+                    </h3>
+                  </div>
+                  <LanguageChanger />
+                </div>
+
                 <div className="mt-8 pt-6 border-t border-orange-200">
                   <Link
                     to={!isAuthenticated ? "/login" : user && user.role === "admin" ? "/admin/dashboard" : user && user.role === "seller" ? "/dashboard" : "/shop-create"}
