@@ -728,7 +728,8 @@
       "allUsers": "Tous les utilisateurs",
       "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
       "cancel": "Annuler",
-      "confirm": "Confirmer"
+      "confirm": "Confirmer",
+      "fetchError": "Échec de la récupération des utilisateurs"
     },
     "allSellers": {
       "sellerId": "ID vendeur",
@@ -753,7 +754,10 @@
       "deleteProduct": "Supprimer le produit",
       "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer ce produit?",
       "cancel": "Annuler",
-      "confirm": "Confirmer"
+      "confirm": "Confirmer",
+      "fetchError": "Échec de la récupération des produits",
+      "deleteSuccess": "Produit supprimé avec succès",
+      "deleteError": "Échec de la suppression du produit"
     },
     "allEvents": {
       "eventId": "ID événement",
@@ -765,7 +769,10 @@
       "deleteEvent": "Supprimer l'événement",
       "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer cet événement?",
       "cancel": "Annuler",
-      "confirm": "Confirmer"
+      "confirm": "Confirmer",
+      "fetchError": "Échec de la récupération des événements",
+      "deleteSuccess": "Événement supprimé avec succès",
+      "deleteError": "Échec de la suppression de l'événement"
     }
   },
   "profile": {

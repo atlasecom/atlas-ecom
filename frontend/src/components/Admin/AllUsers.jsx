@@ -44,11 +44,11 @@ const AllUsers = () => {
       if (response.data.success) {
         setUsers(response.data.users);
       } else {
-        toast.error("Failed to fetch users");
+        toast.error(t("admin.allUsers.fetchError", "Failed to fetch users"));
       }
     } catch (error) {
       console.error("Error fetching users:", error);
-      toast.error("Failed to fetch users");
+      toast.error(t("admin.allUsers.fetchError", "Failed to fetch users"));
     } finally {
       setLoading(false);
     }

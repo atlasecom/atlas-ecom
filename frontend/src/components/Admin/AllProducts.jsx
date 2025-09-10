@@ -31,11 +31,11 @@ const AllProducts = () => {
       if (response.data.success) {
         setData(response.data.products);
       } else {
-        toast.error("Failed to fetch products");
+        toast.error(t("admin.allProducts.fetchError", "Failed to fetch products"));
       }
     } catch (error) {
       console.error("Error fetching products:", error);
-      toast.error("Failed to fetch products");
+      toast.error(t("admin.allProducts.fetchError", "Failed to fetch products"));
     } finally {
       setLoading(false);
     }
@@ -73,13 +73,13 @@ const AllProducts = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      toast.success("Product deleted successfully");
+      toast.success(t("admin.allProducts.deleteSuccess", "Product deleted successfully"));
       setDeleteOpen(false);
       // Refresh products list
       fetchProducts();
     } catch (error) {
       console.error("Error deleting product:", error);
-      toast.error("Failed to delete product");
+      toast.error(t("admin.allProducts.deleteError", "Failed to delete product"));
     }
   };
 

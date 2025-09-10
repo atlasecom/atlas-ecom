@@ -714,7 +714,8 @@
       "allUsers": "جميع المستخدمين",
       "deleteConfirmation": "هل أنت متأكد من أنك تريد حذف هذا المستخدم؟",
       "cancel": "إلغاء",
-      "confirm": "تأكيد"
+      "confirm": "تأكيد",
+      "fetchError": "فشل في جلب المستخدمين"
     },
     "allSellers": {
       "sellerId": "معرف البائع",
@@ -739,7 +740,10 @@
       "deleteProduct": "حذف المنتج",
       "deleteConfirmation": "هل أنت متأكد من أنك تريد حذف هذا المنتج؟",
       "cancel": "إلغاء",
-      "confirm": "تأكيد"
+      "confirm": "تأكيد",
+      "fetchError": "فشل في جلب المنتجات",
+      "deleteSuccess": "تم حذف المنتج بنجاح",
+      "deleteError": "فشل في حذف المنتج"
     },
     "allEvents": {
       "eventId": "معرف الحدث",
@@ -751,7 +755,10 @@
       "deleteEvent": "حذف الحدث",
       "deleteConfirmation": "هل أنت متأكد من أنك تريد حذف هذا الحدث؟",
       "cancel": "إلغاء",
-      "confirm": "تأكيد"
+      "confirm": "تأكيد",
+      "fetchError": "فشل في جلب الأحداث",
+      "deleteSuccess": "تم حذف الحدث بنجاح",
+      "deleteError": "فشل في حذف الحدث"
     }
   },
   "profile": {

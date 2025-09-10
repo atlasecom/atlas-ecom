@@ -746,7 +746,8 @@
       "allUsers": "All Users",
       "deleteConfirmation": "Are you sure you wanna delete this user?",
       "cancel": "Cancel",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "fetchError": "Failed to fetch users"
     },
     "allSellers": {
       "sellerId": "Seller ID",
@@ -771,7 +772,10 @@
       "deleteProduct": "Delete Product",
       "deleteConfirmation": "Are you sure you wanna delete this product?",
       "cancel": "Cancel",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "fetchError": "Failed to fetch products",
+      "deleteSuccess": "Product deleted successfully",
+      "deleteError": "Failed to delete product"
     },
     "allEvents": {
       "eventId": "Event ID",
@@ -783,7 +787,10 @@
       "deleteEvent": "Delete Event",
       "deleteConfirmation": "Are you sure you wanna delete this event?",
       "cancel": "Cancel",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "fetchError": "Failed to fetch events",
+      "deleteSuccess": "Event deleted successfully",
+      "deleteError": "Failed to delete event"
     }
   },
   "profile": {

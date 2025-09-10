@@ -44,7 +44,7 @@ const AllEvents = () => {
         setEvents(response.data.events || []);
       } catch (error) {
         console.error("Error fetching events:", error);
-        toast.error("Failed to fetch events");
+        toast.error(t("admin.allEvents.fetchError", "Failed to fetch events"));
     } finally {
       setLoading(false);
     }
@@ -93,14 +93,14 @@ const AllEvents = () => {
       const response = await axios.delete(`${server}/events/admin/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      toast.success(response.data.message || "Event deleted successfully");
+      toast.success(response.data.message || t("admin.allEvents.deleteSuccess", "Event deleted successfully"));
       // Refresh the events list
       const updatedEvents = events.filter(event => event._id !== id);
       setEvents(updatedEvents);
       setOpen(false);
     } catch (error) {
       console.error("Error deleting event:", error);
-      toast.error("Failed to delete event");
+      toast.error(t("admin.allEvents.deleteError", "Failed to delete event"));
     }
   };
 
