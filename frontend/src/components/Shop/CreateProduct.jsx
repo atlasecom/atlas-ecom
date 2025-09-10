@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -8,6 +7,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
+import { FiPlus, FiUpload, FiX, FiPackage, FiDollarSign, FiTag, FiImage, FiInfo } from "react-icons/fi";
 
 const CreateProduct = () => {
     const { user } = useSelector((state) => state.user);
@@ -18,8 +18,8 @@ const CreateProduct = () => {
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("Electronics");
     const [tags, setTags] = useState("");
-    const [originalPrice, setOriginalPrice] = useState();
-    const [discountPrice, setDiscountPrice] = useState();
+    const [minPrice, setMinPrice] = useState();
+    const [maxPrice, setMaxPrice] = useState();
     const [stock, setStock] = useState();
     const [minOrderQuantity, setMinOrderQuantity] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -91,14 +91,20 @@ const CreateProduct = () => {
                 return;
             }
             
-            if (!discountPrice || parseFloat(discountPrice) <= 0) {
-                toast.error(t('createProduct.priceRequired', 'Discount price must be a positive number'));
+            if (!minPrice || parseFloat(minPrice) <= 0) {
+                toast.error(t('createProduct.minPriceRequired', 'Minimum price must be a positive number'));
                 setLoading(false);
                 return;
             }
             
-            if (originalPrice && parseFloat(originalPrice) <= 0) {
-                toast.error(t('createProduct.originalPriceInvalid', 'Original price must be a positive number'));
+            if (!maxPrice || parseFloat(maxPrice) <= 0) {
+                toast.error(t('createProduct.maxPriceRequired', 'Maximum price must be a positive number'));
+                setLoading(false);
+                return;
+            }
+            
+            if (parseFloat(minPrice) >= parseFloat(maxPrice)) {
+                toast.error(t('createProduct.priceRangeInvalid', 'Maximum price must be greater than minimum price'));
                 setLoading(false);
                 return;
             }
@@ -127,11 +133,9 @@ const CreateProduct = () => {
             newForm.append("category", category);
             newForm.append("tags", tags);
             
-            // If originalPrice is empty, set it to discountPrice
-            const finalOriginalPrice = originalPrice && originalPrice.trim() !== '' ? originalPrice : discountPrice;
-            newForm.append("originalPrice", finalOriginalPrice);
-            
-            newForm.append("discountPrice", discountPrice);
+            // Use minPrice as originalPrice and maxPrice as discountPrice for backend compatibility
+            newForm.append("originalPrice", minPrice);
+            newForm.append("discountPrice", maxPrice);
             newForm.append("stock", stock);
             newForm.append("minOrderQuantity", minOrderQuantity);
 
@@ -158,8 +162,8 @@ const CreateProduct = () => {
                 setDescription("");
                 setCategory("");
                 setTags("");
-                setOriginalPrice("");
-                setDiscountPrice("");
+                setMinPrice("");
+                setMaxPrice("");
                 setStock("");
                 setMinOrderQuantity(1);
                 // Redirect to dashboard
@@ -176,214 +180,261 @@ const CreateProduct = () => {
     };
 
     return (
-        <div className="w-full">
-            <div className="w-full px-0 sm:px-4 lg:px-6 py-2 sm:py-4 lg:py-6">
-                <div className="max-w-4xl mx-auto px-2 sm:px-0">
-                    <h5 className="text-[30px] font-Poppins text-center">{t('createProduct.title', 'Create Product')}</h5>
-                    {/* create product form */}
-                    <form onSubmit={handleSubmit}>
-                        <br />
-                        <div>
-                            <label className="pb-2">
-                                {t('createProduct.name', 'Name')} <span className="text-red-500">{t('createProduct.required', '*')}</span>
-                            </label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={name}
-                                required
-                                maxLength="100"
-                                className={`mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                                    i18n.language === 'ar' ? 'text-right' : 'text-left'
-                                }`}
-                                onChange={(e) => setName(e.target.value)}
-                                placeholder={t('createProduct.namePlaceholder', 'Enter your product name (2-100 characters)...')}
-                            />
-                            <div className="text-xs text-gray-500 mt-1 text-right">
-                                {name.length}/100 characters (minimum 2 required)
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+            <div className="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                <div className="max-w-6xl mx-auto">
+                    {/* Header Section */}
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl mb-4 shadow-lg">
+                            <FiPackage className="text-white text-2xl" />
+                        </div>
+                        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
+                            {t('createProduct.title', 'Create New Product')}
+                        </h1>
+                        <p className="text-gray-600 text-lg">
+                            Add your product to start selling on our platform
+                        </p>
+                    </div>
+
+                    {/* Main Form */}
+                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                        <form onSubmit={handleSubmit} className="p-6 sm:p-8">
+                            {/* Product Information Section */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                                {/* Left Column */}
+                                <div className="space-y-6">
+                                    {/* Product Name */}
+                                    <div className="space-y-2">
+                                        <label className="flex items-center text-sm font-semibold text-gray-700">
+                                            <FiPackage className="mr-2 text-orange-500" size={16} />
+                                            {t('createProduct.name', 'Product Name')} 
+                                            <span className="text-red-500 ml-1">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            value={name}
+                                            required
+                                            maxLength="100"
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                                            onChange={(e) => setName(e.target.value)}
+                                            placeholder="Enter your product name..."
+                                        />
+                                        <div className="flex justify-between text-xs text-gray-500">
+                                            <span>{name.length}/100 characters</span>
+                                            <span>Minimum 2 required</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Category */}
+                                    <div className="space-y-2">
+                                        <label className="flex items-center text-sm font-semibold text-gray-700">
+                                            <FiTag className="mr-2 text-orange-500" size={16} />
+                                            {t('createProduct.category', 'Category')} 
+                                            <span className="text-red-500 ml-1">*</span>
+                                        </label>
+                                        <select
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                                            value={category}
+                                            required
+                                            onChange={(e) => setCategory(e.target.value)}
+                                        >
+                                            <option value="Electronics">Electronics</option>
+                                            <option value="Fashion & Apparel">Fashion & Apparel</option>
+                                            <option value="Home & Garden">Home & Garden</option>
+                                            <option value="Sports & Outdoors">Sports & Outdoors</option>
+                                            <option value="Health & Beauty">Health & Beauty</option>
+                                            <option value="Books & Media">Books & Media</option>
+                                            <option value="Automotive">Automotive</option>
+                                            <option value="Toys & Games">Toys & Games</option>
+                                            <option value="Food & Beverages">Food & Beverages</option>
+                                            <option value="Jewelry & Accessories">Jewelry & Accessories</option>
+                                            <option value="Pet Supplies">Pet Supplies</option>
+                                        </select>
+                                    </div>
+
+                                    {/* Tags */}
+                                    <div className="space-y-2">
+                                        <label className="flex items-center text-sm font-semibold text-gray-700">
+                                            <FiTag className="mr-2 text-orange-500" size={16} />
+                                            {t('createProduct.tags', 'Tags')}
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="tags"
+                                            value={tags}
+                                            maxLength="200"
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                                            onChange={(e) => setTags(e.target.value)}
+                                            placeholder="Enter tags separated by commas..."
+                                        />
+                                        <div className="text-xs text-gray-500 text-right">
+                                            {tags.length}/200 characters
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Right Column - Pricing Section */}
+                                <div className="space-y-6">
+                                    {/* Pricing Range */}
+                                    <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200">
+                                        <div className="flex items-center mb-4">
+                                            <FiDollarSign className="mr-2 text-orange-600" size={20} />
+                                            <h3 className="text-lg font-semibold text-orange-800">Pricing Range</h3>
+                                        </div>
+                                        <p className="text-sm text-orange-700 mb-4">
+                                            Set your price range like Alibaba - customers will see the range and contact you for specific pricing.
+                                        </p>
+                                        
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-orange-800">
+                                                    Minimum Price (DH) <span className="text-red-500">*</span>
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="minPrice"
+                                                    value={minPrice}
+                                                    min="0"
+                                                    step="0.01"
+                                                    className="w-full px-3 py-2 border border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                                    onChange={(e) => setMinPrice(e.target.value)}
+                                                    placeholder="0.00"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-orange-800">
+                                                    Maximum Price (DH) <span className="text-red-500">*</span>
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="maxPrice"
+                                                    value={maxPrice}
+                                                    min="0"
+                                                    step="0.01"
+                                                    className="w-full px-3 py-2 border border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                                    onChange={(e) => setMaxPrice(e.target.value)}
+                                                    placeholder="0.00"
+                                                />
+                                            </div>
+                                        </div>
+                                        
+                                        {minPrice && maxPrice && (
+                                            <div className="mt-4 p-3 bg-white rounded-lg border border-orange-200">
+                                                <p className="text-sm text-orange-800 font-medium">
+                                                    Price Range: {minPrice} DH - {maxPrice} DH
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Stock & Order Quantity */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-semibold text-gray-700">
+                                                Stock Quantity <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="number"
+                                                name="stock"
+                                                value={stock}
+                                                required
+                                                min="0"
+                                                step="1"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                                                onChange={(e) => setStock(e.target.value)}
+                                                placeholder="0"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-semibold text-gray-700">
+                                                Min. Order Qty <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="number"
+                                                name="minOrderQuantity"
+                                                value={minOrderQuantity}
+                                                required
+                                                min="1"
+                                                step="1"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                                                onChange={(e) => setMinOrderQuantity(e.target.value)}
+                                                placeholder="1"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <br />
-                        <div>
-                            <label className="pb-2">
-                                {t('createProduct.description', 'Description')} <span className="text-red-500">{t('createProduct.required', '*')}</span>
-                            </label>
-                            <textarea
-                                cols="30"
-                                required
-                                rows="8"
-                                type="text"
-                                name="description"
-                                value={description}
-                                maxLength="2000"
-                                className={`mt-2 appearance-none block w-full pt-2 px-3 border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                                    i18n.language === 'ar' ? 'text-right' : 'text-left'
-                                }`}
-                                onChange={(e) => setDescription(e.target.value)}
-                                placeholder={t('createProduct.descriptionPlaceholder', 'Enter your product description (minimum 10 characters)...')}
-                            ></textarea>
-                            <div className="text-xs text-gray-500 mt-1 text-right">
-                                {description.length}/2000 characters (minimum 10 required)
+
+                            {/* Description Section */}
+                            <div className="space-y-2 mb-8">
+                                <label className="flex items-center text-sm font-semibold text-gray-700">
+                                    <FiInfo className="mr-2 text-orange-500" size={16} />
+                                    {t('createProduct.description', 'Product Description')} 
+                                    <span className="text-red-500 ml-1">*</span>
+                                </label>
+                                <textarea
+                                    required
+                                    rows="6"
+                                    name="description"
+                                    value={description}
+                                    maxLength="2000"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-none"
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    placeholder="Describe your product in detail..."
+                                />
+                                <div className="flex justify-between text-xs text-gray-500">
+                                    <span>{description.length}/2000 characters</span>
+                                    <span>Minimum 10 required</span>
+                                </div>
                             </div>
-                        </div>
-                        <br />
-                        <div>
-                            <label className="pb-2">
-                                {t('createProduct.category', 'Category')} <span className="text-red-500">{t('createProduct.required', '*')}</span>
-                            </label>
-                            <select
-                                className={`w-full mt-2 border h-[35px] rounded-[5px] ${
-                                    i18n.language === 'ar' ? 'text-right' : 'text-left'
-                                }`}
-                                value={category}
-                                required
-                                onChange={(e) => setCategory(e.target.value)}
-                            >
-                                <option value="Electronics">Electronics</option>
-                                <option value="Fashion & Apparel">Fashion & Apparel</option>
-                                <option value="Home & Garden">Home & Garden</option>
-                                <option value="Sports & Outdoors">Sports & Outdoors</option>
-                                <option value="Health & Beauty">Health & Beauty</option>
-                                <option value="Books & Media">Books & Media</option>
-                                <option value="Automotive">Automotive</option>
-                                <option value="Toys & Games">Toys & Games</option>
-                                <option value="Food & Beverages">Food & Beverages</option>
-                                <option value="Jewelry & Accessories">Jewelry & Accessories</option>
-                                <option value="Pet Supplies">Pet Supplies</option>
-                            </select>
-                        </div>
-                        <br />
-                        <div>
-                            <label className="pb-2">{t('createProduct.tags', 'Tags')}</label>
-                            <input
-                                type="text"
-                                name="tags"
-                                value={tags}
-                                maxLength="200"
-                                className={`mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                                    i18n.language === 'ar' ? 'text-right' : 'text-left'
-                                }`}
-                                onChange={(e) => setTags(e.target.value)}
-                                placeholder={t('createProduct.tagsPlaceholder', 'Enter your product tags...')}
-                            />
-                            <div className="text-xs text-gray-500 mt-1 text-right">
-                                {tags.length}/200 characters
-                            </div>
-                        </div>
-                        <br />
-                        <div>
-                            <label className="pb-2">{t('createProduct.originalPrice', 'Original Price')}</label>
-                            <input
-                                type="number"
-                                name="originalPrice"
-                                value={originalPrice}
-                                min="0"
-                                step="0.01"
-                                className={`mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                                    i18n.language === 'ar' ? 'text-right' : 'text-left'
-                                }`}
-                                onChange={(e) => setOriginalPrice(e.target.value)}
-                                placeholder={t('createProduct.originalPricePlaceholder', 'Enter your product price...')}
-                            />
-                        </div>
-                        <br />
-                        <div>
-                            <label className="pb-2">
-                                {t('createProduct.discountPrice', 'Price (With Discount)')} <span className="text-red-500">{t('createProduct.required', '*')}</span>
-                            </label>
-                            <input
-                                type="number"
-                                name="discountPrice"
-                                value={discountPrice}
-                                required
-                                min="0"
-                                step="0.01"
-                                className={`mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                                    i18n.language === 'ar' ? 'text-right' : 'text-left'
-                                }`}
-                                onChange={(e) => setDiscountPrice(e.target.value)}
-                                placeholder={t('createProduct.discountPricePlaceholder', 'Enter your product price with discount...')}
-                            />
-                        </div>
-                        <br />
-                        <div>
-                            <label className="pb-2">
-                                {t('createProduct.stock', 'Product Stock')} <span className="text-red-500">{t('createProduct.required', '*')}</span>
-                            </label>
-                            <input
-                                type="number"
-                                name="stock"
-                                value={stock}
-                                required
-                                min="0"
-                                step="1"
-                                className={`mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                                    i18n.language === 'ar' ? 'text-right' : 'text-left'
-                                }`}
-                                onChange={(e) => setStock(e.target.value)}
-                                placeholder={t('createProduct.stockPlaceholder', 'Enter your product stock (required, non-negative)...')}
-                            />
-                            <div className="text-xs text-gray-500 mt-1 text-right">
-                                Current stock: {stock || 0} (minimum 0 required)
-                            </div>
-                        </div>
-                        <br />
-                        <div>
-                            <label className="pb-2">
-                                {t('createProduct.minOrderQuantity', 'Minimum Order Quantity')} <span className="text-red-500">{t('createProduct.required', '*')}</span>
-                            </label>
-                            <input
-                                type="number"
-                                name="minOrderQuantity"
-                                value={minOrderQuantity}
-                                required
-                                min="1"
-                                step="1"
-                                className={`mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                                    i18n.language === 'ar' ? 'text-right' : 'text-left'
-                                }`}
-                                onChange={(e) => setMinOrderQuantity(e.target.value)}
-                                placeholder={t('createProduct.minOrderQuantityPlaceholder', 'Enter minimum order quantity...')}
-                            />
-                            <div className="text-xs text-gray-500 mt-1 text-right">
-                                Minimum order: {minOrderQuantity || 1} (minimum 1 required)
-                            </div>
-                        </div>
-                        <br />
-                        <div>
-                            <label className="pb-2">
-                                {t('createProduct.uploadImages', 'Upload Images')} <span className="text-red-500">{t('createProduct.required', '*')}</span>
-                            </label>
-                            <input
-                                type="file"
-                                name="images"
-                                id="upload"
-                                className="hidden"
-                                multiple
-                                accept="image/*"
-                                onChange={handleImageChange}
-                            />
-                            <div className="w-full">
-                                {/* Upload button */}
+
+                            {/* Image Upload Section */}
+                            <div className="space-y-4 mb-8">
+                                <label className="flex items-center text-sm font-semibold text-gray-700">
+                                    <FiImage className="mr-2 text-orange-500" size={16} />
+                                    {t('createProduct.uploadImages', 'Product Images')} 
+                                    <span className="text-red-500 ml-1">*</span>
+                                </label>
+                                
+                                <input
+                                    type="file"
+                                    name="images"
+                                    id="upload"
+                                    className="hidden"
+                                    multiple
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                />
+                                
                                 <label htmlFor="upload" className="cursor-pointer block">
-                                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-500 hover:bg-blue-50 transition-colors duration-200">
-                                        <AiOutlinePlusCircle size={30} className="mx-auto mb-2" color="#555" />
-                                        <p className="text-sm text-gray-600">Click to upload images</p>
-                                        <p className="text-xs text-gray-500 mt-1">Supports: JPG, PNG, GIF (Max: 10MB each)</p>
+                                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-orange-500 hover:bg-orange-50 transition-colors duration-200">
+                                        <FiUpload className="mx-auto mb-4 text-gray-400" size={48} />
+                                        <p className="text-lg font-medium text-gray-700 mb-2">Upload Product Images</p>
+                                        <p className="text-sm text-gray-500 mb-4">Drag and drop or click to select images</p>
+                                        <div className="inline-flex items-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
+                                            <FiPlus className="mr-2" size={16} />
+                                            Choose Files
+                                        </div>
+                                        <p className="text-xs text-gray-400 mt-2">
+                                            Supports: JPG, PNG, GIF, WebP (Max: 10MB each, Up to 10 images)
+                                        </p>
                                     </div>
                                 </label>
                                 
-                                {/* Image previews */}
+                                {/* Image Previews */}
                                 {images && Array.isArray(images) && images.length > 0 && (
-                                    <div className="w-full mt-4">
-                                        <p className="text-sm text-gray-600 mb-2">Uploaded Images ({images.length}):</p>
-                                        <div className="flex flex-wrap gap-2">
+                                    <div className="mt-6">
+                                        <p className="text-sm font-medium text-gray-700 mb-4">
+                                            Uploaded Images ({images.length}/10):
+                                        </p>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                                             {images.map((image, index) => (
-                                                <div key={index} className="relative">
+                                                <div key={index} className="relative group">
                                                     <img
                                                         src={URL.createObjectURL(image)}
                                                         alt={`Product image ${index + 1}`}
-                                                        className="h-[120px] w-[120px] object-cover rounded border border-gray-200 shadow-sm"
+                                                        className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow-sm"
                                                         onError={(e) => {
                                                             console.error('Image load error:', e);
                                                             e.target.style.display = 'none';
@@ -392,35 +443,34 @@ const CreateProduct = () => {
                                                     <button
                                                         type="button"
                                                         onClick={() => removeImage(index)}
-                                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors shadow-lg"
+                                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors shadow-lg opacity-0 group-hover:opacity-100"
                                                         title="Remove image"
                                                     >
-                                                        ×
+                                                        <FiX size={12} />
                                                     </button>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                 )}
-                                
-                                {/* No images message */}
-                                {(!images || !Array.isArray(images) || images.length === 0) && (
-                                    <div className="mt-4 text-center text-gray-500 text-sm">
-                                        No images uploaded yet. Please select at least one image.
-                                    </div>
-                                )}
-                                
-
                             </div>
-                            <br />
-                            <div className="mt-6">
+
+                            {/* Submit Button */}
+                            <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+                                <button
+                                    type="button"
+                                    onClick={() => navigate("/dashboard-products")}
+                                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+                                >
+                                    Cancel
+                                </button>
                                 <button
                                     type="submit"
-                                    disabled={loading || !name.trim() || !description.trim() || !category || !discountPrice || !stock || !minOrderQuantity || !images || images.length === 0}
-                                    className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                                        loading || !name.trim() || !description.trim() || !category || !discountPrice || !stock || !minOrderQuantity || !images || images.length === 0
+                                    disabled={loading || !name.trim() || !description.trim() || !category || !minPrice || !maxPrice || !stock || !minOrderQuantity || !images || images.length === 0}
+                                    className={`flex-1 py-3 px-6 rounded-xl font-semibold text-white transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                                        loading || !name.trim() || !description.trim() || !category || !minPrice || !maxPrice || !stock || !minOrderQuantity || !images || images.length === 0
                                             ? 'bg-gray-400 cursor-not-allowed transform-none'
-                                            : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-blue-500 shadow-lg hover:shadow-xl'
+                                            : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 focus:ring-orange-500 shadow-lg hover:shadow-xl'
                                     }`}
                                 >
                                     {loading ? (
@@ -429,20 +479,15 @@ const CreateProduct = () => {
                                             {t('createProduct.creating', 'Creating Product...')}
                                         </div>
                                     ) : (
-                                        t('createProduct.create', 'Create Product')
+                                        <div className="flex items-center justify-center">
+                                            <FiPackage className="mr-2" size={16} />
+                                            {t('createProduct.create', 'Create Product')}
+                                        </div>
                                     )}
                                 </button>
-                                
-                                {(!name.trim() || !description.trim() || !category || !discountPrice || !stock || !minOrderQuantity || !images || images.length === 0) && (
-                                    <div className="mt-3 text-center">
-                                        <p className="text-sm text-gray-500">
-                                            Please fill in all required fields and upload at least one image
-                                        </p>
-                                    </div>
-                                )}
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
