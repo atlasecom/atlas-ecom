@@ -1016,11 +1016,24 @@
     },
     "sidebar": {
       "dashboard": "Dashboard",
-      "allSellers": "All Sellers",
-      "allUsers": "All Users",
-      "allProducts": "All Products",
-      "allEvents": "All Events",
-      "settings": "Settings"
+      "sellers": "Sellers",
+      "products": "Products",
+      "users": "Users",
+      "events": "Events",
+      "settings": "Settings",
+      "adminPanel": "Admin Panel",
+      "managementTools": "Management Tools"
+    },
+    "allProducts": {
+      "title": "All Products",
+      "subtitle": "Manage and monitor all products in the store",
+      "mobileNavigation": "Mobile Navigation",
+      "mobileNavigationDesc": "Use the blue menu button in the header to navigate",
+      "totalProducts": "Total Products",
+      "totalValue": "Total Value",
+      "lowStock": "Low Stock",
+      "avgRating": "Avg Rating",
+      "fetchError": "Failed to fetch products"
     },
     "dashboard": {
       "overview": "Overview",

@@ -995,11 +995,24 @@
     },
     "sidebar": {
       "dashboard": "لوحة التحكم",
-      "allSellers": "جميع البائعين",
-      "allUsers": "جميع المستخدمين",
-      "allProducts": "جميع المنتجات",
-      "allEvents": "جميع الأحداث",
-      "settings": "الإعدادات"
+      "sellers": "البائعون",
+      "products": "المنتجات",
+      "users": "المستخدمون",
+      "events": "الأحداث",
+      "settings": "الإعدادات",
+      "adminPanel": "لوحة الإدارة",
+      "managementTools": "أدوات الإدارة"
+    },
+    "allProducts": {
+      "title": "جميع المنتجات",
+      "subtitle": "إدارة ومراقبة جميع المنتجات في المتجر",
+      "mobileNavigation": "التنقل المحمول",
+      "mobileNavigationDesc": "استخدم زر القائمة الأزرق في الرأس للتنقل",
+      "totalProducts": "إجمالي المنتجات",
+      "totalValue": "القيمة الإجمالية",
+      "lowStock": "مخزون منخفض",
+      "avgRating": "التقييم المتوسط",
+      "fetchError": "فشل في جلب المنتجات"
     },
     "dashboard": {
       "overview": "نظرة عامة",

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { 
   FiUser, 
   FiSettings, 
@@ -13,13 +14,14 @@ import { GrWorkshop } from "react-icons/gr";
 import { RxDashboard } from "react-icons/rx";
 
 const AdminSideBar = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const menuItems = [
     {
       id: 1,
-      title: "Dashboard",
+      title: t("admin.sidebar.dashboard", "Dashboard"),
       icon: RxDashboard,
       path: '/admin/dashboard',
       color: 'text-blue-600',
@@ -28,7 +30,7 @@ const AdminSideBar = () => {
     },
     {
       id: 2,
-      title: "Sellers",
+      title: t("admin.sidebar.sellers", "Sellers"),
       icon: GrWorkshop,
       path: '/admin-sellers',
       color: 'text-purple-600',
@@ -38,7 +40,7 @@ const AdminSideBar = () => {
     },
     {
       id: 3,
-      title: "Products",
+      title: t("admin.sidebar.products", "Products"),
       icon: FiPackage,
       path: '/admin-products',
       color: 'text-green-600',
@@ -47,7 +49,7 @@ const AdminSideBar = () => {
     },
     {
       id: 4,
-      title: "Users",
+      title: t("admin.sidebar.users", "Users"),
       icon: FiUser,
       path: '/admin-users',
       color: 'text-indigo-600',
@@ -56,7 +58,7 @@ const AdminSideBar = () => {
     },
     {
       id: 5,
-      title: "Events",
+      title: t("admin.sidebar.events", "Events"),
       icon: FiBarChart,
       path: '/admin-events',
       color: 'text-pink-600',
@@ -65,7 +67,7 @@ const AdminSideBar = () => {
     },
     {
       id: 6,
-      title: "Settings",
+      title: t("admin.sidebar.settings", "Settings"),
       icon: FiSettings,
       path: '/admin-settings',
       color: 'text-gray-600',
@@ -104,8 +106,8 @@ const AdminSideBar = () => {
                 <RxDashboard className="text-white text-xl" />
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="text-lg font-bold text-gray-900 truncate">Admin Panel</h2>
-                <p className="text-sm text-gray-600 truncate">Management Tools</p>
+                <h2 className="text-lg font-bold text-gray-900 truncate">{t("admin.sidebar.adminPanel", "Admin Panel")}</h2>
+                <p className="text-sm text-gray-600 truncate">{t("admin.sidebar.managementTools", "Management Tools")}</p>
               </div>
             </div>
           </div>
@@ -175,8 +177,8 @@ const AdminSideBar = () => {
                 <RxDashboard className="text-white text-xl" />
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="text-lg font-bold text-gray-900 truncate">Admin Panel</h2>
-                <p className="text-sm text-gray-600 truncate">Management Tools</p>
+                <h2 className="text-lg font-bold text-gray-900 truncate">{t("admin.sidebar.adminPanel", "Admin Panel")}</h2>
+                <p className="text-sm text-gray-600 truncate">{t("admin.sidebar.managementTools", "Management Tools")}</p>
               </div>
             </div>
             <button

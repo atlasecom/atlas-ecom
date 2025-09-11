@@ -1022,11 +1022,24 @@
     },
     "sidebar": {
       "dashboard": "Tableau de bord",
-      "allSellers": "Tous les vendeurs",
-      "allUsers": "Tous les utilisateurs",
-      "allProducts": "Tous les produits",
-      "allEvents": "Tous les événements",
-      "settings": "Paramètres"
+      "sellers": "Vendeurs",
+      "products": "Produits",
+      "users": "Utilisateurs",
+      "events": "Événements",
+      "settings": "Paramètres",
+      "adminPanel": "Panneau d'administration",
+      "managementTools": "Outils de gestion"
+    },
+    "allProducts": {
+      "title": "Tous les produits",
+      "subtitle": "Gérer et surveiller tous les produits du magasin",
+      "mobileNavigation": "Navigation mobile",
+      "mobileNavigationDesc": "Utilisez le bouton menu bleu dans l'en-tête pour naviguer",
+      "totalProducts": "Total des produits",
+      "totalValue": "Valeur totale",
+      "lowStock": "Stock faible",
+      "avgRating": "Note moyenne",
+      "fetchError": "Échec de la récupération des produits"
     },
     "dashboard": {
       "overview": "Aperçu",

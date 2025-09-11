@@ -98,8 +98,8 @@ const AllProducts = () => {
             <FiPackage className="text-blue-600" size={16} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-blue-900">Mobile Navigation</p>
-            <p className="text-xs text-blue-700">Use the blue menu button in the header to navigate</p>
+            <p className="text-sm font-medium text-blue-900">{t("admin.allProducts.mobileNavigation", "Mobile Navigation")}</p>
+            <p className="text-xs text-blue-700">{t("admin.allProducts.mobileNavigationDesc", "Use the blue menu button in the header to navigate")}</p>
           </div>
         </div>
       </div>
@@ -111,10 +111,10 @@ const AllProducts = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-              All Products
+              {t("admin.allProducts.title", "All Products")}
             </h1>
             <p className="text-sm lg:text-base text-gray-600">
-              Manage and monitor all products in the store
+              {t("admin.allProducts.subtitle", "Manage and monitor all products in the store")}
             </p>
           </div>
 
@@ -126,7 +126,7 @@ const AllProducts = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
-              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Products</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{t("admin.allProducts.totalProducts", "Total Products")}</p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{data.length}</p>
             </div>
             <div className="bg-blue-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
@@ -138,7 +138,7 @@ const AllProducts = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
-              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Value</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{t("admin.allProducts.totalValue", "Total Value")}</p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">
                 {data.reduce((acc, item) => acc + (item.discountPrice || 0), 0).toFixed(2)} DH
               </p>
@@ -152,7 +152,7 @@ const AllProducts = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
-              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Low Stock</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{t("admin.allProducts.lowStock", "Low Stock")}</p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-orange-600">
                 {data.filter(p => p.stock < 20).length}
               </p>
@@ -166,7 +166,7 @@ const AllProducts = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
-              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Avg Rating</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{t("admin.allProducts.avgRating", "Avg Rating")}</p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-600">
                 {data.length > 0 ? (data.reduce((acc, item) => acc + (item.ratings || 0), 0) / data.length).toFixed(1) : '0.0'}
               </p>
