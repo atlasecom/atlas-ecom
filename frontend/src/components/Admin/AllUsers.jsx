@@ -116,7 +116,7 @@ const AllUsers = () => {
       fetchUsers();
     } catch (error) {
       console.error("Error deleting user:", error);
-      toast.error(error.response?.data?.message || "Failed to delete user");
+      toast.error(error.response?.data?.message || t("admin.allUsers.deleteError", "Failed to delete user"));
     }
   };
 
@@ -370,17 +370,17 @@ const AllUsers = () => {
           <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">{t("admin.allUsers.deleteUser", "Delete User")}</h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this user? This action will permanently remove:
+              {t("admin.allUsers.deleteConfirmation", "Are you sure you want to delete this user? This action will permanently remove:")}
             </p>
             <ul className="text-sm text-gray-600 mb-6 space-y-1">
-              <li>• The user's account</li>
-              <li>• All associated data</li>
+              <li>• {t("admin.allUsers.userAccount", "The user's account")}</li>
+              <li>• {t("admin.allUsers.allAssociatedData", "All associated data")}</li>
               {users.find(u => u._id === userId)?.role === 'seller' && (
-                <li>• Their shop and products</li>
+                <li>• {t("admin.allUsers.shopAndProducts", "Their shop and products")}</li>
               )}
             </ul>
             <p className="text-red-600 text-sm font-medium mb-6">
-              This action cannot be undone!
+              {t("admin.allUsers.cannotBeUndone", "This action cannot be undone!")}
             </p>
             <div className="flex space-x-3">
               <button

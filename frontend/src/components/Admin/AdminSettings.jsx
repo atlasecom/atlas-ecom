@@ -4,14 +4,16 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
+import { useTranslation } from "react-i18next";
 
 const AdminSettings = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('general');
   const [isLoading, setIsLoading] = useState(false);
 
   const tabs = [
-    { id: 'general', label: 'General', icon: FiGlobe },
-    { id: 'admin', label: 'Admin Management', icon: FiUsers }
+    { id: 'general', label: t("admin.settings.general", "General"), icon: FiGlobe },
+    { id: 'admin', label: t("admin.settings.adminManagement", "Admin Management"), icon: FiUsers }
   ];
 
   const [settings, setSettings] = useState({
