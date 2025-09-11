@@ -1166,7 +1166,8 @@
     "commentRequired": "يرجى كتابة تعليق للتقييم",
     "reviewSubmitted": "تم إرسال التقييم بنجاح!",
     "reviewSubmitError": "فشل في إرسال التقييم",
-    "clickToReview": "انقر لكتابة تقييم"
+    "clickToReview": "انقر لكتابة تقييم",
+    "commentPlaceholder": "شارك تجربتك مع هذا المنتج..."
   },
   "resetPassword": {
     "title": "إعادة تعيين كلمة المرور",

@@ -1203,7 +1203,8 @@
     "commentRequired": "Please write a comment for your review",
     "reviewSubmitted": "Review submitted successfully!",
     "reviewSubmitError": "Failed to submit review",
-    "clickToReview": "Click to write a review"
+    "clickToReview": "Click to write a review",
+    "commentPlaceholder": "Share your experience with this product..."
   },
   "resetPassword": {
     "title": "Reset Password",

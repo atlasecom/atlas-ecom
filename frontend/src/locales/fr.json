@@ -1185,7 +1185,8 @@
     "commentRequired": "Veuillez écrire un commentaire pour votre avis",
     "reviewSubmitted": "Avis soumis avec succès!",
     "reviewSubmitError": "Échec de la soumission de l'avis",
-    "clickToReview": "Cliquez pour écrire un avis"
+    "clickToReview": "Cliquez pour écrire un avis",
+    "commentPlaceholder": "Partagez votre expérience avec ce produit..."
   },
   "resetPassword": {
     "title": "Réinitialiser le mot de passe",
