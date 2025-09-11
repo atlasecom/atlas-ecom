@@ -203,7 +203,7 @@ const ProductsPage = () => {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L6.293 13H5a1 1 0 01-1-1V4z" />
                     </svg>
-                    {showMobileFilters ? 'Hide Filters' : 'Show Filters'}
+{t(showMobileFilters ? "productsPage.hideFilters" : "productsPage.showFilters", showMobileFilters ? "Hide Filters" : "Show Filters")}
                   </button>
                 </div>
 
@@ -216,7 +216,7 @@ const ProductsPage = () => {
                         onChange={(e) => setSelectedCategory(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
                       >
-                        <option value="">All Categories</option>
+                        <option value="">{t("productsPage.allCategories", "All Categories")}</option>
                         {categoriesData.map((cat) => (
                           <option key={cat.id} value={cat.title.en}>
                             {cat.title[i18n.language] || cat.title.en}
@@ -229,7 +229,7 @@ const ProductsPage = () => {
                         onChange={(e) => setSelectedSeller(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
                       >
-                        <option value="">All Sellers</option>
+                        <option value="">{t("productsPage.allSellers", "All Sellers")}</option>
                         {sellers.map((seller) => (
                           <option key={seller._id} value={seller._id}>
                             {seller.name}
@@ -272,7 +272,7 @@ const ProductsPage = () => {
                     onChange={(e) => setSelectedCategory(e.target.value)}
                     className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
                   >
-                    <option value="">All Categories</option>
+                    <option value="">{t("productsPage.allCategories", "All Categories")}</option>
                     {categoriesData.map((cat) => (
                       <option key={cat.id} value={cat.title.en}>
                         {cat.title[i18n.language] || cat.title.en}
@@ -285,7 +285,7 @@ const ProductsPage = () => {
                     onChange={(e) => setSelectedSeller(e.target.value)}
                     className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
                   >
-                    <option value="">All Sellers</option>
+                    <option value="">{t("productsPage.allSellers", "All Sellers")}</option>
                     {sellers.map((seller) => (
                       <option key={seller._id} value={seller._id}>
                         {seller.name}
@@ -326,19 +326,22 @@ const ProductsPage = () => {
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <h3 className="text-lg sm:text-xl font-bold text-gray-800">
                   {loading ? (
-                    "Loading products..."
+                    t("productsPage.loadingProducts", "Loading products...")
                   ) : (
-                    `${filteredProducts.length} Product${filteredProducts.length !== 1 ? 's' : ''} Found`
+                    t("productsPage.productsFound", "{{count}} Product{{plural}} Found", { 
+                      count: filteredProducts.length, 
+                      plural: filteredProducts.length !== 1 ? 's' : '' 
+                    })
                   )}
                 </h3>
                 {(searchTerm || selectedSeller || selectedCategory || minPrice || maxPrice) && (
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500 hidden sm:inline">•</span>
                     <span className="text-xs text-gray-600">
-                      {searchTerm && `Search: "${searchTerm}"`}
-                      {selectedSeller && ` • Seller: ${sellers.find(s => s._id === selectedSeller)?.name || 'Selected'}`}
-                      {selectedCategory && ` • Category: ${selectedCategory}`}
-                      {(minPrice || maxPrice) && ` • Price: ${minPrice || '0'} - ${maxPrice || '∞'}`}
+                      {searchTerm && t("productsPage.searchFilter", "Search: \"{{term}}\"", { term: searchTerm })}
+                      {selectedSeller && ` • ${t("productsPage.sellerFilter", "Seller: {{name}}", { name: sellers.find(s => s._id === selectedSeller)?.name || 'Selected' })}`}
+                      {selectedCategory && ` • ${t("productsPage.categoryFilter", "Category: {{category}}", { category: selectedCategory })}`}
+                      {(minPrice || maxPrice) && ` • ${t("productsPage.priceFilter", "Price: {{min}} - {{max}}", { min: minPrice || '0', max: maxPrice || '∞' })}`}
                     </span>
                   </div>
                 )}
@@ -346,7 +349,7 @@ const ProductsPage = () => {
               
               {filteredProducts.length > 0 && (
                 <div className="text-xs text-gray-500 font-medium">
-                  Page {currentPage} of {totalPages}
+{t("productsPage.pageOf", "Page {{current}} of {{total}}", { current: currentPage, total: totalPages })}
                 </div>
               )}
             </div>
