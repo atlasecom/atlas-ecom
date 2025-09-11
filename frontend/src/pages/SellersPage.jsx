@@ -139,7 +139,7 @@ const SellersPage = () => {
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-600 mx-auto mb-4"></div>
-            <p className="text-lg text-gray-600">Loading amazing sellers...</p>
+            <p className="text-lg text-gray-600">{t('sellersPage.loadingSellers', 'Loading amazing sellers...')}</p>
           </div>
         </div>
         <Footer />
@@ -156,20 +156,20 @@ const SellersPage = () => {
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3">
-              Discover Amazing Sellers
+              {t('sellersPage.title', 'Discover Amazing Sellers')}
             </h1>
             <p className="text-sm sm:text-base text-orange-100 mb-4 max-w-3xl mx-auto">
-              Connect with verified shops and discover unique products from trusted sellers across Morocco
+              {t('sellersPage.subtitle', 'Connect with verified shops and discover unique products from trusted sellers across Morocco')}
             </p>
             <div className="flex flex-wrap justify-center gap-2 text-xs">
               <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-1">
-                <span className="font-semibold">{sellers.length}+</span> Verified Sellers
+                <span className="font-semibold">{sellers.length}+</span> {t('sellersPage.verifiedSellers', 'Verified Sellers')}
               </div>
               <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-1">
-                <span className="font-semibold">24/7</span> Support
+                <span className="font-semibold">24/7</span> {t('sellersPage.support24', 'Support')}
               </div>
               <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-1">
-                <span className="font-semibold">100%</span> Secure
+                <span className="font-semibold">100%</span> {t('sellersPage.secure100', 'Secure')}
               </div>
             </div>
           </div>
@@ -188,7 +188,7 @@ const SellersPage = () => {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Search sellers by name, description, or category..."
+                    placeholder={t('sellersPage.searchPlaceholder', 'Search sellers by name, description, or category...')}
                     value={searchTerm}
                     onChange={(e) => {
                       setSearchTerm(e.target.value);
@@ -235,10 +235,10 @@ const SellersPage = () => {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300"
                 >
-                  <option value="newest">Newest First</option>
-                  <option value="oldest">Oldest First</option>
-                  <option value="name">Name A-Z</option>
-                  <option value="rating">Highest Rated</option>
+                  <option value="newest">{t('sellersPage.newestFirst', 'Newest First')}</option>
+                  <option value="oldest">{t('sellersPage.oldestFirst', 'Oldest First')}</option>
+                  <option value="name">{t('sellersPage.nameAZ', 'Name A-Z')}</option>
+                  <option value="rating">{t('sellersPage.highestRated', 'Highest Rated')}</option>
                 </select>
               </div>
             </div>
@@ -251,15 +251,22 @@ const SellersPage = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">
-                  {filteredSellers.length} Seller{filteredSellers.length !== 1 ? 's' : ''} Found
+                  {t('sellersPage.sellersFound', '{{count}} Seller{{plural}} Found', { 
+                    count: filteredSellers.length, 
+                    plural: filteredSellers.length !== 1 ? 's' : '' 
+                  })}
                 </h2>
                 {searchTerm && (
                   <p className="text-gray-600 mt-1">
-                    Results for "<span className="font-semibold text-orange-600">{searchTerm}</span>"
+                    {t('sellersPage.resultsFor', 'Results for')} "<span className="font-semibold text-orange-600">{searchTerm}</span>"
                   </p>
                 )}
                 <p className="text-gray-500 text-sm mt-1">
-                  Showing {indexOfFirstSeller + 1}-{Math.min(indexOfLastSeller, filteredSellers.length)} of {filteredSellers.length} results
+                  {t('sellersPage.showingResults', 'Showing {{start}}-{{end}} of {{total}} results', {
+                    start: indexOfFirstSeller + 1,
+                    end: Math.min(indexOfLastSeller, filteredSellers.length),
+                    total: filteredSellers.length
+                  })}
                 </p>
               </div>
               {(searchTerm || categoryFilter !== "all") && (
@@ -272,7 +279,7 @@ const SellersPage = () => {
                   }}
                   className="px-4 py-2 text-sm text-orange-600 hover:text-orange-700 font-medium hover:bg-orange-50 rounded-lg transition-colors"
                 >
-                  Clear Filters
+                  {t('sellersPage.clearFilters', 'Clear Filters')}
                 </button>
               )}
             </div>
@@ -311,7 +318,7 @@ const SellersPage = () => {
                         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
-                        Verified
+                        {t('sellersPage.verified', 'Verified')}
                       </div>
                     )}
                   </div>
@@ -379,10 +386,10 @@ const SellersPage = () => {
                         <div className="text-2xl font-bold text-orange-600">
                           {seller.productCount !== undefined ? seller.productCount : '...'}
                         </div>
-                        <div className="text-xs text-gray-500 font-medium">Products</div>
+                        <div className="text-xs text-gray-500 font-medium">{t('sellersPage.products', 'Products')}</div>
                         {seller.productCount > 0 && (
                           <div className="text-xs text-green-600 mt-1">
-                            Active Shop
+                            {t('sellersPage.activeShop', 'Active Shop')}
                           </div>
                         )}
                       </div>
@@ -390,7 +397,7 @@ const SellersPage = () => {
                         <div className="text-2xl font-bold text-orange-600">
                           {seller.averageRating ? seller.averageRating.toFixed(1) : 'N/A'}
                         </div>
-                        <div className="text-xs text-gray-500 font-medium">Rating</div>
+                        <div className="text-xs text-gray-500 font-medium">{t('sellersPage.rating', 'Rating')}</div>
                         {seller.averageRating ? (
                           <div className="flex items-center justify-center mt-1">
                             {[...Array(5)].map((_, index) => (
@@ -412,7 +419,7 @@ const SellersPage = () => {
                           </div>
                         ) : (
                           <div className="text-xs text-gray-400 mt-1">
-                            No ratings yet
+                            {t('sellersPage.noRatingsYet', 'No ratings yet')}
                           </div>
                         )}
                       </div>
@@ -421,7 +428,7 @@ const SellersPage = () => {
                     {/* Join Date */}
                     <div className="text-center text-xs text-gray-400 mb-4">
                       <AiOutlineCalendar className="w-4 h-4 inline mr-1" />
-                      Joined {new Date(seller.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-MA' : 'en-US', { 
+                      {t('sellersPage.joined', 'Joined')} {new Date(seller.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-MA' : 'en-US', { 
                         year: 'numeric', 
                         month: 'short' 
                       })}
@@ -433,7 +440,7 @@ const SellersPage = () => {
                       className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                     >
                       <AiOutlineEye className="w-5 h-5" />
-                      View Shop
+                      {t('sellersPage.viewShop', 'View Shop')}
                     </Link>
                   </div>
                 </div>
@@ -483,7 +490,7 @@ const SellersPage = () => {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isRTL ? "M9 5l7 7-7 7" : "M15 19l-7-7 7-7"} />
                 </svg>
-                Previous
+                {t('sellersPage.prev', 'Previous')}
               </button>
 
               <div className="flex gap-2">
@@ -512,7 +519,7 @@ const SellersPage = () => {
                 disabled={currentPage === totalPages}
                 className="flex items-center gap-2 px-6 py-3 border border-gray-300 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-all duration-300 font-medium"
               >
-                Next
+                {t('sellersPage.next', 'Next')}
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isRTL ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
                 </svg>
