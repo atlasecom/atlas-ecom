@@ -7,6 +7,7 @@ import styles from "../styles/styles";
 import ProductCard from "../components/Route/ProductCard/ProductCardNew";
 import { useTranslation } from "react-i18next";
 import { FiTrendingUp, FiStar, FiShoppingBag, FiFilter } from "react-icons/fi";
+import { categoriesData } from "../static/data";
 
 const BestSellingPage = () => {
   const [data, setData] = useState([]);
@@ -22,8 +23,13 @@ const BestSellingPage = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
 
-  // Get unique categories
-  const categories = [...new Set((allProducts || []).map(product => product.category).filter(Boolean))];
+  // Get unique categories from products and match with categoriesData
+  const productCategories = [...new Set((allProducts || []).map(product => product.category).filter(Boolean))];
+  const categories = categoriesData.filter(cat => 
+    productCategories.includes(cat.title.en) || 
+    productCategories.includes(cat.title.fr) || 
+    productCategories.includes(cat.title.ar)
+  );
 
   useEffect(() => {
     if (Array.isArray(allProducts)) {
@@ -41,7 +47,13 @@ const BestSellingPage = () => {
     let filtered = [...data];
 
     if (selectedCategory) {
-      filtered = filtered.filter(product => product.category === selectedCategory);
+      filtered = filtered.filter(product => 
+        product.category === selectedCategory ||
+        categoriesData.find(cat => 
+          cat.title[i18n.language] === selectedCategory && 
+          (product.category === cat.title.en || product.category === cat.title.fr || product.category === cat.title.ar)
+        )
+      );
     }
 
     if (minPrice) {
@@ -174,8 +186,8 @@ const BestSellingPage = () => {
                       >
                         <option value="">{t("bestSellingPage.allCategories", "All Categories")}</option>
                         {categories && categories.length > 0 ? categories.map((category) => (
-                          <option key={category} value={category}>
-                            {category}
+                          <option key={category.id} value={category.title[i18n.language] || category.title.en}>
+                            {category.title[i18n.language] || category.title.en}
                           </option>
                         )) : null}
                       </select>
