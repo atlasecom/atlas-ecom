@@ -135,14 +135,14 @@ const BestSellingPage = () => {
             {/* Professional Filter Section */}
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Filter Best Sellers</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800">{t("bestSellingPage.filterTitle", "Filter Best Sellers")}</h2>
                 <div className="flex items-center gap-2 sm:gap-4">
                   <button
                     onClick={() => setShowFilters(!showFilters)}
                     className="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base"
                   >
                     <FiFilter size={16} className="sm:w-[18px] sm:h-[18px]" />
-                    <span className="font-semibold">Filters</span>
+                    <span className="font-semibold">{t("bestSellingPage.filters", "Filters")}</span>
                   </button>
 
                   {(selectedCategory || minPrice || maxPrice) && (
@@ -150,7 +150,7 @@ const BestSellingPage = () => {
                       onClick={resetFilters}
                       className="px-4 sm:px-6 py-2 sm:py-3 text-gray-600 hover:text-red-600 border-2 border-gray-300 rounded-xl hover:border-red-300 transition-all duration-300 font-semibold text-sm sm:text-base"
                     >
-                      Reset
+{t("bestSellingPage.reset", "Reset")}
                     </button>
                   )}
                 </div>
@@ -159,20 +159,20 @@ const BestSellingPage = () => {
               {/* Expanded Filters */}
               {showFilters && (
                 <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-200">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 sm:mb-6">Filter Options</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 sm:mb-6">{t("bestSellingPage.filterOptions", "Filter Options")}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {/* Category Filter */}
                     <div className="space-y-2">
                       <label className="flex items-center text-sm font-semibold text-gray-700">
                         <FiStar className="mr-2 text-orange-500" />
-                        Category
+{t("bestSellingPage.category", "Category")}
                       </label>
                       <select
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
                         className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm sm:text-base"
                       >
-                        <option value="">All Categories</option>
+                        <option value="">{t("bestSellingPage.allCategories", "All Categories")}</option>
                         {categories && categories.length > 0 ? categories.map((category) => (
                           <option key={category} value={category}>
                             {category}
@@ -185,7 +185,7 @@ const BestSellingPage = () => {
                     <div className="space-y-2">
                       <label className="flex items-center text-sm font-semibold text-gray-700">
                         <span className="mr-2 text-orange-500">$</span>
-                        Min Price
+{t("bestSellingPage.minPrice", "Min Price")}
                       </label>
                       <input
                         type="number"
@@ -200,7 +200,7 @@ const BestSellingPage = () => {
                     <div className="space-y-2">
                       <label className="flex items-center text-sm font-semibold text-gray-700">
                         <span className="mr-2 text-orange-500">$</span>
-                        Max Price
+{t("bestSellingPage.maxPrice", "Max Price")}
                       </label>
                       <input
                         type="number"
@@ -219,14 +219,17 @@ const BestSellingPage = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <h3 className="text-lg sm:text-xl font-bold text-gray-800">
-                  {filteredData?.length || 0} Best Seller{(filteredData?.length || 0) !== 1 ? 's' : ''} Found
+{t("bestSellingPage.bestSellersFound", "{{count}} Best Seller{{plural}} Found", { 
+                    count: filteredData?.length || 0, 
+                    plural: (filteredData?.length || 0) !== 1 ? 's' : '' 
+                  })}
                 </h3>
                 {(selectedCategory || minPrice || maxPrice) && (
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500 hidden sm:inline">•</span>
                     <span className="text-xs text-gray-600">
-                      {selectedCategory && `Category: ${selectedCategory}`}
-                      {(minPrice || maxPrice) && ` • Price: ${minPrice || '0'} - ${maxPrice || '∞'}`}
+                      {selectedCategory && t("bestSellingPage.categoryFilter", "Category: {{category}}", { category: selectedCategory })}
+                      {(minPrice || maxPrice) && ` • ${t("bestSellingPage.priceFilter", "Price: {{min}} - {{max}}", { min: minPrice || '0', max: maxPrice || '∞' })}`}
                     </span>
                   </div>
                 )}
@@ -234,7 +237,7 @@ const BestSellingPage = () => {
               
               {(filteredData?.length || 0) > 0 && (
                 <div className="text-xs text-gray-500 font-medium">
-                  Page {currentPage} of {totalPages}
+{t("bestSellingPage.pageOf", "Page {{current}} of {{total}}", { current: currentPage, total: totalPages })}
                 </div>
               )}
             </div>
@@ -247,12 +250,12 @@ const BestSellingPage = () => {
                     <FiShoppingBag size={64} className="sm:w-20 sm:h-20 mx-auto" />
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
-                    No best sellers found
+{t("bestSellingPage.noBestSellersFound", "No best sellers found")}
                   </h3>
                   <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 leading-relaxed">
                     {(selectedCategory || minPrice || maxPrice)
-                      ? "Try adjusting your filters to find more best-selling products"
-                      : "No best-selling products are currently available. Check back soon!"
+                      ? t("bestSellingPage.tryAdjustingFilters", "Try adjusting your filters to find more best-selling products")
+                      : t("bestSellingPage.noBestSellersAvailable", "No best-selling products are currently available. Check back soon!")
                     }
                   </p>
                   {(selectedCategory || minPrice || maxPrice) && (
@@ -260,7 +263,7 @@ const BestSellingPage = () => {
                       onClick={resetFilters}
                       className="px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base"
                     >
-                      Clear All Filters
+{t("bestSellingPage.clearAllFilters", "Clear All Filters")}
                     </button>
                   )}
                 </div>
