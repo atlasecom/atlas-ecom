@@ -794,22 +794,6 @@
     "tokenExpired": "انتهت صلاحية الرمز المميز",
     "accountCreatedSuccessfully": "تم إنشاء حسابك بنجاح!"
   },
-  "productsPage": {
-    "filters": " فلتر",
-    "category": "الفئة",
-    "categories": "الفئات",
-    "allCategories": "جميع الفئات",
-    "seller": "البائع",
-    "allSellers": "جميع البائعين",
-    "priceRange": "نطاق السعر",
-    "minPrice": "الحد الأدنى للسعر",
-    "maxPrice": "الحد الأقصى للسعر",
-    "to": "إلى",
-    "reset": "إعادة تعيين",
-    "noProductsFound": "لم يتم العثور على منتجات!",
-    "prev": "السابق",
-    "next": "التالي"
-  },
   "verifyEmail": {
     "title": "تحقق من بريدك الإلكتروني",
     "subtitle": "أدخل رمز التحقق المرسل إلى بريدك الإلكتروني",

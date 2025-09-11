@@ -150,7 +150,7 @@ const ProductsPage = () => {
             <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 text-center">
               <div className="max-w-4xl mx-auto">
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-                  {t("productsPage.title", "Discover Amazing Products")}
+                  {t("productsPage.title", "Discover Amazing Products")} - {i18n.language}
                 </h1>
                 
                 {/* Compact Stats */}
@@ -329,8 +329,8 @@ const ProductsPage = () => {
                     t("productsPage.loadingProducts", "Loading products...")
                   ) : (
                     filteredProducts.length === 1 
-                      ? t("productsPage.productsFoundSingular", "{{count}} Product Found", { count: filteredProducts.length })
-                      : t("productsPage.productsFoundPlural", "{{count}} Products Found", { count: filteredProducts.length })
+                      ? t("productsPage.productsFoundSingular", "{{count}} Product Found", { count: filteredProducts.length }) + ` - ${i18n.language}`
+                      : t("productsPage.productsFoundPlural", "{{count}} Products Found", { count: filteredProducts.length }) + ` - ${i18n.language}`
                   )}
                 </h3>
                 {(searchTerm || selectedSeller || selectedCategory || minPrice || maxPrice) && (
