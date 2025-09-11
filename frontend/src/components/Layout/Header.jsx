@@ -111,18 +111,12 @@ const Header = ({ activeHeading }) => {
     searchTimeout.current = setTimeout(async () => {
       setSearchLoading(true);
       try {
-        console.log('Searching for:', term);
-        console.log('Search URL:', `${server}/api/products/search?term=${encodeURIComponent(term)}&limit=8`);
-        
         const { data } = await axios.get(
           `${server}/api/products/search?term=${encodeURIComponent(term)}&limit=8`
         );
         
-        console.log('Search response:', data);
         setSearchData(data.products || []);
       } catch (error) {
-        console.error('Search error:', error);
-        console.error('Error details:', error.response?.data || error.message);
         setSearchData([]);
       } finally {
         setSearchLoading(false);
@@ -158,7 +152,6 @@ const Header = ({ activeHeading }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [searchData, showWishlist]);
 
-  console.log(user)
 
   return (
     <>

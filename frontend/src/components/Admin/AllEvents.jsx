@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { AiOutlineEye, AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineEye, AiOutlineDelete } from "react-icons/ai";
 import { FiSearch, FiFilter, FiX, FiCalendar, FiMapPin, FiTag, FiDollarSign } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { server, backend_url } from "../../server";
@@ -10,8 +10,7 @@ import { toast } from "react-toastify";
 import { RxCross1 } from "react-icons/rx";
 
 const AllEvents = () => {
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "ar";
+  const { t } = useTranslation();
 
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -30,11 +29,7 @@ const AllEvents = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-    const fetchEvents = async () => {
+  const fetchEvents = async () => {
     setLoading(true);
       try {
         const token = getAuthToken();
@@ -49,6 +44,10 @@ const AllEvents = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   // Get unique categories and statuses from events
   const categories = [...new Set(events.map(event => event.category).filter(Boolean))];

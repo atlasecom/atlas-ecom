@@ -7,7 +7,7 @@ import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
 import { useTranslation } from "react-i18next";
 import Loader from "../Layout/Loader";
-import { FiPackage, FiDollarSign, FiStar, FiTrendingUp, FiAlertTriangle, FiEye, FiTrash2 } from "react-icons/fi";
+import { FiPackage, FiDollarSign, FiStar, FiAlertTriangle, FiEye, FiTrash2 } from "react-icons/fi";
 import { backend_url } from "../../server";
 
 const AllProducts = () => {
@@ -16,11 +16,6 @@ const AllProducts = () => {
   const [loading, setLoading] = useState(true);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [productId, setProductId] = useState("");
-
-  // Fetch real products from database
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
   const fetchProducts = async () => {
     try {
@@ -42,6 +37,11 @@ const AllProducts = () => {
       setLoading(false);
     }
   };
+
+  // Fetch real products from database
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   // Get image URL with multiple fallbacks and null checks
   const getImageUrl = (product) => {

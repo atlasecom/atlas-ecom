@@ -6,8 +6,6 @@ import {
   FiSettings, 
   FiBarChart,
   FiPackage,
-  FiShield,
-  FiMenu,
   FiX
 } from "react-icons/fi";
 import { GrWorkshop } from "react-icons/gr";
@@ -134,9 +132,9 @@ const AdminSideBar = () => {
                     <Icon size={20} className={active ? item.color : 'text-gray-500'} />
                   </div>
                   
-                  <span className="pl-3 font-medium transition-colors flex-1 min-w-0 truncate ${
+                  <span className={`pl-3 font-medium transition-colors flex-1 min-w-0 truncate ${
                     active ? item.color : 'text-gray-700'
-                  }">
+                  }`}>
                     {item.title}
                   </span>
                   
@@ -213,9 +211,9 @@ const AdminSideBar = () => {
                   <Icon size={20} className={active ? item.color : 'text-gray-500'} />
                 </div>
                 
-                <span className="pl-3 font-medium transition-colors flex-1 min-w-0 truncate ${
+                <span className={`pl-3 font-medium transition-colors flex-1 min-w-0 truncate ${
                   active ? item.color : 'text-gray-700'
-                }">
+                }`}>
                   {item.title}
                 </span>
                 

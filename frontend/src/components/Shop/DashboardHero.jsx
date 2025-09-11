@@ -59,14 +59,11 @@ const DashboardHero = () => {
             setLoading(true);
             setError(null);
             const token = getAuthToken();
-            console.log('Fetching events for shop:', shopId);
             const response = await axios.get(`${server}/api/shops/${shopId}/events`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log('Events response:', response.data);
             if (response.data.success) {
                 setEvents(response.data.events);
-                console.log('Events set:', response.data.events);
             }
         } catch (error) {
             console.error('Error fetching events:', error);
@@ -77,26 +74,17 @@ const DashboardHero = () => {
     };
 
     useEffect(() => {
-        console.log('DashboardHero - User state:', user);
-        console.log('DashboardHero - User shop:', user?.shop);
-        console.log('DashboardHero - User role:', user?.role);
-        console.log('DashboardHero - Is authenticated:', !!user);
-        
         if (user && user.shop) {
             const shopId = user.shop._id || user.shop;
-            console.log('DashboardHero - Shop ID:', shopId);
             if (shopId) {
                 fetchProducts(shopId);
                 fetchEvents(shopId);
             } else {
-                console.log('DashboardHero - Invalid shop ID');
                 setError('Invalid shop ID');
             }
         } else if (user && !user.shop) {
-            console.log('DashboardHero - User has no shop');
             setError('No shop found for this user. Please create a shop first.');
         } else {
-            console.log('DashboardHero - No user data');
             setError('Please login to access the dashboard');
         }
     }, [user]);

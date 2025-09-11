@@ -44,7 +44,6 @@ const ProductsPage = () => {
         const { data } = await axios.get(`${server}/shops`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log(data);
 
         setSellers(data.shops || []);
       } catch (err) {

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllSellers } from "../../redux/actions/sellers";
-import { FiTrendingUp, FiMenu, FiUser, FiPackage, FiBarChart, FiShoppingCart, FiCheckCircle, FiClock, FiArrowRight } from "react-icons/fi";
+import { useDispatch } from "react-redux";
+import { FiTrendingUp, FiMenu, FiUser, FiPackage, FiShoppingCart, FiCheckCircle, FiClock, FiArrowRight } from "react-icons/fi";
 import { GrWorkshop } from "react-icons/gr";
-import { RxDashboard } from "react-icons/rx";
 import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
@@ -13,7 +11,6 @@ import { useTranslation } from "react-i18next";
 
 const AdminDashboardMain = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalUsers: 0,

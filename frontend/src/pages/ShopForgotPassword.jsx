@@ -33,7 +33,7 @@ const ShopForgotPassword = () => {
         isRTL ? "rtl" : "ltr"
       }`}
       dir={isRTL ? "rtl" : "ltr"}
-      style={{ minHeight: "100vh", minHeight: "100dvh" }}
+      style={{ minHeight: "100vh" }}
     >
       {/* Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">

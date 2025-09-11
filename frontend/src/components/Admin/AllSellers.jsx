@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
-import { getAllSellers } from "../../redux/actions/sellers";
-import { Link } from "react-router-dom";
 import { getAuthToken } from "../../utils/auth";
-import { FiSearch, FiX, FiMenu, FiUser, FiShop, FiMail, FiPhone, FiCalendar, FiClock, FiFilter, FiEye, FiCheck, FiTrash2 } from "react-icons/fi";
-import { GrWorkshop } from "react-icons/gr";
+import { FiSearch, FiX, FiMenu, FiUser, FiPhone, FiCalendar, FiClock, FiCheck, FiTrash2 } from "react-icons/fi";
 import Loader from "../Layout/Loader";
 import Avatar from "../Common/Avatar";
 
 const AllSellers = () => {
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "ar";
-  const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [sellers, setSellers] = useState([]);
   const [filteredSellers, setFilteredSellers] = useState([]);
   const [open, setOpen] = useState(false);

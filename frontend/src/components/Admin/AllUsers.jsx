@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { getAllUsers } from "../../redux/actions/user";
-import { AiOutlineDelete, AiOutlineUser, AiOutlineMail, AiOutlineCalendar, AiOutlinePhone, AiOutlineEye, AiOutlineFilter } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineUser, AiOutlineMail, AiOutlineCalendar, AiOutlinePhone, AiOutlineEye } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -15,7 +12,6 @@ import Avatar from "../Common/Avatar";
 
 const AllUsers = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,14 +22,6 @@ const AllUsers = () => {
   const [sortBy, setSortBy] = useState("newest");
   const [selectedUser, setSelectedUser] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    filterAndSortUsers();
-  }, [users, searchTerm, roleFilter, sortBy]);
 
   const fetchUsers = async () => {
     try {
@@ -55,6 +43,14 @@ const AllUsers = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    filterAndSortUsers();
+  }, [users, searchTerm, roleFilter, sortBy]);
 
   const filterAndSortUsers = () => {
     let filtered = [...users];

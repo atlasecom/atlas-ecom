@@ -33,22 +33,12 @@ const AllProducts = () => {
     try {
       setIsLoading(true);
       const token = getAuthToken();
-      console.log('Fetching products for shop ID:', shopId);
-      
       // Use the API endpoint that returns images as objects
       const response = await axios.get(`${server}/api/shops/${shopId}/products`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       if (response.data.success) {
-        console.log('Products fetched successfully:', response.data.products.length);
-        response.data.products.forEach((product, index) => {
-          console.log(`Product ${index + 1}:`, product.name);
-          console.log(`Images:`, product.images);
-          if (product.images && product.images.length > 0) {
-            console.log(`First image:`, product.images[0]);
-          }
-        });
         setProducts(response.data.products);
       } else {
         toast.error('Failed to fetch products');
