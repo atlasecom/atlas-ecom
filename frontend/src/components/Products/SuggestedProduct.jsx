@@ -14,10 +14,6 @@ const SuggestedProduct = ({ data }) => {
     const [products, setProducts] = useState([])
     const { allProducts } = useSelector((state) => state.products);
     const [productData, setProductData] = useState();
-    
-    // Debug logging
-    console.log("SuggestedProduct - Current language:", i18n.language);
-    console.log("SuggestedProduct - Translation result:", t('product.relatedProducts'));
 
     // Product is filter when the category is same as the current product when page is loaded
     useEffect(() => {

@@ -783,6 +783,8 @@
     "outOfStock": "غير متوفر",
     "lowStock": "فقط {{count}} قطع متبقية!",
     "seller": "البائع",
+    "noReviews": "لا توجد تقييمات لهذا المنتج!",
+    "beFirstToReview": "كن أول من يقيم هذا المنتج!",
     "verified": "موثق",
     "aboutSeller": "عن البائع",
     "noDescriptionProvided": "لم يتم تقديم وصف.",
@@ -1236,18 +1238,6 @@
   "wishlist": {
     "empty": "قائمة أمنياتك فارغة!",
     "remove": "إزالة من المفضلة"
-  },
-  "reviews": {
-    "writeReview": "كتابة تقييم",
-    "rating": "التقييم",
-    "comment": "التعليق",
-    "commentPlaceholder": "شارك تجربتك مع هذا المنتج...",
-    "submitting": "جاري الإرسال...",
-    "submitReview": "إرسال التقييم"
-  },
-  "product": {
-    "noReviews": "لا توجد تقييمات لهذا المنتج!",
-    "beFirstToReview": "كن أول من يقيم هذا المنتج!"
   },
   "eventCard": {
     "quickView": "عرض سريع",

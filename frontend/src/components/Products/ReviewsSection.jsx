@@ -10,13 +10,9 @@ import Avatar from "../Common/Avatar";
 import styles from "../../styles/styles";
 
 const ReviewsSection = ({ data, isEvent }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.user);
-  
-  // Debug logging
-  console.log("ReviewsSection - Current language:", i18n.language);
-  console.log("ReviewsSection - Translation result:", t("reviews.customerReviews", "Customer Reviews"));
   
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [rating, setRating] = useState(1);
