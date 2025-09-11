@@ -424,6 +424,8 @@
     "chatTelegram": "Chat on Telegram",
     "removeFromWishlist": "Remove from wishlist",
     "addToWishlist": "Add to wishlist",
+    "addToFavorites": "Add to Favorites",
+    "removeFromFavorites": "Remove from Favorites",
     "addToCart": "Add to cart",
     "quickView": "Quick view",
     "viewShop": "View Shop",
