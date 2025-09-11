@@ -117,6 +117,8 @@
     "productsFound": "تم العثور على {{count}} منتج",
     "productsFoundSingular": "تم العثور على {{count}} منتج",
     "productsFoundPlural": "تم العثور على {{count}} منتج",
+    "productsFoundSingular": "تم العثور على {{count}} منتج",
+    "productsFoundPlural": "تم العثور على {{count}} منتج",
     "searchFilter": "البحث: \"{{term}}\"",
     "sellerFilter": "البائع: {{name}}",
     "categoryFilter": "الفئة: {{category}}",

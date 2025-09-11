@@ -328,10 +328,9 @@ const ProductsPage = () => {
                   {loading ? (
                     t("productsPage.loadingProducts", "Loading products...")
                   ) : (
-                    t("productsPage.productsFound", "{{count}} Product{{plural}} Found", { 
-                      count: filteredProducts.length, 
-                      plural: filteredProducts.length !== 1 ? 's' : '' 
-                    })
+                    filteredProducts.length === 1 
+                      ? t("productsPage.productsFoundSingular", "{{count}} Product Found", { count: filteredProducts.length })
+                      : t("productsPage.productsFoundPlural", "{{count}} Products Found", { count: filteredProducts.length })
                   )}
                 </h3>
                 {(searchTerm || selectedSeller || selectedCategory || minPrice || maxPrice) && (
