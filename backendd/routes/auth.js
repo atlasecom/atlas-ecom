@@ -671,19 +671,24 @@ router.put('/change-password', protect, [
 // @access  Public
 router.get('/google/callback', passport.authenticate('google', { session: false }), async (req, res) => {
   try {
-    console.log('Google OAuth callback received');
-    console.log('User:', req.user ? 'Found' : 'Not found');
+    console.log('🔍 Google OAuth callback received');
+    console.log('🔍 User:', req.user ? 'Found' : 'Not found');
+    console.log('🔍 FRONTEND_URL:', process.env.FRONTEND_URL);
     
     const user = req.user;
     
     if (!user) {
-      console.error('No user found in OAuth callback');
+      console.error('❌ No user found in OAuth callback');
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      console.log('❌ Redirecting to login with error:', `${frontendUrl}/login?error=oauth_failed`);
       return res.redirect(`${frontendUrl}/login?error=oauth_failed`);
     }
     
+    console.log('✅ User found:', user.email);
+    
     // Generate JWT token
     const token = user.getJwtToken();
+    console.log('✅ JWT token generated');
     
     // Remove password from response
     user.password = undefined;
@@ -695,17 +700,20 @@ router.get('/google/callback', passport.authenticate('google', { session: false 
     // Populate shop if user is a seller
     if (user.role === 'seller' && user.shop) {
       await user.populate('shop');
+      console.log('✅ Shop populated for seller');
     }
     
     // Redirect to frontend OAuth callback route with token
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     const redirectUrl = `${frontendUrl}/oauth-callback?token=${token}&user=${encodeURIComponent(JSON.stringify(userResponse))}`;
     
-    console.log('Redirecting to:', redirectUrl);
+    console.log('🚀 Redirecting to:', redirectUrl);
+    console.log('🚀 Frontend URL:', frontendUrl);
     res.redirect(redirectUrl);
   } catch (error) {
-    console.error('Google OAuth callback error:', error);
+    console.error('❌ Google OAuth callback error:', error);
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    console.log('❌ Redirecting to error page:', `${frontendUrl}/oauth-callback?error=oauth_failed`);
     res.redirect(`${frontendUrl}/oauth-callback?error=oauth_failed`);
   }
 });
