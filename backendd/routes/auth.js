@@ -14,6 +14,23 @@ const router = express.Router();
 
 // Cloudinary upload is configured in ../config/cloudinary.js
 
+// @desc    Test Google OAuth configuration
+// @route   GET /auth/google/test
+// @access  Public
+router.get('/google/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Google OAuth Configuration Test',
+    config: {
+      clientId: process.env.GOOGLE_CLIENT_ID ? 'Set' : 'Not set',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ? 'Set' : 'Not set',
+      callbackUrl: process.env.GOOGLE_CALLBACK_URL,
+      frontendUrl: process.env.FRONTEND_URL,
+      environment: process.env.NODE_ENV
+    }
+  });
+});
+
 // @desc    Google OAuth routes - MUST BE BEFORE /:id route to avoid conflicts
 // @route   GET /auth/google
 // @access  Public
