@@ -88,7 +88,7 @@ const EventsPage = () => {
             <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 text-center">
               <div className="max-w-4xl mx-auto">
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-                  {t('eventsPage.title', 'Discover Amazing Events')}
+                  {t('eventsPage.title', 'Discover Amazing Events')} - {i18n.language}
                 </h1>
                 
                 {/* Compact Stats */}
@@ -246,7 +246,7 @@ const EventsPage = () => {
 {t("eventsPage.eventsFound", "{{count}} Event{{plural}} Found", { 
                 count: filteredEvents.length, 
                 plural: filteredEvents.length !== 1 ? 's' : '' 
-              })}
+              })} - {i18n.language}
             </h3>
             {(searchTerm || selectedCategory || selectedLocation || minPrice || maxPrice) && (
               <div className="flex items-center gap-2">
