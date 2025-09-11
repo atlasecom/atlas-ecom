@@ -167,13 +167,13 @@ const AllEvents = () => {
   return (
     <div className="w-full p-4">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">{t("allEvents.title", "All Events")} - {i18n.language}</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t("allEvents.title", "All Events")}</h1>
         <Link
           to="/dashboard-create-event"
           className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center"
         >
           <FiPlus className="mr-2" size={16} />
-{t("allEvents.addNewEvent", "Add New Event")} - {i18n.language}
+{t("allEvents.addNewEvent", "Add New Event")}
         </Link>
       </div>
 

@@ -244,15 +244,6 @@
     "preview": "معاينة",
     "delete": "حذف"
   },
-  "allEvents": {
-    "title": "جميع الأحداث",
-    "addNewEvent": "إضافة حدث جديد",
-    "noEventsFound": "لم يتم العثور على أحداث",
-    "startCreating": "ابدأ بإنشاء حدثك الأول",
-    "createEvent": "إنشاء حدث",
-    "preview": "معاينة",
-    "delete": "حذف"
-  },
   "createProduct": {
     "name": "اسم المنتج",
     "category": "الفئة",
@@ -697,6 +688,10 @@
   },
   "allEvents": {
     "title": "جميع الأحداث",
+    "addNewEvent": "إضافة حدث جديد",
+    "noEventsFound": "لم يتم العثور على أحداث",
+    "startCreating": "ابدأ بإنشاء حدثك الأول",
+    "createEvent": "إنشاء حدث",
     "image": "الصورة",
     "name": "الاسم",
     "price": "السعر",
