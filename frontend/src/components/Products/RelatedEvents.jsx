@@ -11,6 +11,11 @@ const RelatedEvents = ({ data, isEvent = false }) => {
     const [relatedData, setRelatedData] = useState([]);
     const { allEvents } = useSelector((state) => state.events);
     const { allProducts } = useSelector((state) => state.products);
+    
+    // Debug logging
+    console.log("RelatedEvents - Current language:", i18n.language);
+    console.log("RelatedEvents - Translation result:", t('product.relatedProducts', 'Related Products'));
+    console.log("RelatedEvents - Translation result:", t('product.relatedEvents', 'Related Events'));
 
     // Filter related items by the same category as the current item
     useEffect(() => {
