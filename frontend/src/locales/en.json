@@ -622,7 +622,8 @@
     "shopReviews": "Shop Reviews",
     "noEvents": "No Events for your shop!",
     "noReviews": "No Reviews for your shop!",
-    "loadingShopData": "Loading your shop data..."
+    "loadingShopData": "Loading your shop data...",
+    "contactInfo": "Contact Information"
   },
   "shopSettings": {
     "shopName": "Shop Name",
@@ -638,7 +639,10 @@
     "avatarUpdated": "Banner updated successfully!",
     "avatarUpdateError": "Failed to update banner",
     "shopInfoUpdated": "Shop info updated successfully!",
-    "updateError": "Failed to update shop info"
+    "updateError": "Failed to update shop info",
+    "profileSettings": "Profile Settings",
+    "profilePhoto": "Profile Photo",
+    "shopInformation": "Shop Information"
   },
   "allProducts": {
     "title": "All Products",

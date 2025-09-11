@@ -614,7 +614,8 @@
     "shopReviews": "Avis de la boutique",
     "noEvents": "Aucun événement pour votre boutique !",
     "noReviews": "Aucun avis pour votre boutique !",
-    "loadingShopData": "Chargement des données de votre boutique..."
+    "loadingShopData": "Chargement des données de votre boutique...",
+    "contactInfo": "Informations de contact"
   },
   "shopSettings": {
     "shopName": "Nom de la boutique",
@@ -630,7 +631,10 @@
     "avatarUpdated": "Bannière mise à jour avec succès !",
     "avatarUpdateError": "Échec de la mise à jour de la bannière",
     "shopInfoUpdated": "Informations de la boutique mises à jour avec succès !",
-    "updateError": "Échec de la mise à jour des informations de la boutique"
+    "updateError": "Échec de la mise à jour des informations de la boutique",
+    "profileSettings": "Paramètres du profil",
+    "profilePhoto": "Photo de profil",
+    "shopInformation": "Informations de la boutique"
   },
   "allProducts": {
     "title": "Tous les produits",

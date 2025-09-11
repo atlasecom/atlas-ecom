@@ -171,17 +171,17 @@ const ShopSettings = () => {
                 <div className="max-w-4xl mx-auto px-2 sm:px-0">
                     {/* User Profile Section */}
                     <div className="text-center">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6">Profile Settings</h2>
+                        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("shopSettings.profileSettings", "Profile Settings")}</h2>
                         
                         {/* Profile Photo Section */}
                         <div className="mb-6">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Profile Photo</h3>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">{t("shopSettings.profilePhoto", "Profile Photo")}</h3>
                             <div className="flex flex-col items-center space-y-4">
                                 <div className="relative">
                                     {avatarPreview ? (
                                         <img
                                             src={avatarPreview}
-                                            alt="Profile Preview"
+                                            alt={t("shopSettings.profilePhoto", "Profile Photo")}
                                             className="w-32 h-32 border-4 border-white shadow-lg rounded-full object-cover"
                                         />
                                     ) : uploadedAvatarUrl ? (
@@ -198,7 +198,7 @@ const ShopSettings = () => {
                                                     return `${server.replace(/\/$/, "")}${uploadedAvatarUrl}?v=${Date.now()}`;
                                                 }
                                             })()}
-                                            alt="Profile Photo"
+                                            alt={t("shopSettings.profilePhoto", "Profile Photo")}
                                             className="w-32 h-32 border-4 border-white shadow-lg rounded-full object-cover"
                                             onError={(e) => {
                                                 console.error('Failed to load uploaded avatar:', e.target.src);
@@ -243,7 +243,7 @@ const ShopSettings = () => {
                 
                 {/* Shop Information Section */}
                 <div className="w-full mt-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Shop Information</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">{t("shopSettings.shopInformation", "Shop Information")}</h2>
                 </div>
 
                 {/* shop info */}

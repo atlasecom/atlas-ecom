@@ -614,7 +614,8 @@
     "shopReviews": "تقييمات المتجر",
     "noEvents": "لا توجد أحداث لمتجرك!",
     "noReviews": "لا توجد تقييمات لمتجرك!",
-    "loadingShopData": "جاري تحميل بيانات متجرك..."
+    "loadingShopData": "جاري تحميل بيانات متجرك...",
+    "contactInfo": "معلومات الاتصال"
   },
   "shopSettings": {
     "shopName": "اسم المتجر",
@@ -630,7 +631,10 @@
     "avatarUpdated": "تم تحديث البانر بنجاح!",
     "avatarUpdateError": "فشل في تحديث البانر",
     "shopInfoUpdated": "تم تحديث معلومات المتجر بنجاح!",
-    "updateError": "فشل في تحديث معلومات المتجر"
+    "updateError": "فشل في تحديث معلومات المتجر",
+    "profileSettings": "إعدادات الملف الشخصي",
+    "profilePhoto": "صورة الملف الشخصي",
+    "shopInformation": "معلومات المتجر"
   },
   "allProducts": {
     "title": "جميع المنتجات",
