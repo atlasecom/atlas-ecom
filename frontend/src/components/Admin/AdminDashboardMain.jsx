@@ -9,8 +9,10 @@ import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
 import Loader from "../Layout/Loader";
+import { useTranslation } from "react-i18next";
 
 const AdminDashboardMain = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -93,8 +95,8 @@ const AdminDashboardMain = () => {
             <FiMenu className="text-blue-600" size={16} />
           </div>
           <div>
-            <p className="text-sm font-medium text-blue-900">Mobile Navigation</p>
-            <p className="text-xs text-blue-700">Use the blue menu button in the header to navigate</p>
+            <p className="text-sm font-medium text-blue-900">{t("admin.dashboard.mobileNavigation", "Mobile Navigation")}</p>
+            <p className="text-xs text-blue-700">{t("admin.dashboard.useBlueMenuButton", "Use the blue menu button in the header to navigate")}</p>
           </div>
         </div>
       </div>
@@ -105,18 +107,18 @@ const AdminDashboardMain = () => {
           <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <span className="text-purple-600 text-2xl">🎯</span>
           </div>
-          <h2 className="text-lg font-bold text-purple-900 mb-2">Welcome to Admin Dashboard</h2>
-          <p className="text-sm text-purple-700">Manage your platform from anywhere with this mobile-optimized interface</p>
+          <h2 className="text-lg font-bold text-purple-900 mb-2">{t("admin.dashboard.welcomeToAdminDashboard", "Welcome to Admin Dashboard")}</h2>
+          <p className="text-sm text-purple-700">{t("admin.dashboard.managePlatformFromAnywhere", "Manage your platform from anywhere with this mobile-optimized interface")}</p>
         </div>
       </div>
 
       {/* Header */}
       <div className="mb-6 lg:mb-8">
         <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-          Admin Dashboard
+          {t("admin.dashboard.title", "Admin Dashboard")}
         </h1>
         <p className="text-xs sm:text-sm lg:text-base text-gray-600">
-          Overview of platform statistics and management tools
+          {t("admin.dashboard.subtitle", "Overview of platform statistics and management tools")}
         </p>
       </div>
 
@@ -129,8 +131,8 @@ const AdminDashboardMain = () => {
               <span className="text-blue-600 text-lg">📱</span>
             </div>
             <div>
-              <p className="text-sm font-medium text-blue-900">Mobile Dashboard</p>
-              <p className="text-xs text-blue-700">Swipe to see all statistics</p>
+              <p className="text-sm font-medium text-blue-900">{t("admin.dashboard.mobileDashboard", "Mobile Dashboard")}</p>
+              <p className="text-xs text-blue-700">{t("admin.dashboard.swipeToSeeAll", "Swipe to see all statistics")}</p>
             </div>
           </div>
         </div>
@@ -139,12 +141,12 @@ const AdminDashboardMain = () => {
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">
-                Total Users
+                {t("admin.dashboard.totalUsers", "Total Users")}
               </p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600">{stats.totalUsers}</p>
               <div className="flex items-center mt-1 sm:mt-2">
                 <FiTrendingUp className="text-blue-500 mr-1 text-xs sm:text-sm" />
-                <span className="text-xs lg:text-sm text-blue-600 truncate">All registered users</span>
+                <span className="text-xs lg:text-sm text-blue-600 truncate">{t("admin.dashboard.allRegisteredUsers", "All registered users")}</span>
               </div>
             </div>
             <div className="bg-blue-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
@@ -158,12 +160,12 @@ const AdminDashboardMain = () => {
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">
-                Total Sellers
+                {t("admin.dashboard.totalSellers", "Total Sellers")}
               </p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-600">{stats.totalSellers}</p>
               <div className="flex items-center mt-1 sm:mt-2">
                 <GrWorkshop className="text-purple-500 mr-1 text-xs sm:text-sm" />
-                <span className="text-xs lg:text-sm text-purple-600 truncate">Shop owners</span>
+                <span className="text-xs lg:text-sm text-purple-600 truncate">{t("admin.dashboard.shopOwners", "Shop owners")}</span>
               </div>
             </div>
             <div className="bg-purple-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
@@ -177,12 +179,12 @@ const AdminDashboardMain = () => {
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">
-                Total Products
+                {t("admin.dashboard.totalProducts", "Total Products")}
               </p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">{stats.totalProducts}</p>
               <div className="flex items-center mt-1 sm:mt-2">
                 <FiTrendingUp className="text-green-500 mr-1 text-xs sm:text-sm" />
-                <span className="text-xs lg:text-sm text-green-600 truncate">Available items</span>
+                <span className="text-xs lg:text-sm text-green-600 truncate">{t("admin.dashboard.availableItems", "Available items")}</span>
               </div>
             </div>
             <div className="bg-green-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
@@ -196,12 +198,12 @@ const AdminDashboardMain = () => {
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">
-                Total Orders
+                {t("admin.dashboard.totalOrders", "Total Orders")}
               </p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-indigo-600">{stats.totalOrders}</p>
               <div className="flex items-center mt-1 sm:mt-2">
                 <FiTrendingUp className="text-indigo-500 mr-1 text-xs sm:text-sm" />
-                <span className="text-xs lg:text-sm text-indigo-600 truncate">Customer orders</span>
+                <span className="text-xs lg:text-sm text-indigo-600 truncate">{t("admin.dashboard.customerOrders", "Customer orders")}</span>
               </div>
             </div>
             <div className="bg-indigo-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
@@ -215,12 +217,12 @@ const AdminDashboardMain = () => {
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">
-                Approved Sellers
+                {t("admin.dashboard.approvedSellers", "Approved Sellers")}
               </p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">{stats.approvedSellers}</p>
               <div className="flex items-center mt-1 sm:mt-2">
                 <FiTrendingUp className="text-green-500 mr-1 text-xs sm:text-sm" />
-                <span className="text-xs lg:text-sm text-green-600 truncate">Active and verified</span>
+                <span className="text-xs lg:text-sm text-green-600 truncate">{t("admin.dashboard.activeAndVerified", "Active and verified")}</span>
               </div>
             </div>
             <div className="bg-green-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
@@ -234,12 +236,12 @@ const AdminDashboardMain = () => {
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">
-                Pending Approvals
+                {t("admin.dashboard.pendingApprovals", "Pending Approvals")}
               </p>
               <p className="text-lg sm:text-xl lg:text-2xl font-bold text-orange-600">{stats.pendingSellers}</p>
               <div className="flex items-center mt-1 sm:mt-2">
                 <FiClock className="text-orange-500 mr-1 text-xs sm:text-sm" />
-                <span className="text-xs lg:text-sm text-orange-600 truncate">Requires attention</span>
+                <span className="text-xs lg:text-sm text-orange-600 truncate">{t("admin.dashboard.requiresAttention", "Requires attention")}</span>
               </div>
             </div>
             <div className="bg-orange-100 p-2 lg:p-3 rounded-full flex-shrink-0 ml-2">
@@ -251,7 +253,7 @@ const AdminDashboardMain = () => {
 
       {/* Mobile Quick Actions */}
       <div className="lg:hidden mb-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4 text-center">Quick Actions</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-4 text-center">{t("admin.dashboard.quickActions", "Quick Actions")}</h3>
         <div className="grid grid-cols-2 gap-3">
           <Link
             to="/admin-users"
@@ -260,7 +262,7 @@ const AdminDashboardMain = () => {
             <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
               <FiUser className="text-blue-600 text-xl" />
             </div>
-            <p className="text-sm font-medium text-blue-900">Users</p>
+            <p className="text-sm font-medium text-blue-900">{t("admin.dashboard.users", "Users")}</p>
           </Link>
           <Link
             to="/admin-sellers"
@@ -269,7 +271,7 @@ const AdminDashboardMain = () => {
             <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
               <GrWorkshop className="text-purple-600 text-xl" />
             </div>
-            <p className="text-sm font-medium text-purple-900">Sellers</p>
+            <p className="text-sm font-medium text-purple-900">{t("admin.dashboard.sellers", "Sellers")}</p>
           </Link>
         </div>
       </div>
@@ -279,25 +281,25 @@ const AdminDashboardMain = () => {
         {/* User Management */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900">User Management</h3>
+            <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900">{t("admin.dashboard.userManagement", "User Management")}</h3>
             <FiUser className="text-blue-600 text-base sm:text-lg lg:text-xl" />
           </div>
           <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-3 sm:mb-4">
-            Manage user accounts, permissions, and monitor user activity across the platform.
+            {t("admin.dashboard.manageUserAccounts", "Manage user accounts, permissions, and monitor user activity across the platform.")}
           </p>
           <div className="space-y-2 sm:space-y-3">
             <Link
               to="/admin-users"
               className="flex items-center justify-between p-2 sm:p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
             >
-              <span className="text-blue-700 font-medium text-xs sm:text-sm lg:text-base">View All Users</span>
+              <span className="text-blue-700 font-medium text-xs sm:text-sm lg:text-base">{t("admin.dashboard.viewAllUsers", "View All Users")}</span>
               <FiArrowRight className="text-blue-600 text-sm sm:text-base" />
             </Link>
             <Link
               to="/admin-sellers"
               className="flex items-center justify-between p-2 sm:p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
             >
-              <span className="text-purple-700 font-medium text-xs sm:text-sm lg:text-base">Manage Sellers</span>
+              <span className="text-purple-700 font-medium text-xs sm:text-sm lg:text-base">{t("admin.dashboard.manageSellers", "Manage Sellers")}</span>
               <FiArrowRight className="text-purple-600 text-sm sm:text-base" />
             </Link>
           </div>
@@ -306,25 +308,25 @@ const AdminDashboardMain = () => {
         {/* Content Management */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900">Content Management</h3>
+            <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900">{t("admin.dashboard.contentManagement", "Content Management")}</h3>
             <FiPackage className="text-green-600 text-base sm:text-lg lg:text-xl" />
           </div>
           <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-3 sm:mb-4">
-            Monitor products, events, and manage content quality across all shops.
+            {t("admin.dashboard.monitorProductsEvents", "Monitor products, events, and manage content quality across all shops.")}
           </p>
           <div className="space-y-2 sm:space-y-3">
             <Link
               to="/admin-products"
               className="flex items-center justify-between p-2 sm:p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
             >
-              <span className="text-green-700 font-medium text-xs sm:text-sm lg:text-base">View All Products</span>
+              <span className="text-green-700 font-medium text-xs sm:text-sm lg:text-base">{t("admin.dashboard.viewAllProducts", "View All Products")}</span>
               <FiArrowRight className="text-green-600 text-sm sm:text-base" />
             </Link>
             <Link
               to="/admin-events"
               className="flex items-center justify-between p-2 sm:p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors"
             >
-              <span className="text-orange-700 font-medium text-xs sm:text-sm lg:text-base">Manage Events</span>
+              <span className="text-orange-700 font-medium text-xs sm:text-sm lg:text-base">{t("admin.dashboard.manageEvents", "Manage Events")}</span>
               <FiArrowRight className="text-orange-600 text-sm sm:text-base" />
             </Link>
           </div>
