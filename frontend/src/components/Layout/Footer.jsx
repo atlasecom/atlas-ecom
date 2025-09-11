@@ -25,20 +25,18 @@ const Footer = () => {
                     <div className="md:flex md:justify-between md:items-center">
                         <div className="md:mb-0 mb-6 md:w-2/5">
                             <h1 className="lg:text-4xl text-3xl font-bold leading-tight">
-                                <span className="text-orange-200">Subscribe</span> to get news,{" "}
-                                <br />
-                                events and exclusive offers
+                                <span className="text-orange-200">{t("footer.newsletter.title", "Subscribe to get news, events and exclusive offers")}</span>
                             </h1>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-4">
                             <input
                                 type="email"
                                 required
-                                placeholder="Enter your email..."
+                                placeholder={t("footer.newsletter.emailPlaceholder", "Enter your email...")}
                                 className="px-6 py-4 rounded-xl text-slate-800 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 transition-all duration-300 flex-1 min-w-0"
                             />
                             <button className="bg-white text-orange-600 hover:bg-orange-50 duration-300 px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                Subscribe
+{t("footer.newsletter.subscribe", "Subscribe")}
                             </button>
                         </div>
                     </div>

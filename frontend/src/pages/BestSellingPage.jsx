@@ -114,17 +114,17 @@ const BestSellingPage = () => {
                 <div className="flex flex-wrap justify-center gap-3 sm:gap-4 lg:gap-6">
                   <div className="text-center px-2">
                     <div className="text-lg sm:text-xl font-bold text-white">{filteredData?.length || 0}</div>
-                    <div className="text-orange-200 text-xs font-medium">Best Sellers</div>
+                    <div className="text-orange-200 text-xs font-medium">{t("bestSellingPage.bestSellers", "Best Sellers")}</div>
                   </div>
                   <div className="text-center px-2">
                     <div className="text-lg sm:text-xl font-bold text-white">
                       {data.length > 0 ? data[0]?.sold_out || 0 : 0}
                     </div>
-                    <div className="text-orange-200 text-xs font-medium">Top Seller Units</div>
+                    <div className="text-orange-200 text-xs font-medium">{t("bestSellingPage.topSellerUnits", "Top Seller Units")}</div>
                   </div>
                   <div className="text-center px-2">
                     <div className="text-lg sm:text-xl font-bold text-white">{categories?.length || 0}</div>
-                    <div className="text-orange-200 text-xs font-medium">Categories</div>
+                    <div className="text-orange-200 text-xs font-medium">{t("bestSellingPage.categories", "Categories")}</div>
                   </div>
                 </div>
               </div>

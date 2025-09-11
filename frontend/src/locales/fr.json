@@ -108,6 +108,12 @@
     "categories": "Catégories",
     "locations": "Lieux"
   },
+  "bestSellingPage": {
+    "title": "Produits les plus vendus",
+    "bestSellers": "Meilleurs vendeurs",
+    "topSellerUnits": "Unités du meilleur vendeur",
+    "categories": "Catégories"
+  },
   "allProducts": {
     "title": "Tous les produits",
     "addNewProduct": "Ajouter un nouveau produit",
@@ -218,6 +224,8 @@
     "getStarted": "Commencer",
     "goDashboard": "Aller au tableau de bord",
     "becomeSeller": "Devenir vendeur",
+    "deliveryMorocco": "Livraison dans tout le Maroc",
+    "customerSupport": "Support client 24/7",
     "language": "Langue",
     "searchBar": {
       "placeholder": "Rechercher des produits..."
@@ -242,7 +250,13 @@
     "shop": "Boutique",
     "support": "Support",
     "copyright": "© 2025 AtlasEcom. Tous droits réservés.",
-    "terms": "Conditions · Politique de confidentialité"
+    "terms": "Conditions · Politique de confidentialité",
+    "newsletter": {
+      "title": "Abonnez-vous pour recevoir des actualités, événements et offres exclusives",
+      "subscribe": "S'abonner",
+      "emailPlaceholder": "Entrez votre adresse e-mail"
+    },
+    "categories": "Catégories"
   },
   "shopLogin": {
     "title": "Connectez-vous à votre boutique",

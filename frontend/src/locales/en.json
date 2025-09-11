@@ -108,6 +108,12 @@
     "categories": "Categories",
     "locations": "Locations"
   },
+  "bestSellingPage": {
+    "title": "Best Selling Products",
+    "bestSellers": "Best Sellers",
+    "topSellerUnits": "Top Seller Units",
+    "categories": "Categories"
+  },
   "allProducts": {
     "title": "All Products",
     "addNewProduct": "Add New Product",
@@ -218,6 +224,8 @@
     "getStarted": "Get Started",
     "goDashboard": "Go Dashboard",
     "becomeSeller": "Become a Seller",
+    "deliveryMorocco": "Delivery throughout Morocco",
+    "customerSupport": "24/7 Customer Support",
     "language": "Language",
     "searchBar": {
       "placeholder": "Search for products..."
@@ -242,7 +250,13 @@
     "shop": "Shop",
     "support": "Support",
     "copyright": "© 2025 AtlasEcom. All rights reserved.",
-    "terms": "Terms · Privacy Policy"
+    "terms": "Terms · Privacy Policy",
+    "newsletter": {
+      "title": "Subscribe to get news, events and exclusive offers",
+      "subscribe": "Subscribe",
+      "emailPlaceholder": "Enter your email address"
+    },
+    "categories": "Categories"
   },
   "shopLogin": {
     "title": "Login to your Shop",

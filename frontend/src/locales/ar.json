@@ -108,6 +108,12 @@
     "categories": "الفئات",
     "locations": "المواقع"
   },
+  "bestSellingPage": {
+    "title": "المنتجات الأكثر مبيعاً",
+    "bestSellers": "الأكثر مبيعاً",
+    "topSellerUnits": "وحدات أفضل بائع",
+    "categories": "الفئات"
+  },
   "allProducts": {
     "title": "جميع المنتجات",
     "addNewProduct": "إضافة منتج جديد",
@@ -204,6 +210,8 @@
     "getStarted": "ابدأ الآن",
     "goDashboard": "اذهب إلى لوحة التحكم",
     "becomeSeller": "أصبح بائعًا",
+    "deliveryMorocco": "التوصيل في جميع أنحاء المغرب",
+    "customerSupport": "دعم العملاء 24/7",
     "language": "اللغة",
     "searchBar": {
       "placeholder": "البحث عن المنتجات..."
@@ -228,7 +236,13 @@
     "shop": "المتجر",
     "support": "الدعم",
     "copyright": "© 2025 أطلس إيكوم. جميع الحقوق محفوظة.",
-    "terms": "الشروط · سياسة الخصوصية"
+    "terms": "الشروط · سياسة الخصوصية",
+    "newsletter": {
+      "title": "اشترك للحصول على الأخبار والأحداث والعروض الحصرية",
+      "subscribe": "اشتراك",
+      "emailPlaceholder": "أدخل عنوان بريدك الإلكتروني"
+    },
+    "categories": "الفئات"
   },
   "shopLogin": {
     "title": "تسجيل الدخول إلى متجرك",
