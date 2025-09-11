@@ -12,20 +12,20 @@ const Features = () => {
   const features = [
     {
       icon: FiTruck,
-      title: t('features.delivery.title', 'Livraison'),
-      subtitle: t('features.delivery.subtitle', 'Partout au Maroc'),
+      title: t('features.delivery.title', 'Delivery'),
+      subtitle: t('features.delivery.subtitle', 'Everywhere in Morocco'),
       color: 'text-orange-600'
     },
     {
       icon: FiGift,
-      title: t('features.offers.title', 'Offres Surprise Quotidiennes'),
-      subtitle: t('features.offers.subtitle', 'Économisez jusqu\'à 25%'),
+      title: t('features.offers.title', 'Daily Surprise Offers'),
+      subtitle: t('features.offers.subtitle', 'Save up to 25%'),
       color: 'text-orange-600'
     },
     {
       icon: FiAward,
-      title: t('features.prices.title', 'Prix Abordables'),
-      subtitle: t('features.prices.subtitle', 'Obtenez le prix direct d\'usine'),
+      title: t('features.prices.title', 'Affordable Prices'),
+      subtitle: t('features.prices.subtitle', 'Get direct factory price'),
       color: 'text-orange-600'
     }
   ];
