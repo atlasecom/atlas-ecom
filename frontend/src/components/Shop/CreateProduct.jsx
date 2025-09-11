@@ -319,7 +319,7 @@ const CreateProduct = () => {
                                         {minPrice && maxPrice && (
                                             <div className="mt-4 p-3 bg-white rounded-lg border border-orange-200">
                                                 <p className="text-sm text-orange-800 font-medium">
-                                                    Price Range: {minPrice} DH - {maxPrice} DH
+                                                    {t("createProduct.priceRange", "Price Range")}: {minPrice} DH - {maxPrice} DH
                                                 </p>
                                             </div>
                                         )}
@@ -329,7 +329,7 @@ const CreateProduct = () => {
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <label className="text-sm font-semibold text-gray-700">
-                                                Stock Quantity <span className="text-red-500">*</span>
+                                                {t("createProduct.stockQuantity", "Stock Quantity")} <span className="text-red-500">*</span>
                                             </label>
                                             <input
                                                 type="number"
@@ -345,7 +345,7 @@ const CreateProduct = () => {
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-sm font-semibold text-gray-700">
-                                                Min. Order Qty <span className="text-red-500">*</span>
+                                                {t("createProduct.minOrderQty", "Min. Order Qty")} <span className="text-red-500">*</span>
                                             </label>
                                             <input
                                                 type="number"

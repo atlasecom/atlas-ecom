@@ -680,7 +680,13 @@
     "uploadImages": "Upload Images",
     "create": "Create",
     "productCreated": "Product created successfully!",
-    "required": "*"
+    "required": "*",
+    "pricingRange": "Pricing Range",
+    "minPrice": "Minimum Price (DH)",
+    "maxPrice": "Maximum Price (DH)",
+    "stockQuantity": "Stock Quantity",
+    "minOrderQty": "Min. Order Qty",
+    "priceRange": "Price Range"
   },
   "dashboardHero": {
     "overview": "Overview",

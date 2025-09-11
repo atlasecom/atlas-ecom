@@ -672,7 +672,13 @@
     "uploadImages": "رفع الصور",
     "create": "إنشاء",
     "productCreated": "تم إنشاء المنتج بنجاح!",
-    "required": "*"
+    "required": "*",
+    "pricingRange": "نطاق الأسعار",
+    "minPrice": "الحد الأدنى للسعر (درهم)",
+    "maxPrice": "الحد الأقصى للسعر (درهم)",
+    "stockQuantity": "كمية المخزون",
+    "minOrderQty": "الحد الأدنى للطلب",
+    "priceRange": "نطاق السعر"
   },
   "dashboardHero": {
     "overview": "نظرة عامة",

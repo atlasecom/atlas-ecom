@@ -672,7 +672,13 @@
     "uploadImages": "Télécharger des images",
     "create": "Créer",
     "productCreated": "Produit créé avec succès !",
-    "required": "*"
+    "required": "*",
+    "pricingRange": "Gamme de prix",
+    "minPrice": "Prix minimum (DH)",
+    "maxPrice": "Prix maximum (DH)",
+    "stockQuantity": "Quantité en stock",
+    "minOrderQty": "Qté min. commande",
+    "priceRange": "Gamme de prix"
   },
   "dashboardHero": {
     "overview": "Aperçu",
