@@ -235,15 +235,6 @@
     "filterOptions": "خيارات التصفية",
     "allCategories": "جميع الفئات"
   },
-  "allProducts": {
-    "title": "جميع المنتجات",
-    "addNewProduct": "إضافة منتج جديد",
-    "noProductsFound": "لم يتم العثور على منتجات",
-    "startCreating": "ابدأ بإنشاء منتجك الأول",
-    "createProduct": "إنشاء منتج",
-    "preview": "معاينة",
-    "delete": "حذف"
-  },
   "createProduct": {
     "name": "اسم المنتج",
     "category": "الفئة",
@@ -633,6 +624,10 @@
   },
   "allProducts": {
     "title": "جميع المنتجات",
+    "addNewProduct": "إضافة منتج جديد",
+    "noProductsFound": "لم يتم العثور على منتجات",
+    "startCreating": "ابدأ بإنشاء منتجك الأول",
+    "createProduct": "إنشاء منتج",
     "image": "الصورة",
     "name": "الاسم",
     "price": "السعر",
