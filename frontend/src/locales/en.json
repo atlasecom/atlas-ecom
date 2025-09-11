@@ -240,14 +240,18 @@
     "addNewProduct": "Add New Product",
     "noProductsFound": "No Products Found",
     "startCreating": "Start by creating your first product",
-    "createProduct": "Create Product"
+    "createProduct": "Create Product",
+    "preview": "Preview",
+    "delete": "Delete"
   },
   "allEvents": {
     "title": "All Events",
     "addNewEvent": "Add New Event",
     "noEventsFound": "No Events Found",
     "startCreating": "Start by creating your first event",
-    "createEvent": "Create Event"
+    "createEvent": "Create Event",
+    "preview": "Preview",
+    "delete": "Delete"
   },
   "createProduct": {
     "name": "Product Name",
@@ -957,7 +961,13 @@
     "fillAllFields": "Please fill in all required fields",
     "charactersCount": "{{count}}/100 characters",
     "minCharacters": "Minimum 2 required",
-    "error": "Failed to create event. Please try again."
+    "error": "Failed to create event. Please try again.",
+    "eventPricingRange": "Event Pricing Range",
+    "minimumPrice": "Minimum Price (DH)",
+    "maximumPrice": "Maximum Price (DH)",
+    "stockQuantity": "Stock Quantity",
+    "minOrderQty": "Min. Order Qty",
+    "priceRange": "Price Range"
   },
   "withdraw": {
     "availableBalance": "Available Balance",

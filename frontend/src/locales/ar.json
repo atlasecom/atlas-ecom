@@ -240,14 +240,18 @@
     "addNewProduct": "إضافة منتج جديد",
     "noProductsFound": "لم يتم العثور على منتجات",
     "startCreating": "ابدأ بإنشاء منتجك الأول",
-    "createProduct": "إنشاء منتج"
+    "createProduct": "إنشاء منتج",
+    "preview": "معاينة",
+    "delete": "حذف"
   },
   "allEvents": {
     "title": "جميع الأحداث",
     "addNewEvent": "إضافة حدث جديد",
     "noEventsFound": "لم يتم العثور على أحداث",
     "startCreating": "ابدأ بإنشاء حدثك الأول",
-    "createEvent": "إنشاء حدث"
+    "createEvent": "إنشاء حدث",
+    "preview": "معاينة",
+    "delete": "حذف"
   },
   "createProduct": {
     "name": "اسم المنتج",
@@ -922,7 +926,13 @@
     "fillAllFields": "يرجى ملء جميع الحقول المطلوبة",
     "charactersCount": "{{count}}/100 حرف",
     "minCharacters": "الحد الأدنى 2 مطلوب",
-    "error": "فشل في إنشاء الفعالية. يرجى المحاولة مرة أخرى."
+    "error": "فشل في إنشاء الفعالية. يرجى المحاولة مرة أخرى.",
+    "eventPricingRange": "نطاق أسعار الفعالية",
+    "minimumPrice": "الحد الأدنى للسعر (درهم)",
+    "maximumPrice": "الحد الأقصى للسعر (درهم)",
+    "stockQuantity": "كمية المخزون",
+    "minOrderQty": "الحد الأدنى للطلب",
+    "priceRange": "نطاق السعر"
   },
   "withdraw": {
     "availableBalance": "الرصيد المتاح",

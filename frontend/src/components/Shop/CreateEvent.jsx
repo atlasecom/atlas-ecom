@@ -305,13 +305,13 @@ const CreateEvent = () => {
                   <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200">
                     <div className="flex items-center mb-4">
                       <FiDollarSign className="mr-2 text-orange-600" size={20} />
-                      <h3 className="text-lg font-semibold text-orange-800">Event Pricing Range</h3>
+                      <h3 className="text-lg font-semibold text-orange-800">{t("createEvent.eventPricingRange", "Event Pricing Range")}</h3>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-orange-800">
-                          Minimum Price (DH) <span className="text-red-500">*</span>
+                          {t("createEvent.minimumPrice", "Minimum Price (DH)")} <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="number"
@@ -326,7 +326,7 @@ const CreateEvent = () => {
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-orange-800">
-                          Maximum Price (DH) <span className="text-red-500">*</span>
+                          {t("createEvent.maximumPrice", "Maximum Price (DH)")} <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="number"
@@ -344,7 +344,7 @@ const CreateEvent = () => {
                     {minPrice && maxPrice && (
                       <div className="mt-4 p-3 bg-white rounded-lg border border-orange-200">
                         <p className="text-sm text-orange-800 font-medium">
-                          Price Range: {minPrice} DH - {maxPrice} DH
+                          {t("createEvent.priceRange", "Price Range")}: {minPrice} DH - {maxPrice} DH
                         </p>
                       </div>
                     )}
@@ -354,7 +354,7 @@ const CreateEvent = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-gray-700">
-                        Stock Quantity <span className="text-red-500">*</span>
+                        {t("createEvent.stockQuantity", "Stock Quantity")} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="number"
@@ -370,7 +370,7 @@ const CreateEvent = () => {
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-gray-700">
-                        Min. Order Qty <span className="text-red-500">*</span>
+                        {t("createEvent.minOrderQty", "Min. Order Qty")} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="number"

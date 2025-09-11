@@ -240,14 +240,18 @@
     "addNewProduct": "Ajouter un nouveau produit",
     "noProductsFound": "Aucun produit trouvé",
     "startCreating": "Commencez par créer votre premier produit",
-    "createProduct": "Créer un produit"
+    "createProduct": "Créer un produit",
+    "preview": "Aperçu",
+    "delete": "Supprimer"
   },
   "allEvents": {
     "title": "Tous les événements",
     "addNewEvent": "Ajouter un nouvel événement",
     "noEventsFound": "Aucun événement trouvé",
     "startCreating": "Commencez par créer votre premier événement",
-    "createEvent": "Créer un événement"
+    "createEvent": "Créer un événement",
+    "preview": "Aperçu",
+    "delete": "Supprimer"
   },
   "createProduct": {
     "name": "Nom du produit",
@@ -939,7 +943,13 @@
     "fillAllFields": "Veuillez remplir tous les champs obligatoires",
     "charactersCount": "{{count}}/100 caractères",
     "minCharacters": "Minimum 2 requis",
-    "error": "Échec de la création de l'événement. Veuillez réessayer."
+    "error": "Échec de la création de l'événement. Veuillez réessayer.",
+    "eventPricingRange": "Gamme de prix de l'événement",
+    "minimumPrice": "Prix minimum (DH)",
+    "maximumPrice": "Prix maximum (DH)",
+    "stockQuantity": "Quantité en stock",
+    "minOrderQty": "Qté min. commande",
+    "priceRange": "Gamme de prix"
   },
   "withdraw": {
     "availableBalance": "Solde disponible",

@@ -283,14 +283,14 @@ const AllProducts = () => {
                         className="flex-1 bg-orange-500 text-white text-sm py-2 px-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center"
                       >
                         <FiEye className="mr-1" size={14} />
-                        Preview
+                        {t("allProducts.preview", "Preview")}
                       </Link>
                       <button
                         onClick={() => handleDelete(product._id)}
                         className="flex-1 bg-red-500 text-white text-sm py-2 px-3 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center"
                       >
                         <FiTrash2 className="mr-1" size={14} />
-                        Delete
+                        {t("allProducts.delete", "Delete")}
                       </button>
                     </div>
                   </div>
