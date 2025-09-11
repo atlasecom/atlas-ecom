@@ -42,7 +42,7 @@ const BestDeals = () => {
             {t('bestDeals.title', 'Best Deals')}
           </h1>
           <p className="text-xs sm:text-sm text-gray-600 max-w-lg mx-auto">
-            Don't miss out on these amazing deals and limited-time offers
+{t('bestDeals.subtitle', 'Don\'t miss out on these amazing deals and limited-time offers')}
           </p>
         </div>
         
@@ -68,7 +68,7 @@ const BestDeals = () => {
                   {t('bestDeals.noDeals', 'No deals available')}
                 </h3>
                 <p className="text-sm xl:text-base 2xl:text-lg text-gray-600">
-                  Check back soon for amazing deals!
+{t('bestDeals.checkBackSoon', 'Check back soon for amazing deals!')}
                 </p>
               </div>
             </div>

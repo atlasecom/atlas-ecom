@@ -51,7 +51,7 @@ const FeaturedProduct = () => {
           {t('featuredProduct.title', 'Featured Products')}
         </h1>
         <p className="text-xs sm:text-sm text-gray-600 max-w-lg mx-auto">
-          Discover our handpicked selection of premium products
+{t('featuredProduct.subtitle', 'Discover our handpicked selection of premium products')}
         </p>
       </div>
 

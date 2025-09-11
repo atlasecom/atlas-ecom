@@ -382,7 +382,8 @@
     "shopCreatedSuccess": "Shop created successfully!"
   },
   "featuredProduct": {
-    "title": "Products",
+    "title": "Featured Products",
+    "subtitle": "Discover our handpicked selection of premium products",
     "noProducts": "No products available.",
     "prev": "Previous",
     "next": "Next",
@@ -392,11 +393,18 @@
     "error": "Failed to load products"
   },
   "bestDeals": {
-    "title": "Best Deals"
+    "title": "Best Deals",
+    "subtitle": "Don't miss out on these amazing deals and limited-time offers",
+    "loading": "Loading best deals...",
+    "noDeals": "No deals available",
+    "checkBackSoon": "Check back soon for amazing deals!"
   },
   "events": {
     "title": "Popular Events",
-    "noEvents": "No Events have!",
+    "subtitle": "Discover amazing events happening around you",
+    "loading": "Loading events...",
+    "noEvents": "No events available",
+    "checkBackSoon": "Check back soon for exciting events!",
     "itemAlreadyInCart": "Item already in cart!",
     "stockLimited": "Product stock limited!",
     "itemAddedToCart": "Item added to cart successfully!",

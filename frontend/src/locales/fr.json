@@ -374,7 +374,8 @@
     "shopCreatedSuccess": "Boutique créée avec succès !"
   },
   "featuredProduct": {
-    "title": "Produits",
+    "title": "Produits en vedette",
+    "subtitle": "Découvrez notre sélection soigneusement choisie de produits premium",
     "noProducts": "Aucun produit disponible.",
     "prev": "Précédent",
     "next": "Suivant",
@@ -384,11 +385,18 @@
     "error": "Échec du chargement des produits"
   },
   "bestDeals": {
-    "title": "Meilleures offres"
+    "title": "Meilleures offres",
+    "subtitle": "Ne manquez pas ces offres incroyables et promotions limitées",
+    "loading": "Chargement des meilleures offres...",
+    "noDeals": "Aucune offre disponible",
+    "checkBackSoon": "Revenez bientôt pour des offres incroyables !"
   },
   "events": {
     "title": "Événements populaires",
-    "noEvents": "Aucun événement disponible !",
+    "subtitle": "Découvrez des événements incroyables qui se déroulent autour de vous",
+    "loading": "Chargement des événements...",
+    "noEvents": "Aucun événement disponible",
+    "checkBackSoon": "Revenez bientôt pour des événements passionnants !",
     "itemAlreadyInCart": "Article déjà dans le panier !",
     "stockLimited": "Stock de produit limité !",
     "itemAddedToCart": "Article ajouté au panier avec succès !",

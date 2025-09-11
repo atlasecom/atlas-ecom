@@ -55,7 +55,7 @@ const Events = () => {
             {t('events.title', 'Popular Events')}
           </h1>
           <p className="text-xs sm:text-sm text-gray-600 max-w-lg mx-auto">
-            Discover amazing events happening around you
+{t('events.subtitle', 'Discover amazing events happening around you')}
           </p>
         </div>
 
@@ -87,7 +87,7 @@ const Events = () => {
                   {t('events.noEvents', 'No events available')}
                 </h3>
                 <p className="text-sm xl:text-base 2xl:text-lg text-gray-600">
-                  Check back soon for exciting events!
+{t('events.checkBackSoon', 'Check back soon for exciting events!')}
                 </p>
               </div>
             </div>
