@@ -7,6 +7,7 @@ import Loader from "../components/Layout/Loader";
 import { useTranslation } from "react-i18next";
 import { FiSearch, FiFilter, FiX, FiCalendar, FiMapPin, FiTag } from "react-icons/fi";
 import { AiOutlineEye } from "react-icons/ai";
+import { categoriesData } from "../static/data";
 
 const EventsPage = () => {
   const { t, i18n } = useTranslation();
@@ -26,7 +27,12 @@ const EventsPage = () => {
   const itemsPerPage = 12;
 
   // Get unique categories and locations from events
-  const categories = [...new Set(allEvents.map(event => event.category).filter(Boolean))];
+  const eventCategories = [...new Set(allEvents.map(event => event.category).filter(Boolean))];
+  const categories = categoriesData.filter(cat =>
+    eventCategories.includes(cat.title.en) ||
+    eventCategories.includes(cat.title.fr) ||
+    eventCategories.includes(cat.title.ar)
+  );
   const locations = [...new Set(allEvents.map(event => event.location).filter(Boolean))];
 
   // Filter events based on search and filters
@@ -163,7 +169,7 @@ const EventsPage = () => {
           {/* Expanded Filters */}
           {showFilters && (
             <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-200">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 sm:mb-6">Filter Options</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 sm:mb-6">{t('eventsPage.filterOptions', 'Filter Options')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {/* Category Filter */}
                 <div className="space-y-2">
@@ -178,8 +184,8 @@ const EventsPage = () => {
                   >
                     <option value="">{t('eventsPage.allCategories', 'All Categories')}</option>
                     {categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
+                      <option key={category.id} value={category.title.en}>
+                        {category.title[i18n.language] || category.title.en}
                       </option>
                     ))}
                   </select>
@@ -208,7 +214,7 @@ const EventsPage = () => {
                 {/* Min Price */}
                 <div className="space-y-2">
                   <label className="flex items-center text-sm font-semibold text-gray-700">
-                    <span className="mr-2 text-orange-500">$</span>
+                    <span className="mr-2 text-orange-500">DH</span>
                     {t('eventsPage.minPrice', 'Min Price')}
                   </label>
                   <input
@@ -223,7 +229,7 @@ const EventsPage = () => {
                 {/* Max Price */}
                 <div className="space-y-2">
                   <label className="flex items-center text-sm font-semibold text-gray-700">
-                    <span className="mr-2 text-orange-500">$</span>
+                    <span className="mr-2 text-orange-500">DH</span>
                     {t('eventsPage.maxPrice', 'Max Price')}
                   </label>
                   <input

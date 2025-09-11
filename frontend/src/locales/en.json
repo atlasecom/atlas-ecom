@@ -162,7 +162,14 @@
     "prev": "Previous",
     "next": "Next",
     "prevShort": "Prev",
-    "nextShort": "Next"
+    "nextShort": "Next",
+    "filters": "Filters",
+    "searchPlaceholder": "Search events by name, description, or category...",
+    "filterOptions": "Filter Options",
+    "category": "Category",
+    "location": "Location",
+    "allCategories": "All Categories",
+    "allLocations": "All Locations"
   },
   "sellersPage": {
     "title": "Discover Amazing Sellers",
@@ -848,9 +855,6 @@
     "activeNow": "Active Now",
     "enterMessage": "Enter your message...",
     "send": "Send"
-  },
-  "eventsPage": {
-    "noEvents": "No events available."
   },
   "orderSuccess": {
     "message": "Your order is successful 😍"

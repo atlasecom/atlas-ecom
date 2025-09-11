@@ -162,7 +162,14 @@
     "prev": "Précédent",
     "next": "Suivant",
     "prevShort": "Préc",
-    "nextShort": "Suiv"
+    "nextShort": "Suiv",
+    "filters": "Filtres",
+    "searchPlaceholder": "Rechercher des événements par nom, description ou catégorie...",
+    "filterOptions": "Options de filtrage",
+    "category": "Catégorie",
+    "location": "Lieu",
+    "allCategories": "Toutes les catégories",
+    "allLocations": "Tous les lieux"
   },
   "sellersPage": {
     "title": "Découvrez des vendeurs incroyables",
@@ -839,9 +846,6 @@
     "you": "Vous",
     "activeNow": "Actif maintenant",
     "enterMessage": "Entrez votre message..."
-  },
-  "eventsPage": {
-    "noEvents": "Aucun événement disponible."
   },
   "orderSuccess": {
     "message": "Votre commande a été réussie 😍"
