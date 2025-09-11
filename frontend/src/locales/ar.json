@@ -117,8 +117,6 @@
     "productsFound": "تم العثور على {{count}} منتج",
     "productsFoundSingular": "تم العثور على {{count}} منتج",
     "productsFoundPlural": "تم العثور على {{count}} منتج",
-    "productsFoundSingular": "تم العثور على {{count}} منتج",
-    "productsFoundPlural": "تم العثور على {{count}} منتج",
     "searchFilter": "البحث: \"{{term}}\"",
     "sellerFilter": "البائع: {{name}}",
     "categoryFilter": "الفئة: {{category}}",
@@ -171,6 +169,7 @@
     "totalSellers": "إجمالي البائعين",
     "categories": "الفئات",
     "locations": "المواقع",
+    "allCategories": "جميع الفئات",
     "noSellersFound": "لم يتم العثور على بائعين",
     "noSellersAvailable": "لا يوجد بائعون متاحون",
     "noSellersMatchSearch": "لا يوجد بائعون يطابقون بحثك عن \"{{term}}\"{{category}}",
@@ -617,6 +616,7 @@
   },
   "createProduct": {
     "title": "إنشاء منتج",
+    "subtitle": "أضف منتجك للبدء في البيع على منصتنا",
     "name": "الاسم",
     "namePlaceholder": "أدخل اسم منتجك...",
     "description": "الوصف",
@@ -884,6 +884,7 @@
   },
   "createEvent": {
     "title": "إنشاء فعالية",
+    "subtitle": "أنشئ فعالية خاصة للترويج لمنتجاتك",
     "name": "الاسم",
     "namePlaceholder": "أدخل اسم منتج الفعالية...",
     "description": "الوصف",
@@ -905,6 +906,8 @@
     "creating": "جاري إنشاء الفعالية...",
     "eventCreatedSuccess": "تم إنشاء الفعالية بنجاح!",
     "fillAllFields": "يرجى ملء جميع الحقول المطلوبة",
+    "charactersCount": "{{count}}/100 حرف",
+    "minCharacters": "الحد الأدنى 2 مطلوب",
     "error": "فشل في إنشاء الفعالية. يرجى المحاولة مرة أخرى."
   },
   "withdraw": {

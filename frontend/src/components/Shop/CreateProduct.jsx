@@ -192,7 +192,7 @@ const CreateProduct = () => {
                             {t('createProduct.title', 'Create New Product')}
                         </h1>
                         <p className="text-gray-600 text-lg">
-                            Add your product to start selling on our platform
+                            {t("createProduct.subtitle", "Add your product to start selling on our platform")}
                         </p>
                     </div>
 

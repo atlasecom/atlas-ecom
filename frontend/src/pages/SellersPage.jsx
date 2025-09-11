@@ -8,6 +8,7 @@ import { getAuthToken } from "../utils/auth";
 import Avatar from "../components/Common/Avatar";
 import { AiOutlineShop, AiOutlineMail, AiOutlinePhone, AiOutlineEnvironment, AiOutlineStar, AiOutlineCalendar, AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { categoriesData } from "../static/data";
 
 const SellersPage = () => {
   const { t, i18n } = useTranslation();
@@ -218,18 +219,12 @@ const SellersPage = () => {
                   onChange={(e) => setCategoryFilter(e.target.value)}
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300"
                 >
-                  <option value="all">All Categories</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Fashion & Apparel">Fashion & Apparel</option>
-                  <option value="Home & Garden">Home & Garden</option>
-                  <option value="Sports & Outdoors">Sports & Outdoors</option>
-                  <option value="Health & Beauty">Health & Beauty</option>
-                  <option value="Books & Media">Books & Media</option>
-                  <option value="Automotive">Automotive</option>
-                  <option value="Toys & Games">Toys & Games</option>
-                  <option value="Food & Beverages">Food & Beverages</option>
-                  <option value="Jewelry & Accessories">Jewelry & Accessories</option>
-                  <option value="Pet Supplies">Pet Supplies</option>
+                  <option value="all">{t("sellersPage.allCategories", "All Categories")}</option>
+                  {categoriesData.map((cat) => (
+                    <option key={cat.id} value={cat.title.en}>
+                      {cat.title[i18n.language] || cat.title.en}
+                    </option>
+                  ))}
                 </select>
               </div>
 

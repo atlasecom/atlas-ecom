@@ -169,6 +169,7 @@
     "totalSellers": "Total Sellers",
     "categories": "Categories",
     "locations": "Locations",
+    "allCategories": "All Categories",
     "noSellersFound": "No sellers found",
     "noSellersAvailable": "No sellers available",
     "noSellersMatchSearch": "No sellers match your search for \"{{term}}\"{{category}}",
@@ -623,6 +624,7 @@
   },
   "createProduct": {
     "title": "Create Product",
+    "subtitle": "Add your product to start selling on our platform",
     "name": "Name",
     "namePlaceholder": "Enter your product name...",
     "description": "Description",
@@ -900,6 +902,7 @@
   },
   "createEvent": {
     "title": "Create Event",
+    "subtitle": "Create a special event to promote your products",
     "name": "Name",
     "namePlaceholder": "Enter your event product name...",
     "description": "Description",
@@ -921,6 +924,8 @@
     "creating": "Creating Event...",
     "eventCreatedSuccess": "Event created successfully!",
     "fillAllFields": "Please fill in all required fields",
+    "charactersCount": "{{count}}/100 characters",
+    "minCharacters": "Minimum 2 required",
     "error": "Failed to create event. Please try again."
   },
   "withdraw": {

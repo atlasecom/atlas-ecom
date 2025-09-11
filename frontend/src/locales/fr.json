@@ -169,6 +169,7 @@
     "totalSellers": "Total des vendeurs",
     "categories": "Catégories",
     "locations": "Lieux",
+    "allCategories": "Toutes les catégories",
     "noSellersFound": "Aucun vendeur trouvé",
     "noSellersAvailable": "Aucun vendeur disponible",
     "noSellersMatchSearch": "Aucun vendeur ne correspond à votre recherche pour \"{{term}}\"{{category}}",
@@ -615,6 +616,7 @@
   },
   "createProduct": {
     "title": "Créer un produit",
+    "subtitle": "Ajoutez votre produit pour commencer à vendre sur notre plateforme",
     "name": "Nom",
     "namePlaceholder": "Entrez le nom de votre produit...",
     "description": "Description",
@@ -882,6 +884,7 @@
   },
   "createEvent": {
     "title": "Créer un événement",
+    "subtitle": "Créez un événement spécial pour promouvoir vos produits",
     "name": "Nom",
     "namePlaceholder": "Entrez le nom de votre produit événement...",
     "description": "Description",
@@ -903,6 +906,8 @@
     "creating": "Création de l'événement...",
     "eventCreatedSuccess": "Événement créé avec succès !",
     "fillAllFields": "Veuillez remplir tous les champs obligatoires",
+    "charactersCount": "{{count}}/100 caractères",
+    "minCharacters": "Minimum 2 requis",
     "error": "Échec de la création de l'événement. Veuillez réessayer."
   },
   "withdraw": {

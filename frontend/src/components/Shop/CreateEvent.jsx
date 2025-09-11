@@ -182,7 +182,7 @@ const CreateEvent = () => {
               {t("createEvent.title", "Create New Event")}
             </h1>
             <p className="text-gray-600 text-lg">
-              Create a special event to promote your products
+              {t("createEvent.subtitle", "Create a special event to promote your products")}
             </p>
           </div>
 
@@ -208,11 +208,11 @@ const CreateEvent = () => {
                       maxLength="100"
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Enter your event name..."
+                      placeholder={t("createEvent.namePlaceholder", "Enter your event name...")}
                     />
                     <div className="flex justify-between text-xs text-gray-500">
-                      <span>{name.length}/100 characters</span>
-                      <span>Minimum 2 required</span>
+                      <span>{t("createEvent.charactersCount", "{{count}}/100 characters", { count: name.length })}</span>
+                      <span>{t("createEvent.minCharacters", "Minimum 2 required")}</span>
                     </div>
                   </div>
 
