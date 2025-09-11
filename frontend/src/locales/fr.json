@@ -99,14 +99,35 @@
     "upcoming": "🟡 À venir"
   },
   "productsPage": {
+    "title": "Découvrez des produits incroyables",
     "totalProducts": "Total des produits",
     "sellers": "Vendeurs",
-    "categories": "Catégories"
+    "categories": "Catégories",
+    "minPrice": "Prix minimum",
+    "maxPrice": "Prix maximum",
+    "min": "Min",
+    "max": "Max",
+    "to": "à",
+    "resetFilters": "Réinitialiser les filtres",
+    "reset": "Réinitialiser",
+    "fetchSellersError": "Échec de la récupération des vendeurs",
+    "fetchProductsError": "Échec de la récupération des produits",
+    "noProductsFound": "Aucun produit trouvé",
+    "tryAdjustingFilters": "Essayez d'ajuster vos critères de recherche ou filtres pour trouver plus de produits",
+    "noProductsAvailable": "Aucun produit n'est actuellement disponible. Revenez bientôt pour de nouveaux produits !",
+    "clearAllFilters": "Effacer tous les filtres",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "prevShort": "Préc",
+    "nextShort": "Suiv"
   },
   "eventsPage": {
+    "title": "Découvrez des événements incroyables",
     "totalEvents": "Total des événements",
     "categories": "Catégories",
-    "locations": "Lieux"
+    "locations": "Lieux",
+    "minPrice": "Prix minimum",
+    "maxPrice": "Prix maximum"
   },
   "bestSellingPage": {
     "title": "Produits les plus vendus",

@@ -240,15 +240,15 @@ const ProductsPage = () => {
                       <div className="flex items-center gap-2">
                         <input
                           type="number"
-                          placeholder="Min Price"
+                          placeholder={t("productsPage.minPrice", "Min Price")}
                           value={minPrice}
                           onChange={(e) => setMinPrice(e.target.value)}
                           className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
                         />
-                        <span className="text-gray-500 text-sm">to</span>
+                        <span className="text-gray-500 text-sm">{t("productsPage.to", "to")}</span>
                         <input
                           type="number"
-                          placeholder="Max Price"
+                          placeholder={t("productsPage.maxPrice", "Max Price")}
                           value={maxPrice}
                           onChange={(e) => setMaxPrice(e.target.value)}
                           className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
@@ -260,7 +260,7 @@ const ProductsPage = () => {
                       onClick={resetFilters}
                       className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:border-orange-300 hover:text-orange-600 transition-all duration-300 text-sm"
                     >
-                      Reset Filters
+{t("productsPage.resetFilters", "Reset Filters")}
                     </button>
                   </div>
                 )}
@@ -296,7 +296,7 @@ const ProductsPage = () => {
                   <div className="flex items-center gap-2 min-w-0">
                     <input
                       type="number"
-                      placeholder="Min"
+                      placeholder={t("productsPage.min", "Min")}
                       value={minPrice}
                       onChange={(e) => setMinPrice(e.target.value)}
                       className="w-20 px-2 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
@@ -304,7 +304,7 @@ const ProductsPage = () => {
                     <span className="text-gray-500 text-sm">-</span>
                     <input
                       type="number"
-                      placeholder="Max"
+                      placeholder={t("productsPage.max", "Max")}
                       value={maxPrice}
                       onChange={(e) => setMaxPrice(e.target.value)}
                       className="w-20 px-2 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
@@ -315,7 +315,7 @@ const ProductsPage = () => {
                     onClick={resetFilters}
                     className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:border-orange-300 hover:text-orange-600 transition-all duration-300 text-sm whitespace-nowrap"
                   >
-                    Reset
+{t("productsPage.reset", "Reset")}
                   </button>
                 </div>
               </div>
@@ -365,8 +365,8 @@ const ProductsPage = () => {
                   </h3>
                   <p className="text-sm text-gray-600 mb-4 sm:mb-6 leading-relaxed">
                     {(searchTerm || selectedSeller || selectedCategory || minPrice || maxPrice)
-                      ? "Try adjusting your search criteria or filters to find more products"
-                      : "No products are currently available. Check back soon for new products!"
+                      ? t("productsPage.tryAdjustingFilters", "Try adjusting your search criteria or filters to find more products")
+                      : t("productsPage.noProductsAvailable", "No products are currently available. Check back soon for new products!")
                     }
                   </p>
                   {(searchTerm || selectedSeller || selectedCategory || minPrice || maxPrice) && (
@@ -374,7 +374,7 @@ const ProductsPage = () => {
                       onClick={resetFilters}
                       className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
                     >
-                      Clear All Filters
+{t("productsPage.clearAllFilters", "Clear All Filters")}
                     </button>
                   )}
                 </div>
@@ -398,7 +398,7 @@ const ProductsPage = () => {
                     className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
                     <span className="hidden sm:inline">{t("productsPage.prev", "Previous")}</span>
-                    <span className="sm:hidden">Prev</span>
+                    <span className="sm:hidden">{t("productsPage.prevShort", "Prev")}</span>
                   </button>
                   
                   {Array.from({ length: Math.min(totalPages, window.innerWidth < 640 ? 5 : 7) }, (_, i) => {
@@ -435,7 +435,7 @@ const ProductsPage = () => {
                     className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
                     <span className="hidden sm:inline">{t("productsPage.next", "Next")}</span>
-                    <span className="sm:hidden">Next</span>
+                    <span className="sm:hidden">{t("productsPage.nextShort", "Next")}</span>
                   </button>
                 </div>
               </div>

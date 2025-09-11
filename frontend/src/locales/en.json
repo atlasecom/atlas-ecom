@@ -99,14 +99,35 @@
     "upcoming": "🟡 Upcoming"
   },
   "productsPage": {
+    "title": "Discover Amazing Products",
     "totalProducts": "Total Products",
     "sellers": "Sellers",
-    "categories": "Categories"
+    "categories": "Categories",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "min": "Min",
+    "max": "Max",
+    "to": "to",
+    "resetFilters": "Reset Filters",
+    "reset": "Reset",
+    "fetchSellersError": "Failed to fetch sellers",
+    "fetchProductsError": "Failed to fetch products",
+    "noProductsFound": "No products found",
+    "tryAdjustingFilters": "Try adjusting your search criteria or filters to find more products",
+    "noProductsAvailable": "No products are currently available. Check back soon for new products!",
+    "clearAllFilters": "Clear All Filters",
+    "prev": "Previous",
+    "next": "Next",
+    "prevShort": "Prev",
+    "nextShort": "Next"
   },
   "eventsPage": {
+    "title": "Discover Amazing Events",
     "totalEvents": "Total Events",
     "categories": "Categories",
-    "locations": "Locations"
+    "locations": "Locations",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price"
   },
   "bestSellingPage": {
     "title": "Best Selling Products",
