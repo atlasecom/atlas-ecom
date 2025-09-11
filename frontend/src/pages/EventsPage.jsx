@@ -243,15 +243,18 @@ const EventsPage = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <h3 className="text-lg sm:text-xl font-bold text-gray-800">
-              {filteredEvents.length} Event{filteredEvents.length !== 1 ? 's' : ''} Found
+{t("eventsPage.eventsFound", "{{count}} Event{{plural}} Found", { 
+                count: filteredEvents.length, 
+                plural: filteredEvents.length !== 1 ? 's' : '' 
+              })}
             </h3>
             {(searchTerm || selectedCategory || selectedLocation || minPrice || maxPrice) && (
               <div className="flex items-center gap-2">
                 <span className="text-gray-500 hidden sm:inline">•</span>
                 <span className="text-xs text-gray-600">
-                  {searchTerm && `"${searchTerm}"`}
-                  {selectedCategory && ` in ${selectedCategory}`}
-                  {selectedLocation && ` at ${selectedLocation}`}
+                  {searchTerm && t("eventsPage.searchFilter", "\"{{term}}\"", { term: searchTerm })}
+                  {selectedCategory && ` ${t("eventsPage.inCategory", "in {{category}}", { category: selectedCategory })}`}
+                  {selectedLocation && ` ${t("eventsPage.atLocation", "at {{location}}", { location: selectedLocation })}`}
                   {(minPrice || maxPrice) && ` (${minPrice || '0'} - ${maxPrice || '∞'})`}
                 </span>
               </div>
@@ -260,7 +263,7 @@ const EventsPage = () => {
           
           {filteredEvents.length > 0 && (
             <div className="text-xs text-gray-500">
-              Page {currentPage} of {totalPages}
+{t("eventsPage.pageOf", "Page {{current}} of {{total}}", { current: currentPage, total: totalPages })}
             </div>
           )}
         </div>
@@ -286,7 +289,7 @@ const EventsPage = () => {
                   onClick={resetFilters}
                   className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
                 >
-                  Clear All Filters
+{t("eventsPage.clearAllFilters", "Clear All Filters")}
                 </button>
               )}
             </div>

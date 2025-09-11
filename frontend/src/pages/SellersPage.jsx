@@ -450,13 +450,16 @@ const SellersPage = () => {
                 <AiOutlineShop className="w-12 h-12 text-gray-400" />
               </div>
               <h3 className="text-2xl font-bold text-gray-700 mb-2">
-                {searchTerm || categoryFilter !== "all" ? "No sellers found" : "No sellers available"}
+{t(searchTerm || categoryFilter !== "all" ? "sellersPage.noSellersFound" : "sellersPage.noSellersAvailable", searchTerm || categoryFilter !== "all" ? "No sellers found" : "No sellers available")}
               </h3>
               <p className="text-gray-500 mb-6">
-                {searchTerm || categoryFilter !== "all" 
-                  ? `No sellers match your search for "${searchTerm}"${categoryFilter !== "all" ? ` in ${categoryFilter}` : ""}`
-                  : "There are currently no sellers registered on the platform"
-                }
+{t(searchTerm || categoryFilter !== "all" 
+                  ? "sellersPage.noSellersMatchSearch" 
+                  : "sellersPage.noSellersRegistered", 
+                  searchTerm || categoryFilter !== "all" 
+                    ? `No sellers match your search for "${searchTerm}"${categoryFilter !== "all" ? ` in ${categoryFilter}` : ""}`
+                    : "There are currently no sellers registered on the platform"
+                )}
               </p>
               {(searchTerm || categoryFilter !== "all") && (
                 <button
@@ -468,7 +471,7 @@ const SellersPage = () => {
                   }}
                   className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors"
                 >
-                  Clear All Filters
+{t("sellersPage.clearAllFilters", "Clear All Filters")}
                 </button>
               )}
             </div>
