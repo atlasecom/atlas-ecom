@@ -1398,32 +1398,41 @@ io.on('connection', (socket) => {
   });
 });
 
-// Initialize WhatsApp Service
-whatsappService.initialize().then((isReady) => {
-  if (isReady) {
-    console.log('✅ WhatsApp service initialized and ready');
-  } else {
-    console.log('⚠️ WhatsApp service initialized but not ready (QR code required)');
-  }
-}).catch((error) => {
-  console.error('❌ WhatsApp service initialization failed:', error);
-});
+// Initialize WhatsApp Service (only in development)
+if (process.env.NODE_ENV !== 'production') {
+  whatsappService.initialize().then((isReady) => {
+    if (isReady) {
+      console.log('✅ WhatsApp service initialized and ready');
+    } else {
+      console.log('⚠️ WhatsApp service initialized but not ready (QR code required)');
+    }
+  }).catch((error) => {
+    console.error('❌ WhatsApp service initialization failed:', error);
+  });
+} else {
+  console.log('⚠️ WhatsApp service disabled in production');
+}
 
 // Start the server
 httpServer.listen(PORT, () => {
-  console.log(`🚀 Atlas Ecom Backend Server running on http://localhost:${PORT}`);
-  console.log(`📱 Frontend can connect to: http://localhost:${PORT}`);
-  console.log(`🔍 Health check: http://localhost:${PORT}/health`);
-  console.log(`📦 Products: http://localhost:${PORT}/api/v2/products`);
-  console.log(`🎉 Events: http://localhost:${PORT}/api/v2/events`);
-  console.log(`🏪 Shops: http://localhost:${PORT}/api/v2/shops`);
-  console.log(`🔐 Auth: POST /api/auth/login, POST /api/auth/register`);
-  console.log(`👨‍💼 Admin: GET /admin/sellers, POST /admin/sellers/:id/approve, POST /admin/sellers/:id/reject, DELETE /admin/sellers/:id, GET /admin/users, DELETE /admin/users/:id, POST /admin/create-admin, GET /products/admin, DELETE /products/admin/:id, GET /events/admin, DELETE /events/admin/:id`);
+  const serverUrl = process.env.NODE_ENV === 'production' 
+    ? `https://atlas-ecom-1.onrender.com` 
+    : `http://localhost:${PORT}`;
+    
+  console.log(`🚀 Atlas Ecom Backend Server running on port ${PORT}`);
+  console.log(`📱 Frontend can connect to: ${serverUrl}`);
+  console.log(`🔍 Health check: ${serverUrl}/health`);
+  console.log(`📦 Products: ${serverUrl}/api/v2/products`);
+  console.log(`🎉 Events: ${serverUrl}/api/v2/events`);
+  console.log(`🏪 Shops: ${serverUrl}/api/v2/shops`);
+  console.log(`🔐 Auth: POST ${serverUrl}/api/auth/login, POST ${serverUrl}/api/auth/register`);
+  console.log(`👨‍💼 Admin: GET ${serverUrl}/admin/sellers, POST ${serverUrl}/admin/sellers/:id/approve, POST ${serverUrl}/admin/sellers/:id/reject, DELETE ${serverUrl}/admin/sellers/:id, GET ${serverUrl}/admin/users, DELETE ${serverUrl}/admin/users/:id, POST ${serverUrl}/admin/create-admin, GET ${serverUrl}/products/admin, DELETE ${serverUrl}/products/admin/:id, GET ${serverUrl}/events/admin, DELETE ${serverUrl}/events/admin/:id`);
   console.log(`🗄️ Database: MongoDB connected successfully`);
   console.log(`🔑 JWT Secret loaded: ${process.env.JWT_SECRET ? 'Yes' : 'No'}`);
   console.log(`🔑 JWT Expire: ${process.env.JWT_EXPIRE || 'Not set'}`);
   console.log(`🕐 Automatic event cleanup: Every hour`);
   console.log(`🔌 Socket.IO server running on port ${PORT}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 // Graceful shutdown
