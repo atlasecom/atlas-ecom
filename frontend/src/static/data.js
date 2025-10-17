@@ -278,6 +278,112 @@ export const brandingData = [
   },
 ];
 
+// Footer links data
+export const footercompanyLinks = [
+  {
+    name: {
+      en: "About Us",
+      fr: "À Propos",
+      ar: "من نحن",
+    },
+    link: "/about",
+  },
+  {
+    name: {
+      en: "Contact Us",
+      fr: "Contactez-Nous",
+      ar: "اتصل بنا",
+    },
+    link: "/contact",
+  },
+  {
+    name: {
+      en: "Privacy Policy",
+      fr: "Politique de Confidentialité",
+      ar: "سياسة الخصوصية",
+    },
+    link: "/privacy",
+  },
+  {
+    name: {
+      en: "Terms of Service",
+      fr: "Conditions d'Utilisation",
+      ar: "شروط الخدمة",
+    },
+    link: "/terms",
+  },
+];
+
+export const footerProductLinks = [
+  {
+    name: {
+      en: "All Products",
+      fr: "Tous les Produits",
+      ar: "جميع المنتجات",
+    },
+    link: "/products",
+  },
+  {
+    name: {
+      en: "Best Selling",
+      fr: "Meilleures Ventes",
+      ar: "الأكثر مبيعاً",
+    },
+    link: "/best-selling",
+  },
+  {
+    name: {
+      en: "Events",
+      fr: "Événements",
+      ar: "الفعاليات",
+    },
+    link: "/events",
+  },
+  {
+    name: {
+      en: "Sellers",
+      fr: "Vendeurs",
+      ar: "البائعون",
+    },
+    link: "/sellers",
+  },
+];
+
+export const footerSupportLinks = [
+  {
+    name: {
+      en: "Help Center",
+      fr: "Centre d'Aide",
+      ar: "مركز المساعدة",
+    },
+    link: "/help",
+  },
+  {
+    name: {
+      en: "Shipping Info",
+      fr: "Informations de Livraison",
+      ar: "معلومات الشحن",
+    },
+    link: "/shipping",
+  },
+  {
+    name: {
+      en: "Returns",
+      fr: "Retours",
+      ar: "الإرجاع",
+    },
+    link: "/returns",
+  },
+  {
+    name: {
+      en: "FAQ",
+      fr: "FAQ",
+      ar: "الأسئلة الشائعة",
+    },
+    link: "/faq",
+  },
+];
+
 // Empty arrays for mock data - will be populated from database
 export const categoriesData = [];
 export const productData = [];
