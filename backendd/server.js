@@ -57,7 +57,8 @@ app.use(cors({
     "http://localhost:3000", 
     "http://localhost:3001",
     "https://atlas-ecom-1.onrender.com",
-    "https://atlas-ecom-frontend.onrender.com"
+    "https://atlas-ecom-frontend.onrender.com",
+    "https://atlasecom.ma"
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

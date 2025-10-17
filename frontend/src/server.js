@@ -1,7 +1,8 @@
 // Production Configuration - Uses environment variables
 const getBackendUrl = () => {
-  // Check if we're in production (deployed on Render)
-  if (window.location.hostname === 'atlas-ecom-frontend.onrender.com') {
+  // Check if we're in production (deployed on Render or custom domain)
+  if (window.location.hostname === 'atlas-ecom-frontend.onrender.com' || 
+      window.location.hostname === 'atlasecom.ma') {
     const url = "https://atlas-ecom-1.onrender.com";
     console.log('Production Backend URL configured as:', url);
     return url;
