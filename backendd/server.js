@@ -697,20 +697,20 @@ app.get('/products', async (req, res) => {
         price: product.discountPrice,
         discountPrice: product.discountPrice,
         originalPrice: product.originalPrice,
-        images: product.images.map(img => img.url),
-        category: product.category,
-        subcategory: product.subcategory,
+        images: product.images ? product.images.map(img => img.url) : [],
+        category: product.category || null,
+        subcategory: product.subcategory || null,
         stock: product.stock,
         sold: product.sold_out,
         ratings: product.ratings,
         numOfReviews: product.numOfReviews,
-        shop: {
+        shop: product.shop ? {
           _id: product.shop._id,
           name: product.shop.name,
           avatar: product.shop.avatar?.url,
           phoneNumber: product.shop.phoneNumber,
           telegram: product.shop.telegram
-        }
+        } : null
       }))
     });
   } catch (error) {
@@ -770,23 +770,23 @@ app.get('/api/v2/products', async (req, res) => {
         price: product.discountPrice,
         discountPrice: product.discountPrice,
         originalPrice: product.originalPrice,
-        images: product.images.map(img => img.url),
-        category: product.category,
-        subcategory: product.subcategory,
+        images: product.images ? product.images.map(img => img.url) : [],
+        category: product.category || null,
+        subcategory: product.subcategory || null,
         stock: product.stock,
         sold: product.sold_out,
         ratings: product.ratings,
         numOfReviews: product.numOfReviews,
         isBoosted: product.isBoosted,
         boostPriority: product.boostPriority,
-        shop: {
+        shop: product.shop ? {
           _id: product.shop._id,
           name: product.shop.name,
           avatar: product.shop.avatar?.url,
           phoneNumber: product.shop.phoneNumber,
           telegram: product.shop.telegram,
           verifiedBadge: product.shop.verifiedBadge
-        }
+        } : null
       })),
       totalPages: Math.ceil(total / limit),
       currentPage: page,
