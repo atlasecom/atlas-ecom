@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import Signup from '../components/Signup/Signup'
+import UnifiedSignup from '../components/Signup/UnifiedSignup'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -16,7 +16,7 @@ const SignupPage = () => {
 
     return (
         <div>
-            <Signup />
+            <UnifiedSignup />
         </div>
     )
 }

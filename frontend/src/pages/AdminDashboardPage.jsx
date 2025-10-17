@@ -7,12 +7,12 @@ const AdminDashboardPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminHeader />
-      <div className="w-full flex flex-col lg:flex-row">
+      <div className="flex h-screen">
         {/* Sidebar - Always rendered but positioned differently on mobile vs desktop */}
         <AdminSideBar />
         
         {/* Main Content - Full width on mobile, remaining width on desktop */}
-        <div className="w-full lg:flex-1 lg:min-w-0">
+        <div className="flex-1 overflow-y-auto">
           <AdminDashboardMain />
         </div>
       </div>

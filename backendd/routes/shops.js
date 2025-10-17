@@ -199,18 +199,23 @@ router.post('/become-seller', protect, upload.single('image'), [
     const shop = await Shop.create(shopData);
 
     // Update user role to seller and add shop reference
-    await User.findByIdAndUpdate(req.user._id, { 
-      role: 'seller',
-      shop: shop._id 
-    });
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id, 
+      { 
+        role: 'seller',
+        shop: shop._id 
+      },
+      { new: true }
+    ).select('-password').populate('shop');
 
     // Populate shop owner
-    await shop.populate('owner', 'name email');
+    await shop.populate('owner', 'name email avatar');
 
     res.status(201).json({
       success: true,
       message: 'Shop created successfully! You are now a seller. Your shop is pending approval.',
       shop,
+      user: updatedUser,
       userRole: 'seller'
     });
   } catch (error) {
@@ -374,7 +379,7 @@ router.put('/:id', protect, upload.single('image'), [
   }
 });
 
-// @desc    Get shop products
+// @desc    Get shop products (public - only active products)
 // @route   GET /api/shops/:id/products
 // @access  Public
 router.get('/:id/products', async (req, res) => {
@@ -411,6 +416,73 @@ router.get('/:id/products', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching shop products',
+      error: error.message
+    });
+  }
+});
+
+// @desc    Get seller's own products (all products - active and inactive)
+// @route   GET /api/shops/:id/products/seller
+// @access  Private (Seller - own products only)
+router.get('/:id/products/seller', protect, async (req, res) => {
+  try {
+    const { page = 1, limit = 10, category, search, status } = req.query;
+    
+    // Check if user owns this shop
+    if (req.user.shop?.toString() !== req.params.id && req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to view these products'
+      });
+    }
+    
+    const query = { shop: req.params.id };
+    
+    // Add status filter if provided (active, inactive, pending, approved, rejected, all)
+    if (status === 'active') {
+      query.isActive = true;
+    } else if (status === 'inactive') {
+      query.isActive = false;
+    } else if (status === 'pending') {
+      query.approvalStatus = 'pending';
+    } else if (status === 'approved') {
+      query.approvalStatus = 'approved';
+    } else if (status === 'rejected') {
+      query.approvalStatus = 'rejected';
+    }
+    // If status is 'all' or not provided, show all products
+    
+    if (category) {
+      query.category = category;
+    }
+    
+    if (search) {
+      query.$text = { $search: search };
+    }
+
+    const products = await require('../models/Product').find(query)
+      .populate('shop', 'name avatar phoneNumber telegram')
+      .populate('category', 'name nameAr nameFr image')
+      .populate('subcategory', 'name nameAr nameFr image')
+      .populate('approvedBy', 'name email')
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .sort({ createdAt: -1 });
+
+    const total = await require('../models/Product').countDocuments(query);
+
+    res.json({
+      success: true,
+      products,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      total
+    });
+  } catch (error) {
+    console.error('Get seller products error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching seller products',
       error: error.message
     });
   }
@@ -455,6 +527,66 @@ router.get('/:id/events', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching shop events',
+      error: error.message
+    });
+  }
+});
+
+// @desc    Get seller's own events (all events - active and inactive)
+// @route   GET /api/shops/:id/events/seller
+// @access  Private (Seller - own events only)
+router.get('/:id/events/seller', protect, async (req, res) => {
+  try {
+    const { page = 1, limit = 10, category, search, status } = req.query;
+    
+    // Check if user owns this shop
+    if (req.user.shop?.toString() !== req.params.id && req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to view these events'
+      });
+    }
+    
+    const query = { shop: req.params.id };
+    
+    // Add status filter if provided (active, inactive, all)
+    if (status === 'active') {
+      query.isActive = true;
+    } else if (status === 'inactive') {
+      query.isActive = false;
+    }
+    // If status is 'all' or not provided, show all events
+    
+    if (category) {
+      query.category = category;
+    }
+    
+    if (search) {
+      query.$text = { $search: search };
+    }
+
+    const events = await require('../models/Event').find(query)
+      .populate('shop', 'name avatar phoneNumber telegram')
+      .populate('category', 'name nameAr nameFr image')
+      .populate('subcategory', 'name nameAr nameFr image')
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .sort({ createdAt: -1 });
+
+    const total = await require('../models/Event').countDocuments(query);
+
+    res.json({
+      success: true,
+      events,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      total
+    });
+  } catch (error) {
+    console.error('Get seller events error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching seller events',
       error: error.message
     });
   }

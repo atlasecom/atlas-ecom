@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { categoriesData } from "../../static/data";
+import { useCategories } from "../../hooks/useCategories";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { server } from "../../server";
@@ -16,15 +16,25 @@ const CreateProduct = () => {
     const [images, setImages] = useState([]);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [category, setCategory] = useState("Electronics");
-    const [tags, setTags] = useState("");
+    const [category, setCategory] = useState("");
+    const [subcategory, setSubcategory] = useState("");
     const [minPrice, setMinPrice] = useState();
     const [maxPrice, setMaxPrice] = useState();
     const [stock, setStock] = useState();
     const [minOrderQuantity, setMinOrderQuantity] = useState(1);
     const [loading, setLoading] = useState(false);
+    
+    // Use dynamic categories from API
+    const { categories, subcategories, getSubcategoriesByCategory } = useCategories();
 
+    // Handle category change - reset subcategory when category changes
+    const handleCategoryChange = (e) => {
+        setCategory(e.target.value);
+        setSubcategory(""); // Reset subcategory when category changes
+    };
 
+    // Get subcategories for selected category
+    const availableSubcategories = category ? getSubcategoriesByCategory(category) : [];
 
     const handleImageChange = (e) => {
         e.preventDefault();
@@ -91,6 +101,12 @@ const CreateProduct = () => {
                 return;
             }
             
+            if (!subcategory) {
+                toast.error(t('createProduct.subcategoryRequired', 'Please select a subcategory'));
+                setLoading(false);
+                return;
+            }
+            
             if (!minPrice || parseFloat(minPrice) <= 0) {
                 toast.error(t('createProduct.minPriceRequired', 'Minimum price must be a positive number'));
                 setLoading(false);
@@ -131,7 +147,7 @@ const CreateProduct = () => {
             newForm.append("name", name);
             newForm.append("description", description);
             newForm.append("category", category);
-            newForm.append("tags", tags);
+            newForm.append("subcategory", subcategory);
             
             // Use minPrice as originalPrice and maxPrice as discountPrice for backend compatibility
             newForm.append("originalPrice", minPrice);
@@ -161,7 +177,7 @@ const CreateProduct = () => {
                 setName("");
                 setDescription("");
                 setCategory("");
-                setTags("");
+                setSubcategory("");
                 setMinPrice("");
                 setMaxPrice("");
                 setStock("");
@@ -237,41 +253,49 @@ const CreateProduct = () => {
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
                                             value={category}
                                             required
-                                            onChange={(e) => setCategory(e.target.value)}
+                                            onChange={handleCategoryChange}
                                         >
-                                            <option value="Electronics">{t("createProduct.categories.electronics", "Electronics")}</option>
-                                            <option value="Fashion & Apparel">{t("createProduct.categories.fashion", "Fashion & Apparel")}</option>
-                                            <option value="Home & Garden">{t("createProduct.categories.home", "Home & Garden")}</option>
-                                            <option value="Sports & Outdoors">{t("createProduct.categories.sports", "Sports & Outdoors")}</option>
-                                            <option value="Health & Beauty">{t("createProduct.categories.health", "Health & Beauty")}</option>
-                                            <option value="Books & Media">{t("createProduct.categories.books", "Books & Media")}</option>
-                                            <option value="Automotive">{t("createProduct.categories.automotive", "Automotive")}</option>
-                                            <option value="Toys & Games">{t("createProduct.categories.toys", "Toys & Games")}</option>
-                                            <option value="Food & Beverages">{t("createProduct.categories.food", "Food & Beverages")}</option>
-                                            <option value="Jewelry & Accessories">{t("createProduct.categories.jewelry", "Jewelry & Accessories")}</option>
-                                            <option value="Pet Supplies">{t("createProduct.categories.pet", "Pet Supplies")}</option>
+                                            <option value="">{t("createProduct.chooseCategory", "Choose a category")}</option>
+                                            {categories.map((cat) => (
+                                                <option key={cat._id} value={cat._id}>
+                                                    {i18n.language === 'ar' ? cat.nameAr : 
+                                                     i18n.language === 'fr' ? cat.nameFr : 
+                                                     cat.name}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
 
-                                    {/* Tags */}
+                                    {/* Subcategory */}
                                     <div className="space-y-2">
                                         <label className="flex items-center text-sm font-semibold text-gray-700">
                                             <FiTag className="mr-2 text-orange-500" size={16} />
-                                            {t('createProduct.tags', 'Tags')}
+                                            {t('createProduct.subcategory', 'Subcategory')} 
+                                            <span className="text-red-500 ml-1">*</span>
                                         </label>
-                                        <input
-                                            type="text"
-                                            name="tags"
-                                            value={tags}
-                                            maxLength="200"
+                                        <select
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                                            onChange={(e) => setTags(e.target.value)}
-                                            placeholder={t("createProduct.tagsPlaceholder", "Enter tags separated by commas...")}
-                                        />
-                                        <div className="text-xs text-gray-500 text-right">
-{t("createProduct.charactersCount", "{{count}}/200 characters", { count: tags.length })}
-                                        </div>
+                                            value={subcategory}
+                                            required
+                                            onChange={(e) => setSubcategory(e.target.value)}
+                                            disabled={!category}
+                                        >
+                                            <option value="">{t("createProduct.chooseSubcategory", "Choose a subcategory")}</option>
+                                            {availableSubcategories.map((sub) => (
+                                                <option key={sub._id} value={sub._id}>
+                                                    {i18n.language === 'ar' ? sub.nameAr : 
+                                                     i18n.language === 'fr' ? sub.nameFr : 
+                                                     sub.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {!category && (
+                                            <p className="text-sm text-gray-500">
+                                                {t("createProduct.selectCategoryFirst", "Please select a category first")}
+                                            </p>
+                                        )}
                                     </div>
+
                                 </div>
 
                                 {/* Right Column - Pricing Section */}
@@ -407,14 +431,14 @@ const CreateProduct = () => {
                                 <label htmlFor="upload" className="cursor-pointer block">
                                     <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-orange-500 hover:bg-orange-50 transition-colors duration-200">
                                         <FiUpload className="mx-auto mb-4 text-gray-400" size={48} />
-                                        <p className="text-lg font-medium text-gray-700 mb-2">Upload Product Images</p>
-                                        <p className="text-sm text-gray-500 mb-4">Drag and drop or click to select images</p>
+                                        <p className="text-lg font-medium text-gray-700 mb-2">{t("createProduct.uploadProductImages", "Upload Product Images")}</p>
+                                        <p className="text-sm text-gray-500 mb-4">{t("createProduct.dragAndDropOrClick", "Drag and drop or click to select images")}</p>
                                         <div className="inline-flex items-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
                                             <FiPlus className="mr-2" size={16} />
-                                            Choose Files
+                                            {t("createProduct.chooseFiles", "Choose Files")}
                                         </div>
                                         <p className="text-xs text-gray-400 mt-2">
-                                            Supports: JPG, PNG, GIF, WebP (Max: 10MB each, Up to 10 images)
+                                            {t("createProduct.supportedFormats", "Supports: JPG, PNG, GIF, WebP (Max: 10MB each, Up to 10 images)")}
                                         </p>
                                     </div>
                                 </label>
@@ -423,7 +447,7 @@ const CreateProduct = () => {
                                 {images && Array.isArray(images) && images.length > 0 && (
                                     <div className="mt-6">
                                         <p className="text-sm font-medium text-gray-700 mb-4">
-                                            Uploaded Images ({images.length}/10):
+                                            {t("createProduct.uploadedImages", "Uploaded Images")} ({images.length}/10):
                                         </p>
                                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                                             {images.map((image, index) => (
@@ -441,7 +465,7 @@ const CreateProduct = () => {
                                                         type="button"
                                                         onClick={() => removeImage(index)}
                                                         className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors shadow-lg opacity-0 group-hover:opacity-100"
-                                                        title="Remove image"
+                                                        title={t("createProduct.removeImage", "Remove image")}
                                                     >
                                                         <FiX size={12} />
                                                     </button>
@@ -459,13 +483,13 @@ const CreateProduct = () => {
                                     onClick={() => navigate("/dashboard-products")}
                                     className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
                                 >
-                                    Cancel
+                                    {t("createProduct.cancel", "Cancel")}
                                 </button>
                                 <button
                                     type="submit"
-                                    disabled={loading || !name.trim() || !description.trim() || !category || !minPrice || !maxPrice || !stock || !minOrderQuantity || !images || images.length === 0}
+                                    disabled={loading || !name.trim() || !description.trim() || !category || !subcategory || !minPrice || !maxPrice || !stock || !minOrderQuantity || !images || images.length === 0}
                                     className={`flex-1 py-3 px-6 rounded-xl font-semibold text-white transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                                        loading || !name.trim() || !description.trim() || !category || !minPrice || !maxPrice || !stock || !minOrderQuantity || !images || images.length === 0
+                                        loading || !name.trim() || !description.trim() || !category || !subcategory || !minPrice || !maxPrice || !stock || !minOrderQuantity || !images || images.length === 0
                                             ? 'bg-gray-400 cursor-not-allowed transform-none'
                                             : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 focus:ring-orange-500 shadow-lg hover:shadow-xl'
                                     }`}

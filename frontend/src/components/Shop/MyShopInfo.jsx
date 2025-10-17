@@ -91,47 +91,50 @@ const MyShopInfo = () => {
       ) : (
         <div className={`${i18n.language === "ar" ? "rtl" : "ltr"}`}>
           {/* Shop Header */}
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6 text-center text-white">
-            <div className="w-full flex justify-center mb-4">
-              <div className="relative">
-                <Avatar 
-                  user={user || {}} 
-                  size="xl" 
-                  className="w-24 h-24 border-4 border-white shadow-lg"
-                />
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
+          <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-8 text-center text-white relative overflow-hidden">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="relative z-10">
+              <div className="w-full flex justify-center mb-6">
+                <div className="relative">
+                  <Avatar 
+                    user={user || {}} 
+                    size="xl" 
+                    className="w-28 h-28 border-4 border-white shadow-2xl"
+                  />
+                  <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 border-3 border-white rounded-full shadow-lg"></div>
+                </div>
               </div>
+              <h3 className="text-3xl font-bold mb-3">
+                {shopData.name || user?.shop?.name}
+              </h3>
+              <p className="text-blue-100 text-base leading-relaxed max-w-xs mx-auto">
+                {shopData.description || user?.shop?.description || t("shop.noDescription", "No description available")}
+              </p>
             </div>
-            <h3 className="text-2xl font-bold mb-2">
-              {shopData.name || user?.shop?.name}
-            </h3>
-            <p className="text-orange-100 text-sm leading-relaxed">
-              {shopData.description || user?.shop?.description || t("shop.noDescription", "No description available")}
-            </p>
           </div>
 
           {/* Shop Stats */}
-          <div className="p-6 space-y-6">
+          <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
             {/* Products Count */}
-            <div className="flex items-center p-4 bg-orange-50 rounded-xl">
-              <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center mr-4">
-                <FiPackage className="text-white text-lg" />
+            <div className="flex items-center p-3 sm:p-4 lg:p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl sm:rounded-2xl border border-blue-100">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg sm:rounded-xl flex items-center justify-center mr-3 sm:mr-4 shadow-lg flex-shrink-0">
+                <FiPackage className="text-white text-lg sm:text-xl" />
               </div>
-              <div>
-                <p className="text-sm text-orange-600 font-medium">{t("myShop.totalProducts", "Total Products")}</p>
-                <p className="text-2xl font-bold text-gray-900">{products.length}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-blue-600 font-semibold leading-tight">{t("myShop.totalProducts", "Total Products")}</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight">{products.length}</p>
               </div>
             </div>
 
             {/* Rating */}
-            <div className="flex items-center p-4 bg-yellow-50 rounded-xl">
-              <div className="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center mr-4">
-                <FiStar className="text-white text-lg" />
+            <div className="flex items-center p-3 sm:p-4 lg:p-5 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl sm:rounded-2xl border border-yellow-100">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg sm:rounded-xl flex items-center justify-center mr-3 sm:mr-4 shadow-lg flex-shrink-0">
+                <FiStar className="text-white text-lg sm:text-xl" />
               </div>
-              <div>
-                <p className="text-sm text-yellow-600 font-medium">{t("myShop.shopRatings", "Shop Rating")}</p>
-                <p className="text-2xl font-bold text-gray-900">{averageRating.toFixed(1)}/5</p>
-                <p className="text-xs text-gray-500">{totalReviewsLength} {t("myShop.reviews", "reviews")}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-yellow-600 font-semibold leading-tight">{t("myShop.shopRatings", "Shop Rating")}</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight">{averageRating.toFixed(1)}/5</p>
+                <p className="text-xs text-gray-500 font-medium leading-tight">{totalReviewsLength} {t("myShop.reviews", "reviews")}</p>
               </div>
             </div>
 
@@ -180,22 +183,22 @@ const MyShopInfo = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="space-y-3 pt-4">
+            <div className="space-y-4 pt-6">
               <Link to="/settings" className="block">
-                <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg">
+                <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl">
                   <span className="flex items-center justify-center">
-                    <FiSettings className="mr-2" size={16} />
+                    <FiSettings className="mr-3" size={18} />
                     {t("myShop.editShop", "Edit Shop")}
                   </span>
                 </button>
               </Link>
 
               <button
-                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl"
                 onClick={logoutHandler}
               >
                 <span className="flex items-center justify-center">
-                  <FiLogOut className="mr-2" size={16} />
+                  <FiLogOut className="mr-3" size={18} />
                   {t("myShop.logOut", "Log Out")}
                 </span>
               </button>

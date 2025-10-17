@@ -7,7 +7,7 @@ import Loader from "../Layout/Loader";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { getAuthToken } from "../../utils/auth";
-import { FiBarChart, FiEye, FiTrash2, FiPlus, FiCamera, FiStar, FiCalendar } from "react-icons/fi";
+import { FiBarChart, FiEye, FiTrash2, FiPlus, FiCamera, FiStar, FiCalendar, FiEdit, FiEyeOff } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 
 const AllEvents = () => {
@@ -26,25 +26,30 @@ const AllEvents = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
   const [localDeleteLoading, setLocalDeleteLoading] = useState(false);
+  const [hideModalOpen, setHideModalOpen] = useState(false);
+  const [eventToHide, setEventToHide] = useState(null);
+  const [localHideLoading, setLocalHideLoading] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'active', 'inactive'
 
   // Fetch all events for the shop
-  const fetchEvents = async () => {
+  const fetchEvents = async (status = 'all') => {
     try {
       setIsLoading(true);
       const token = getAuthToken();
       const shopId = user.shop._id || user.shop;
-      const { data } = await axios.get(`${server}/api/shops/${shopId}/events`, {
+      // Use the seller-specific API endpoint that returns all events (active and inactive)
+      const { data } = await axios.get(`${server}/api/shops/${shopId}/events/seller?status=${status}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEvents(data.events || []);
       
       // Show notification if expired events were deleted
       if (data.deletedExpiredEvents && data.deletedExpiredEvents > 0) {
-        toast.info(`🕐 ${data.deletedExpiredEvents} expired event(s) were automatically deleted`);
+        toast.info(t("allEvents.expiredEventsDeleted", `🕐 ${data.deletedExpiredEvents} expired event(s) were automatically deleted`, { count: data.deletedExpiredEvents }));
       }
     } catch (error) {
       console.error('Error fetching events:', error);
-      toast.error(error.response?.data?.message || 'Failed to fetch events');
+      toast.error(error.response?.data?.message || t("allEvents.failedToFetch", "Failed to fetch events"));
       setEvents([]);
     } finally {
       setIsLoading(false);
@@ -53,9 +58,9 @@ const AllEvents = () => {
 
   useEffect(() => {
     if (user?.shop) {
-      fetchEvents();
+      fetchEvents(statusFilter);
     }
-  }, [user?.shop]);
+  }, [user?.shop, statusFilter]);
 
   const handleDelete = (id) => {
     const event = events.find(e => e._id === id);
@@ -72,7 +77,7 @@ const AllEvents = () => {
       await dispatch(deleteEvent(eventToDelete._id));
     } catch (error) {
       console.error('Error deleting event:', error);
-      toast.error('Failed to delete event. Please try again.');
+      toast.error(t("allEvents.failedToDelete", "Failed to delete event. Please try again."));
     } finally {
       setLocalDeleteLoading(false);
     }
@@ -105,6 +110,50 @@ const AllEvents = () => {
   const cancelDelete = () => {
     setDeleteModalOpen(false);
     setEventToDelete(null);
+  };
+
+  const handleHide = (event) => {
+    setEventToHide(event);
+    setHideModalOpen(true);
+  };
+
+  const confirmHide = async () => {
+    if (!eventToHide) return;
+    
+    setLocalHideLoading(true);
+    try {
+      const token = getAuthToken();
+      const newStatus = !eventToHide.isActive;
+      
+      const response = await axios.put(`${server}/api/events/${eventToHide._id}`, 
+        { isActive: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.success) {
+        toast.success(newStatus ? t("allEvents.eventShown", "Event shown successfully") : t("allEvents.eventHidden", "Event hidden successfully"));
+        
+        // Update the event in the local state
+        setEvents(prev => prev.map(e => 
+          e._id === eventToHide._id ? { ...e, isActive: newStatus } : e
+        ));
+        
+        setHideModalOpen(false);
+        setEventToHide(null);
+      } else {
+        toast.error(response.data.message || t("allEvents.failedToUpdateStatus", "Failed to update event status"));
+      }
+    } catch (error) {
+      console.error('Error updating event status:', error);
+      toast.error(t("allEvents.failedToUpdateStatus", "Failed to update event status. Please try again."));
+    } finally {
+      setLocalHideLoading(false);
+    }
+  };
+
+  const cancelHide = () => {
+    setHideModalOpen(false);
+    setEventToHide(null);
   };
 
   const openImageModal = (imageUrl) => {
@@ -166,28 +215,45 @@ const AllEvents = () => {
 
   return (
     <div className="w-full p-4">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <h1 className="text-2xl font-bold text-gray-900">{t("allEvents.title", "All Events")}</h1>
-        <Link
-          to="/dashboard-create-event"
-          className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center"
-        >
-          <FiPlus className="mr-2" size={16} />
+        
+        <div className="flex items-center gap-4">
+          {/* Status Filter */}
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">{t("allEvents.filter", "Filter")}:</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
+            >
+              <option value="all">{t("allEvents.allEvents", "All Events")}</option>
+              <option value="active">{t("allEvents.visibleOnly", "Visible Only")}</option>
+              <option value="inactive">{t("allEvents.hiddenOnly", "Hidden Only")}</option>
+            </select>
+          </div>
+          
+          <Link
+            to="/dashboard-create-event"
+            className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center"
+          >
+            <FiPlus className="mr-2" size={16} />
 {t("allEvents.addNewEvent", "Add New Event")}
-        </Link>
+          </Link>
+        </div>
       </div>
 
       {events.length === 0 ? (
         <div className="text-center py-12">
           <FiBarChart className="text-6xl mb-4 block text-gray-400" />
-          <h3 className="text-xl font-semibold text-gray-600 mb-2">No Events Found</h3>
-          <p className="text-gray-500 mb-4">Start by creating your first event</p>
+          <h3 className="text-xl font-semibold text-gray-600 mb-2">{t("allEvents.noEventsFound", "No Events Found")}</h3>
+          <p className="text-gray-500 mb-4">{t("allEvents.startCreating", "Start by creating your first event")}</p>
           <Link
             to="/dashboard-create-event"
             className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center mx-auto w-fit"
           >
             <FiPlus className="mr-2" size={16} />
-            Create Event
+            {t("allEvents.createEvent", "Create Event")}
           </Link>
         </div>
       ) : (
@@ -221,16 +287,21 @@ const AllEvents = () => {
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
                     <div className="text-center">
                       <FiCalendar className="text-gray-400 mx-auto mb-2" size={48} />
-                      <p className="text-gray-500 text-sm font-medium">No Image</p>
+                      <p className="text-gray-500 text-sm font-medium">{t("allEvents.noImage", "No Image")}</p>
                     </div>
                   </div>
                 )}
                 <div className="absolute top-2 right-2">
                   <span className="px-2 py-1 bg-orange-500 text-white text-xs rounded-full">
-                    {event.category}
+                    {event.category?.name || event.category || 'Category'}
                   </span>
                 </div>
-                <div className="absolute top-2 left-2">
+                <div className="absolute top-2 left-2 flex flex-col gap-1">
+                  <span className={`px-2 py-1 text-white text-xs rounded-full w-fit ${
+                    event.isActive ? 'bg-green-500' : 'bg-red-500'
+                  }`}>
+                    {event.isActive ? t("allEvents.active", "Live") : t("allEvents.inactive", "Hidden")}
+                  </span>
                   <span className={`px-2 py-1 text-white text-xs rounded-full ${
                     event.status === 'Running' ? 'bg-green-500' :
                     event.status === 'Ended' ? 'bg-red-500' : 'bg-yellow-500'
@@ -249,7 +320,7 @@ const AllEvents = () => {
                     return (
                       <div className="absolute bottom-2 left-2">
                         <span className="px-2 py-1 bg-orange-500 text-white text-xs rounded-full animate-pulse">
-                          ⏰ Expires in {Math.ceil(hoursLeft)}h
+                          ⏰ {t("allEvents.expiresIn", "Expires in")} {Math.ceil(hoursLeft)}h
                         </span>
                       </div>
                     );
@@ -277,36 +348,63 @@ const AllEvents = () => {
 
                 <div className="grid grid-cols-2 gap-2 text-sm mb-4">
                   <div>
-                    <span className="text-gray-500">Stock:</span>
+                    <span className="text-gray-500">{t("allEvents.stock", "Stock")}:</span>
                     <span className={`ml-1 font-medium ${event.stock < 10 ? 'text-red-600' : 'text-gray-900'}`}>
                       {event.stock}
                     </span>
                   </div>
                   <div>
-                    <span className="text-gray-500">Sold:</span>
+                    <span className="text-gray-500">{t("allEvents.sold", "Sold")}:</span>
                     <span className="ml-1 font-medium text-gray-900">{event.sold_out || 0}</span>
                   </div>
                 </div>
 
                 <div className="text-xs text-gray-500 mb-4">
                   <div className="flex justify-between">
-                    <span>Start: {formatDate(event.start_Date)}</span>
-                    <span>End: {formatDate(event.Finish_Date)}</span>
+                    <span>{t("allEvents.startDate", "Start")}: {formatDate(event.start_Date)}</span>
+                    <span>{t("allEvents.endDate", "End")}: {formatDate(event.Finish_Date)}</span>
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex space-x-2">
+                <div className="grid grid-cols-2 gap-2">
                   <Link
                     to={`/product/${event._id}?isEvent=true`}
-                    className="flex-1 bg-orange-500 text-white text-sm py-2 px-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center"
+                    className="bg-blue-500 text-white text-sm py-2 px-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center"
                   >
                     <FiEye className="mr-1" size={14} />
                     {t("allEvents.preview", "Preview")}
                   </Link>
+                  <Link
+                    to={`/dashboard-edit-event/${event._id}`}
+                    className="bg-orange-500 text-white text-sm py-2 px-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center"
+                  >
+                    <FiEdit className="mr-1" size={14} />
+                    {t("allEvents.edit", "Edit")}
+                  </Link>
+                  <button
+                    onClick={() => handleHide(event)}
+                    className={`text-white text-sm py-2 px-3 rounded-lg transition-colors flex items-center justify-center ${
+                      event.isActive 
+                        ? 'bg-yellow-500 hover:bg-yellow-600' 
+                        : 'bg-green-500 hover:bg-green-600'
+                    }`}
+                  >
+                    {event.isActive ? (
+                      <>
+                        <FiEyeOff className="mr-1" size={14} />
+                        {t("allEvents.hide", "Hide")}
+                      </>
+                    ) : (
+                      <>
+                        <FiEye className="mr-1" size={14} />
+                        {t("allEvents.show", "Show")}
+                      </>
+                    )}
+                  </button>
                   <button
                     onClick={() => handleDelete(event._id)}
-                    className="flex-1 bg-red-500 text-white text-sm py-2 px-3 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center"
+                    className="bg-red-500 text-white text-sm py-2 px-3 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center"
                   >
                     <FiTrash2 className="mr-1" size={14} />
                     {t("allEvents.delete", "Delete")}
@@ -342,7 +440,7 @@ const AllEvents = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Delete Event</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t("allEvents.deleteEvent", "Delete Event")}</h3>
               <button
                 onClick={cancelDelete}
                 className="text-gray-400 hover:text-gray-600"
@@ -351,21 +449,66 @@ const AllEvents = () => {
               </button>
             </div>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete "{eventToDelete?.name}"? This action cannot be undone.
+              {t("allEvents.areYouSureDelete", "Are you sure you want to delete")} "{eventToDelete?.name}"? {t("allEvents.thisActionCannotBeUndone", "This action cannot be undone.")}
             </p>
             <div className="flex space-x-3">
               <button
                 onClick={cancelDelete}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                Cancel
+                {t("allEvents.cancel", "Cancel")}
               </button>
               <button
                 onClick={confirmDelete}
                 disabled={localDeleteLoading || deleteLoading}
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
               >
-                {(localDeleteLoading || deleteLoading) ? 'Deleting...' : 'Delete'}
+                {(localDeleteLoading || deleteLoading) ? t("allEvents.deleting", "Deleting...") : t("allEvents.delete", "Delete")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hide/Show Confirmation Modal */}
+      {hideModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                {eventToHide?.isActive ? t("allEvents.hideEvent", "Hide Event") : t("allEvents.showEvent", "Show Event")}
+              </h3>
+              <button
+                onClick={cancelHide}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <span className="text-2xl">✕</span>
+              </button>
+            </div>
+            <p className="text-gray-600 mb-6">
+              {t("allEvents.areYouSureHide", "Are you sure you want to")} {eventToHide?.isActive ? t("allEvents.hide", "hide") : t("allEvents.show", "show")} "{eventToHide?.name}"? 
+              {eventToHide?.isActive 
+                ? ` ${t("allEvents.hiddenEventsNotice", "Hidden events will not be visible to customers.")}` 
+                : ` ${t("allEvents.eventWillBeVisible", "The event will be visible to customers again.")}`
+              }
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={cancelHide}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                {t("allEvents.cancel", "Cancel")}
+              </button>
+              <button
+                onClick={confirmHide}
+                disabled={localHideLoading}
+                className={`flex-1 px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 ${
+                  eventToHide?.isActive 
+                    ? 'bg-yellow-600 hover:bg-yellow-700' 
+                    : 'bg-green-600 hover:bg-green-700'
+                }`}
+              >
+                {localHideLoading ? t("allEvents.updating", "Updating...") : (eventToHide?.isActive ? t("allEvents.hide", "Hide") : t("allEvents.show", "Show"))}
               </button>
             </div>
           </div>

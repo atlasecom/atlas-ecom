@@ -6,6 +6,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Header from "../../components/Layout/Header";
 import Footer from "../../components/Layout/Footer";
+import axios from "axios";
+import { server } from "../../server";
 
 const ShopPreviewPage = () => {
   const { user } = useSelector((state) => state.user);
@@ -15,6 +17,11 @@ const ShopPreviewPage = () => {
   useEffect(() => {
     if (user?.shop?._id === id) {
       navigate("/shop/me");
+    } else if (id) {
+      // Track shop profile view (only if not the shop owner)
+      axios.post(`${server}/api/track/shop/${id}/profile-view`).catch(err => 
+        console.log('Analytics tracking failed:', err)
+      );
     }
   }, [id, user, navigate]);
 
@@ -30,7 +37,7 @@ const ShopPreviewPage = () => {
       {/* Main Content */}
       <div className={`${styles.section} py-10`}>
         <div className="w-full 800px:flex justify-between">
-          <div className="800px:w-[25%] bg-[#fff] rounded-[4px] shadow-sm 800px:overflow-y-scroll 800px:h-[90vh] 800px:sticky top-10 left-0 z-10">
+          <div className="800px:w-[25%] bg-[#fff] rounded-[4px] shadow-sm 800px:sticky top-10 left-0 z-10">
             <ShopInfo isOwner={false} />
           </div>
           <div className="800px:w-[72%] mt-5 800px:mt-['unset'] rounded-[4px]">

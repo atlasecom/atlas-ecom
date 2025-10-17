@@ -9,10 +9,251 @@ const Shop = require('../models/Shop');
 const { protect, authorize } = require('../middleware/auth');
 const { upload } = require('../config/cloudinary');
 const { getImageUrlFromFile } = require('../utils/imageUtils');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const whatsappService = require('../services/whatsappService');
 
 const router = express.Router();
 
+// Email verification storage (in production, use Redis or database)
+const emailVerificationCodes = new Map();
+
+// WhatsApp phone verification storage (in production, use Redis or database)
+const phoneVerificationCodes = new Map();
+
+// Email transporter configuration
+const createEmailTransporter = () => {
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT) || 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
+};
+
 // Cloudinary upload is configured in ../config/cloudinary.js
+
+// @desc    Send verification code to email
+// @route   POST /users/send-verification-code
+// @access  Public
+router.post('/send-verification-code', async (req, res) => {
+  try {
+    const { email, type } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is required'
+      });
+    }
+
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'User with this email already exists'
+      });
+    }
+
+    // Generate 6-digit verification code
+    const verificationCode = crypto.randomInt(100000, 999999).toString();
+
+    // Store code with expiration (10 minutes)
+    emailVerificationCodes.set(email, {
+      code: verificationCode,
+      type: type || 'customer',
+      expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes
+    });
+
+          // Send email
+          try {
+            const transporter = createEmailTransporter();
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Email Verification Code - Atlas Ecommerce',
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Email Verification - Atlas Ecommerce</title>
+          </head>
+          <body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+            <div style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+              
+              <!-- Header -->
+              <div style="background: linear-gradient(135deg, #f97316, #ea580c); padding: 30px; text-align: center;">
+                <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold;">Atlas Ecommerce</h1>
+                <p style="color: white; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Email Verification</p>
+              </div>
+              
+              <!-- Content -->
+              <div style="padding: 40px 30px;">
+                <h2 style="color: #333; text-align: center; margin-bottom: 30px; font-size: 24px;">Verify Your Email Address</h2>
+                
+                <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                  Thank you for signing up! To complete your registration, please use the verification code below:
+                </p>
+                
+                <!-- Verification Code Box -->
+                <div style="background-color: #f8f9fa; border: 2px dashed #f97316; padding: 30px; border-radius: 10px; margin: 30px 0; text-align: center;">
+                  <p style="font-size: 18px; color: #333; margin-bottom: 15px; font-weight: 500;">Your verification code is:</p>
+                  <div style="background-color: #ffffff; border: 2px solid #f97316; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                    <h1 style="color: #f97316; text-align: center; font-size: 36px; letter-spacing: 8px; margin: 0; font-weight: bold; font-family: 'Courier New', monospace;">${verificationCode}</h1>
+                  </div>
+                  <p style="color: #666; font-size: 14px; margin: 0;">Enter this code in the verification field</p>
+                </div>
+                
+                <!-- Instructions -->
+                <div style="background-color: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; margin: 30px 0; border-radius: 0 8px 8px 0;">
+                  <h3 style="color: #1976d2; margin: 0 0 10px 0; font-size: 16px;">Important Instructions:</h3>
+                  <ul style="color: #666; font-size: 14px; line-height: 1.6; margin: 0; padding-left: 20px;">
+                    <li>This code will expire in <strong>10 minutes</strong></li>
+                    <li>Enter the code exactly as shown above</li>
+                    <li>If you didn't request this code, please ignore this email</li>
+                    <li>Check your spam folder if you don't see this email</li>
+                  </ul>
+                </div>
+                
+                <p style="color: #666; font-size: 14px; text-align: center; margin: 30px 0 0 0;">
+                  If you have any questions, please contact our support team.
+                </p>
+              </div>
+              
+              <!-- Footer -->
+              <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e9ecef;">
+                <p style="color: #999; font-size: 12px; margin: 0;">
+                  © 2024 Atlas Ecommerce Platform. All rights reserved.
+                </p>
+                <p style="color: #999; font-size: 12px; margin: 5px 0 0 0;">
+                  This email was sent to ${email} at ${new Date().toLocaleString()}
+                </p>
+              </div>
+              
+            </div>
+          </body>
+          </html>
+        `,
+        text: `
+Atlas Ecommerce - Email Verification
+
+Hello,
+
+Thank you for signing up! To complete your registration, please use the verification code below:
+
+VERIFICATION CODE: ${verificationCode}
+
+Important Instructions:
+- This code will expire in 10 minutes
+- Enter the code exactly as shown above
+- If you didn't request this code, please ignore this email
+- Check your spam folder if you don't see this email
+
+If you have any questions, please contact our support team.
+
+Best regards,
+Atlas Ecommerce Team
+
+This email was sent to ${email} at ${new Date().toLocaleString()}
+        `
+            });
+            
+            res.status(200).json({
+              success: true,
+              message: 'Verification code sent successfully to your email'
+            });
+            
+          } catch (emailError) {
+            console.error('Email sending error:', emailError);
+            
+            // Fallback: return code in response if email fails
+            res.status(200).json({
+              success: true,
+              message: 'Email sending failed, but verification code is available. Check console or try again.',
+              code: verificationCode,
+              error: 'Email sending failed, but code is valid',
+              fallback: true
+            });
+          }
+
+  } catch (error) {
+    console.error('Send verification code error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to send verification code'
+    });
+  }
+});
+
+// @desc    Verify email with code
+// @route   POST /users/verify-email
+// @access  Public
+router.post('/verify-email', async (req, res) => {
+  try {
+    const { email, code, type } = req.body;
+
+    if (!email || !code) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and verification code are required'
+      });
+    }
+
+    // Check if code exists and is valid
+    const storedData = emailVerificationCodes.get(email);
+    
+    if (!storedData) {
+      return res.status(400).json({
+        success: false,
+        message: 'No verification code found for this email'
+      });
+    }
+
+    // Check if code is expired
+    if (Date.now() > storedData.expiresAt) {
+      emailVerificationCodes.delete(email);
+      return res.status(400).json({
+        success: false,
+        message: 'Verification code has expired'
+      });
+    }
+
+    // Check if code matches
+    if (storedData.code !== code) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid verification code'
+      });
+    }
+
+    // Mark email as verified
+    emailVerificationCodes.set(email, {
+      ...storedData,
+      verified: true
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Email verified successfully'
+    });
+
+  } catch (error) {
+    console.error('Verify email error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to verify email'
+    });
+  }
+});
 
 // @desc    Test Google OAuth configuration
 // @route   GET /auth/google/test
@@ -117,6 +358,44 @@ router.post('/register', upload.single('image'), [
     const phoneNumber = req.body.phoneNumber || '';
     const address = req.body.address || '';
 
+    // Check email verification for customer and seller accounts
+    if (role === 'user' || role === 'seller' || !role) {
+      const storedData = emailVerificationCodes.get(email);
+      if (!storedData || !storedData.verified) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email must be verified before registration'
+        });
+      }
+    }
+
+    // Check phone verification for seller accounts
+    if (role === 'seller') {
+      const shopPhone = req.body.shopPhone || '';
+      if (shopPhone) {
+        // Clean phone number
+        const cleanPhone = shopPhone.replace(/\D/g, '');
+        let formattedPhone;
+        if (cleanPhone.startsWith('212')) {
+          formattedPhone = cleanPhone;
+        } else if (cleanPhone.startsWith('0')) {
+          formattedPhone = '212' + cleanPhone.substring(1);
+        } else if (cleanPhone.length === 9 && /^(6|7)[0-9]{8}$/.test(cleanPhone)) {
+          formattedPhone = '212' + cleanPhone;
+        }
+
+        if (formattedPhone) {
+          const phoneData = phoneVerificationCodes.get(formattedPhone);
+          if (!phoneData || !phoneData.verified) {
+            return res.status(400).json({
+              success: false,
+              message: 'Shop phone must be verified before registration'
+            });
+          }
+        }
+      }
+    }
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -138,9 +417,19 @@ router.post('/register', upload.single('image'), [
 
     // Add avatar if uploaded
     if (req.file) {
-      userData.avatar = {
+      const { getImageUrlFromFile } = require('../utils/imageUtils');
+      const avatarUrl = getImageUrlFromFile(req, req.file, 'avatars');
+      
+      console.log('🔍 Avatar upload details:', {
         public_id: req.file.public_id,
-        url: req.file.secure_url
+        secure_url: req.file.secure_url,
+        filename: req.file.filename,
+        generatedUrl: avatarUrl
+      });
+      
+      userData.avatar = {
+        public_id: req.file.public_id || req.file.filename,
+        url: avatarUrl
       };
     }
 
@@ -156,6 +445,13 @@ router.post('/register', upload.single('image'), [
     // Add fallback avatar to response - PRIMARY ROUTE
     const userResponse = user.toObject();
     userResponse.fallbackAvatar = user.fallbackAvatar;
+
+    console.log('✅ User registered successfully:', {
+      email: userResponse.email,
+      role: userResponse.role,
+      hasAvatar: !!userResponse.avatar,
+      avatarUrl: userResponse.avatar?.url
+    });
 
     res.status(201).json({
       success: true,
@@ -340,9 +636,9 @@ router.get('/users/me', protect, async (req, res) => {
 });
 
 // @desc    Get user by ID (admin only)
-// @route   GET /:id
+// @route   GET /user/:id
 // @access  Private/Admin
-router.get('/:id', protect, authorize('admin'), async (req, res) => {
+router.get('/user/:id', protect, authorize('admin'), async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password').populate('shop');
     
@@ -399,18 +695,95 @@ router.get('/users/:id', async (req, res) => {
   }
 });
 
+// @desc    Delete current user's account
+// @route   DELETE /delete-account
+// @access  Private
+router.delete('/delete-account', protect, async (req, res) => {
+  try {
+    console.log('Delete account request received for user:', req.user._id);
+    console.log('User role:', req.user.role);
+    
+    const userId = req.user.id || req.user._id; // Use id from token, fallback to _id
+    
+    // Find the user
+    const user = await User.findById(userId).populate('shop');
+    
+    if (!user) {
+      console.log('User not found:', userId);
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    console.log('Found user:', user.email, 'with shop:', user.shop ? 'Yes' : 'No');
+
+    // If user has a shop, delete all associated data
+    if (user.shop) {
+      const Product = require('../models/Product');
+      const Event = require('../models/Event');
+      
+      // Delete all products associated with this shop
+      const deletedProducts = await Product.deleteMany({ shop: user.shop._id });
+      console.log(`Deleted ${deletedProducts.deletedCount} products for shop:`, user.shop._id);
+      
+      // Delete all events associated with this shop
+      const deletedEvents = await Event.deleteMany({ shop: user.shop._id });
+      console.log(`Deleted ${deletedEvents.deletedCount} events for shop:`, user.shop._id);
+      
+      // Delete the shop
+      await Shop.findByIdAndDelete(user.shop._id);
+      console.log('Shop deleted for user:', userId);
+    }
+
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+    console.log('User account deleted:', userId);
+
+    res.json({
+      success: true,
+      message: 'Account deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete account error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+});
+
 // @desc    Delete user (admin only)
 // @route   DELETE /:id
 // @access  Private/Admin
 router.delete('/:id', protect, authorize('admin'), async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).populate('shop');
     
     if (!user) {
       return res.status(404).json({
         success: false,
         message: 'User not found'
       });
+    }
+    
+    // If user has a shop (is a seller), delete all associated data
+    if (user.shop) {
+      const Product = require('../models/Product');
+      const Event = require('../models/Event');
+      
+      // Delete all products associated with this shop
+      const deletedProducts = await Product.deleteMany({ shop: user.shop._id });
+      console.log(`Admin deleted ${deletedProducts.deletedCount} products for shop:`, user.shop._id);
+      
+      // Delete all events associated with this shop
+      const deletedEvents = await Event.deleteMany({ shop: user.shop._id });
+      console.log(`Admin deleted ${deletedEvents.deletedCount} events for shop:`, user.shop._id);
+      
+      // Delete the shop
+      await Shop.findByIdAndDelete(user.shop._id);
+      console.log('Admin deleted shop:', user.shop._id);
     }
     
     await User.findByIdAndDelete(req.params.id);
@@ -425,6 +798,65 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
       success: false,
       message: 'Error deleting user',
       error: error.message
+    });
+  }
+});
+
+// @desc    Change user password
+// @route   PUT /change-password
+// @access  Private
+router.put('/change-password', protect, [
+  body('currentPassword').notEmpty().withMessage('Current password is required'),
+  body('newPassword').isLength({ min: 6 }).withMessage('New password must be at least 6 characters long')
+], async (req, res) => {
+  try {
+    // Check validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    // Find the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Verify current password
+    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current password is incorrect'
+      });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update password
+    await User.findByIdAndUpdate(userId, { password: hashedNewPassword });
+
+    res.json({
+      success: true,
+      message: 'Password changed successfully'
+    });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
     });
   }
 });
@@ -860,6 +1292,347 @@ router.put('/reset-password/:token', [
     res.status(500).json({
       success: false,
       message: 'Error resetting password',
+      error: error.message
+    });
+  }
+});
+
+// @desc    Add product to wishlist
+// @route   POST /wishlist/:productId
+// @access  Private
+router.post('/wishlist/:productId', protect, async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user._id;
+
+    // Check if product exists
+    const Product = require('../models/Product');
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found'
+      });
+    }
+
+    // Find user and check if product is already in wishlist
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if product is already in wishlist
+    if (user.wishlist.includes(productId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Product already in wishlist'
+      });
+    }
+
+    // Add product to wishlist
+    user.wishlist.push(productId);
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Product added to wishlist',
+      wishlist: user.wishlist
+    });
+  } catch (error) {
+    console.error('Add to wishlist error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error adding to wishlist',
+      error: error.message
+    });
+  }
+});
+
+// @desc    Remove product from wishlist
+// @route   DELETE /wishlist/:productId
+// @access  Private
+router.delete('/wishlist/:productId', protect, async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user._id;
+
+    // Find user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if product is in wishlist
+    if (!user.wishlist.includes(productId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Product not in wishlist'
+      });
+    }
+
+    // Remove product from wishlist
+    user.wishlist = user.wishlist.filter(id => id.toString() !== productId);
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Product removed from wishlist',
+      wishlist: user.wishlist
+    });
+  } catch (error) {
+    console.error('Remove from wishlist error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error removing from wishlist',
+      error: error.message
+    });
+  }
+});
+
+// @desc    Check if product is in wishlist
+// @route   GET /wishlist/:productId
+// @access  Private
+router.get('/wishlist/:productId', protect, async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user._id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    const isInWishlist = user.wishlist.includes(productId);
+
+    res.json({
+      success: true,
+      isInWishlist
+    });
+  } catch (error) {
+    console.error('Check wishlist error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error checking wishlist',
+      error: error.message
+    });
+  }
+});
+
+// @desc    Get user wishlist
+// @route   GET /wishlist
+// @access  Private
+router.get('/wishlist', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate({
+      path: 'wishlist',
+      populate: {
+        path: 'shop',
+        select: 'name avatar'
+      }
+    });
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      wishlist: user.wishlist || []
+    });
+  } catch (error) {
+    console.error('Get wishlist error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching wishlist',
+      error: error.message
+    });
+  }
+});
+
+// Send WhatsApp verification code
+router.post('/users/send-phone-verification', [
+  body('phone').notEmpty().withMessage('Phone number is required'),
+  body('type').isIn(['customer', 'seller']).withMessage('Type must be customer or seller')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { phone, type } = req.body;
+
+    // Clean phone number (remove non-digits)
+    const cleanPhone = phone.replace(/\D/g, '');
+    
+    // Validate Moroccan phone number
+    let formattedPhone;
+    if (cleanPhone.startsWith('212')) {
+      formattedPhone = cleanPhone;
+    } else if (cleanPhone.startsWith('0')) {
+      formattedPhone = '212' + cleanPhone.substring(1);
+    } else if (cleanPhone.length === 9 && /^(6|7)[0-9]{8}$/.test(cleanPhone)) {
+      formattedPhone = '212' + cleanPhone;
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid Moroccan phone number format'
+      });
+    }
+
+    // Generate 6-digit verification code
+    const code = crypto.randomInt(100000, 999999).toString();
+    
+    // Store verification code with expiration (10 minutes)
+    phoneVerificationCodes.set(formattedPhone, {
+      code,
+      timestamp: Date.now(),
+      type,
+      verified: false
+    });
+
+    // Clean up expired codes
+    for (const [phoneNumber, data] of phoneVerificationCodes.entries()) {
+      if (Date.now() - data.timestamp > 10 * 60 * 1000) {
+        phoneVerificationCodes.delete(phoneNumber);
+      }
+    }
+
+    // Send verification code via WhatsApp
+    try {
+      const whatsappResult = await whatsappService.sendVerificationCode(formattedPhone, code);
+      
+      if (whatsappResult.success) {
+        res.json({
+          success: true,
+          message: 'Verification code sent to WhatsApp',
+          phone: formattedPhone
+        });
+      } else {
+        console.error(`Failed to send WhatsApp code to ${formattedPhone}:`, whatsappResult.error);
+        
+        res.json({
+          success: true,
+          message: 'WhatsApp service unavailable. Code logged to console.',
+          code: code, // Include code in response as fallback
+          phone: formattedPhone
+        });
+      }
+    } catch (error) {
+      console.error('WhatsApp service error:', error);
+      
+      res.json({
+        success: true,
+        message: 'WhatsApp service error. Code logged to console.',
+        code: code, // Include code in response as fallback
+        phone: formattedPhone
+      });
+    }
+
+  } catch (error) {
+    console.error('Send phone verification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to send verification code',
+      error: error.message
+    });
+  }
+});
+
+// Verify WhatsApp code
+router.post('/users/verify-phone', [
+  body('phone').notEmpty().withMessage('Phone number is required'),
+  body('code').isLength({ min: 6, max: 6 }).withMessage('Code must be 6 digits'),
+  body('type').isIn(['customer', 'seller']).withMessage('Type must be customer or seller')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { phone, code, type } = req.body;
+
+    // Clean phone number
+    const cleanPhone = phone.replace(/\D/g, '');
+    let formattedPhone;
+    if (cleanPhone.startsWith('212')) {
+      formattedPhone = cleanPhone;
+    } else if (cleanPhone.startsWith('0')) {
+      formattedPhone = '212' + cleanPhone.substring(1);
+    } else if (cleanPhone.length === 9 && /^(6|7)[0-9]{8}$/.test(cleanPhone)) {
+      formattedPhone = '212' + cleanPhone;
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid Moroccan phone number format'
+      });
+    }
+
+    // Check if code exists and is not expired
+    const storedData = phoneVerificationCodes.get(formattedPhone);
+    
+    if (!storedData) {
+      return res.status(400).json({
+        success: false,
+        message: 'No verification code found for this phone number'
+      });
+    }
+
+    // Check if code is expired (10 minutes)
+    if (Date.now() - storedData.timestamp > 10 * 60 * 1000) {
+      phoneVerificationCodes.delete(formattedPhone);
+      return res.status(400).json({
+        success: false,
+        message: 'Verification code has expired'
+      });
+    }
+
+    // Check if code matches
+    if (storedData.code !== code) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid verification code'
+      });
+    }
+
+    // Mark as verified
+    phoneVerificationCodes.set(formattedPhone, {
+      ...storedData,
+      verified: true
+    });
+
+    res.json({
+      success: true,
+      message: 'Phone number verified successfully',
+      phone: formattedPhone
+    });
+
+  } catch (error) {
+    console.error('Verify phone error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to verify phone number',
       error: error.message
     });
   }

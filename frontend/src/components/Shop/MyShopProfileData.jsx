@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styles from "../../styles/styles";
-import ProductCard from "../Route/ProductCard/ProductCardNew";
+import ProductCard from "../Route/ProductCard/ProductCard";
 import { backend_url, server } from "../../server";
 import Ratings from "../Products/Ratings";
 import axios from "axios";
@@ -157,111 +157,186 @@ const MyShopProfileData = () => {
 
     return (
         <div className="w-full">
-            <div className="flex w-full items-center justify-between">
-                <div className="w-full flex">
-                    <div className="flex items-center" onClick={() => setActive(1)}>
-                        <h5
-                            className={`font-[600] text-[20px] ${active === 1 ? "text-red-500" : "text-[#333]"
-                                } cursor-pointer ${i18n.language === 'ar' ? 'pl-[20px]' : 'pr-[20px]'}`}
-                        >
-                            {t("myShop.myProducts")}
-                        </h5>
-                    </div>
-                    <div className="flex items-center" onClick={() => setActive(2)}>
-                        <h5
-                            className={`font-[600] text-[20px] ${active === 2 ? "text-red-500" : "text-[#333]"
-                                } cursor-pointer ${i18n.language === 'ar' ? 'pl-[20px]' : 'pr-[20px]'}`}
-                        >
-                            {t("myShop.myEvents")}
-                        </h5>
-                    </div>
-
-                    <div className="flex items-center" onClick={() => setActive(3)}>
-                        <h5
-                            className={`font-[600] text-[20px] ${active === 3 ? "text-red-500" : "text-[#333]"
-                                } cursor-pointer ${i18n.language === 'ar' ? 'pl-[20px]' : 'pr-[20px]'}`}
-                        >
-                            {t("myShop.shopReviews")}
-                        </h5>
-                    </div>
-                </div>
-                
+            {/* Professional Header */}
+            <div className="bg-gradient-to-r from-gray-50 to-blue-50/50 px-8 py-6 border-b border-gray-100">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    {t("myShop.overview", "Shop Overview")}
+                </h2>
+                <p className="text-gray-600">
+                    {t("myShop.overviewDesc", "Manage your products, events, and view customer feedback")}
+                </p>
             </div>
 
-            <br />
+            {/* Professional Tab Navigation */}
+            <div className="px-8 py-6 border-b border-gray-100">
+                <div className="flex flex-wrap gap-2">
+                    <button
+                        onClick={() => setActive(1)}
+                        className={`flex items-center px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 ${
+                            active === 1
+                                ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+                        }`}
+                    >
+                        <FiPackage className="mr-2" size={16} />
+                        {t("myShop.myProducts")}
+                        {products && products.length > 0 && (
+                            <span className={`ml-2 px-2 py-1 rounded-full text-xs ${
+                                active === 1 ? "bg-blue-500" : "bg-gray-300"
+                            }`}>
+                                {products.length}
+                            </span>
+                        )}
+                    </button>
+                    
+                    <button
+                        onClick={() => setActive(2)}
+                        className={`flex items-center px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 ${
+                            active === 2
+                                ? "bg-green-600 text-white shadow-lg shadow-green-200"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+                        }`}
+                    >
+                        <FiBarChart className="mr-2" size={16} />
+                        {t("myShop.myEvents")}
+                        {events && events.length > 0 && (
+                            <span className={`ml-2 px-2 py-1 rounded-full text-xs ${
+                                active === 2 ? "bg-green-500" : "bg-gray-300"
+                            }`}>
+                                {events.length}
+                            </span>
+                        )}
+                    </button>
 
-            {active === 1 && (
-                <div>
-                    {products && products.length > 0 ? (
-                        <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-4 xl:gap-[20px] mb-12 border-0">
-                            {products.map((product, index) => (
-                                <ProductCard data={product} key={index} isShop={true} />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="w-full text-center py-20">
-                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <FiPackage className="text-2xl text-blue-600" />
-                            </div>
-                            <h5 className="text-lg font-semibold text-gray-900 mb-2">
-                                {t("myShop.noProducts", "No Products Available")}
-                            </h5>
-                            <p className="text-gray-600 mb-4">
-                                {t("myShop.noProductsDesc", "You haven't added any products to your shop yet.")}
-                            </p>
-                            <Link to="/dashboard-create-product" className="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                                <FiPlus className="mr-2" size={16} />
-                                {t("myShop.createFirstProduct", "Create Your First Product")}
-                            </Link>
-                        </div>
-                    )}
+                    <button
+                        onClick={() => setActive(3)}
+                        className={`flex items-center px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 ${
+                            active === 3
+                                ? "bg-purple-600 text-white shadow-lg shadow-purple-200"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+                        }`}
+                    >
+                        <svg className="mr-2" size={16} width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        {t("myShop.shopReviews")}
+                        {allReviews && allReviews.length > 0 && (
+                            <span className={`ml-2 px-2 py-1 rounded-full text-xs ${
+                                active === 3 ? "bg-purple-500" : "bg-gray-300"
+                            }`}>
+                                {allReviews.length}
+                            </span>
+                        )}
+                    </button>
                 </div>
-            )}
+            </div>
 
-            {active === 2 && (
-                <div className="w-full">
-                    {events && events.length > 0 ? (
-                        <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-4 xl:gap-[20px] mb-12 border-0">
-                            {events.map((event, index) => (
-                                <ProductCard
-                                    data={event}
-                                    key={index}
-                                    isShop={true}
-                                    isEvent={true}
-                                />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="w-full text-center py-20">
-                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <FiBarChart className="text-2xl text-green-600" />
-                            </div>
-                            <h5 className="text-lg font-semibold text-gray-900 mb-2">
-                                {t("myShop.noEvents", "No Events Available")}
-                            </h5>
-                            <p className="text-gray-600 mb-4">
-                                {t("myShop.noEventsDesc", "You haven't created any events for your shop yet.")}
-                            </p>
-                            <Link to="/dashboard-create-event" className="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                                <FiPlus className="mr-2" size={16} />
-                                {t("myShop.createFirstEvent", "Create Your First Event")}
-                            </Link>
-                        </div>
-                    )}
-                </div>
-            )}
+            {/* Content Area */}
+            <div className="p-8">
 
-            {/* Shop reviews */}
-            {active === 3 && (
-                <div className="w-full">
-                    {loadingUsers && (
-                        <div className="flex items-center justify-center py-4">
-                            <div className="flex items-center gap-2 text-gray-600">
-                                <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                                <span>{t("common.loadingUserData", "Loading user information...")}</span>
+                {active === 1 && (
+                    <div>
+                        {products && products.length > 0 ? (
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-xl font-semibold text-gray-900">
+                                        {t("myShop.myProducts", "My Products")} ({products.length})
+                                    </h3>
+                                    <Link to="/dashboard-create-product" className="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md">
+                                        <FiPlus className="mr-2" size={16} />
+                                        {t("myShop.addProduct", "Add Product")}
+                                    </Link>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {products.map((product, index) => (
+                                        <ProductCard data={product} key={index} isShop={true} />
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="text-center py-16">
+                                <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                                    <FiPackage className="text-3xl text-blue-600" />
+                                </div>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                                    {t("myShop.noProducts", "No Products Yet")}
+                                </h3>
+                                <p className="text-gray-600 mb-8 max-w-md mx-auto text-lg">
+                                    {t("myShop.noProductsDesc", "Start building your shop by adding your first product. It's easy and takes just a few minutes!")}
+                                </p>
+                                <Link to="/dashboard-create-product" className="inline-flex items-center bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 transform hover:scale-105 shadow-lg">
+                                    <FiPlus className="mr-3" size={20} />
+                                    {t("myShop.createFirstProduct", "Create Your First Product")}
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {active === 2 && (
+                    <div>
+                        {events && events.length > 0 ? (
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-xl font-semibold text-gray-900">
+                                        {t("myShop.myEvents", "My Events")} ({events.length})
+                                    </h3>
+                                    <Link to="/dashboard-create-event" className="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors shadow-md">
+                                        <FiPlus className="mr-2" size={16} />
+                                        {t("myShop.addEvent", "Add Event")}
+                                    </Link>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {events.map((event, index) => (
+                                        <ProductCard
+                                            data={event}
+                                            key={index}
+                                            isShop={true}
+                                            isEvent={true}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="text-center py-16">
+                                <div className="w-24 h-24 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                                    <FiBarChart className="text-3xl text-green-600" />
+                                </div>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                                    {t("myShop.noEvents", "No Events Yet")}
+                                </h3>
+                                <p className="text-gray-600 mb-8 max-w-md mx-auto text-lg">
+                                    {t("myShop.noEventsDesc", "Create exciting events to attract customers and boost your sales. Events help showcase your products in a special way!")}
+                                </p>
+                                <Link to="/dashboard-create-event" className="inline-flex items-center bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-200 transform hover:scale-105 shadow-lg">
+                                    <FiPlus className="mr-3" size={20} />
+                                    {t("myShop.createFirstEvent", "Create Your First Event")}
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Shop reviews */}
+                {active === 3 && (
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-xl font-semibold text-gray-900">
+                                {t("myShop.shopReviews", "Customer Reviews")} ({allReviews?.length || 0})
+                            </h3>
+                            <div className="text-sm text-gray-500">
+                                {t("myShop.reviewSummary", "Customer feedback and ratings")}
                             </div>
                         </div>
-                    )}
+                        
+                        {loadingUsers && (
+                            <div className="flex items-center justify-center py-8">
+                                <div className="flex items-center gap-3 text-gray-600">
+                                    <div className="animate-spin w-5 h-5 border-2 border-purple-600 border-t-transparent rounded-full"></div>
+                                    <span className="font-medium">{t("common.loadingUserData", "Loading user information...")}</span>
+                                </div>
+                            </div>
+                        )}
                     
                     {allReviews &&
                         allReviews.map((item, index) => {
@@ -275,7 +350,7 @@ const MyShopProfileData = () => {
                             const userAvatar = fullUserData?.avatar;
                             
                             return (
-                                <div className="w-full flex my-4 p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200" key={index}>
+                                <div className="w-full flex p-6 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200" key={index}>
                                     <div className="flex-shrink-0">
                                         <Avatar 
                                             user={{ name: userName, avatar: userAvatar }} 
@@ -355,31 +430,32 @@ const MyShopProfileData = () => {
                                 </div>
                             );
                         })}
-                    {allReviews && allReviews.length === 0 && (
-                        <div className="w-full text-center py-20">
-                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <span className="text-2xl">💬</span>
+                        {allReviews && allReviews.length === 0 && (
+                            <div className="text-center py-16">
+                                <div className="w-24 h-24 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                                    <span className="text-3xl">💬</span>
+                                </div>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                                    {t("myShop.noReviews", "No Reviews Yet")}
+                                </h3>
+                                <p className="text-gray-600 mb-8 max-w-md mx-auto text-lg">
+                                    {t("myShop.noReviewsDesc", "Your shop hasn't received any reviews yet. Reviews will appear here once customers rate your products or events.")}
+                                </p>
+                                <div className="flex items-center justify-center gap-6 text-sm text-gray-500">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                        <span>Product Reviews</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                        <span>Event Reviews</span>
+                                    </div>
+                                </div>
                             </div>
-                            <h5 className="text-lg font-semibold text-gray-900 mb-2">
-                                {t("myShop.noReviews", "No Reviews Yet")}
-                            </h5>
-                            <p className="text-gray-600 mb-4 max-w-md mx-auto">
-                                {t("myShop.noReviewsDesc", "Your shop hasn't received any reviews yet. Reviews will appear here once customers rate your products or events.")}
-                            </p>
-                            <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
-                                <span className="flex items-center gap-1">
-                                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                                    Product Reviews
-                                </span>
-                                <span className="flex items-center gap-1">
-                                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                                    Event Reviews
-                                </span>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

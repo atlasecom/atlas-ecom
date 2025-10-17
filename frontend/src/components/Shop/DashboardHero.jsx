@@ -224,6 +224,87 @@ const DashboardHero = () => {
                         </div>
                     </div>
 
+                    {/* Quick Actions */}
+                    <div className="mb-6 sm:mb-8 lg:mb-10">
+                        <div className="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
+                            <div className="bg-gradient-to-r from-purple-50 to-indigo-100 px-4 sm:px-5 lg:px-6 py-4 border-b border-purple-200">
+                                <h2 className="text-xl sm:text-2xl font-bold text-purple-900">{t("dashboard.quickActions", "Quick Actions")}</h2>
+                                <p className="text-sm text-purple-700 mt-1">{t("dashboard.createNewContent", "Create new products and events to grow your business")}</p>
+                            </div>
+                            
+                            <div className="p-4 sm:p-5 lg:p-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                    {/* Create Product Button */}
+                                    <Link
+                                        to="/dashboard-create-product"
+                                        className="group relative overflow-hidden bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl"
+                                    >
+                                        <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                                        <div className="relative flex items-center space-x-4">
+                                            <div className="bg-white bg-opacity-20 p-3 rounded-lg">
+                                                <FiPackage className="text-2xl sm:text-3xl" />
+                                            </div>
+                                            <div className="flex-1">
+                                                <h3 className="text-lg sm:text-xl font-bold mb-1">{t("dashboard.createProduct", "Create Product")}</h3>
+                                                <p className="text-blue-100 text-sm sm:text-base">{t("dashboard.addNewProduct", "Add a new product to your shop")}</p>
+                                            </div>
+                                            <div className="text-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+                                                <FiPlus />
+                                            </div>
+                                        </div>
+                                    </Link>
+
+                                    {/* Create Event Button */}
+                                    <Link
+                                        to="/dashboard-create-event"
+                                        className="group relative overflow-hidden bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl"
+                                    >
+                                        <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                                        <div className="relative flex items-center space-x-4">
+                                            <div className="bg-white bg-opacity-20 p-3 rounded-lg">
+                                                <FiBarChart className="text-2xl sm:text-3xl" />
+                                            </div>
+                                            <div className="flex-1">
+                                                <h3 className="text-lg sm:text-xl font-bold mb-1">{t("dashboard.createEvent", "Create Event")}</h3>
+                                                <p className="text-green-100 text-sm sm:text-base">{t("dashboard.addNewEvent", "Create an exciting event for your customers")}</p>
+                                            </div>
+                                            <div className="text-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+                                                <FiPlus />
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </div>
+
+                                {/* Additional Quick Actions Row */}
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 sm:mt-6">
+                                    <Link
+                                        to="/dashboard-products"
+                                        className="flex items-center justify-center space-x-3 bg-gray-50 hover:bg-gray-100 rounded-lg p-4 transition-colors duration-200 border border-gray-200 hover:border-gray-300"
+                                    >
+                                        <FiPackage className="text-blue-600" size={20} />
+                                        <span className="text-gray-700 font-medium text-sm sm:text-base">{t("dashboard.manageProducts", "Manage Products")}</span>
+                                    </Link>
+                                    
+                                    <Link
+                                        to="/dashboard-events"
+                                        className="flex items-center justify-center space-x-3 bg-gray-50 hover:bg-gray-100 rounded-lg p-4 transition-colors duration-200 border border-gray-200 hover:border-gray-300"
+                                    >
+                                        <FiBarChart className="text-green-600" size={20} />
+                                        <span className="text-gray-700 font-medium text-sm sm:text-base">{t("dashboard.manageEvents", "Manage Events")}</span>
+                                    </Link>
+                                    
+                                    <Link
+                                        to="/shop/me"
+                                        className="flex items-center justify-center space-x-3 bg-gray-50 hover:bg-gray-100 rounded-lg p-4 transition-colors duration-200 border border-gray-200 hover:border-gray-300"
+                                    >
+                                        <FiCamera className="text-purple-600" size={20} />
+                                        <span className="text-gray-700 font-medium text-sm sm:text-base">{t("dashboard.viewShop", "View Shop")}</span>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Recent Products */}
                     <div className="mb-6 sm:mb-8 lg:mb-10">
                         <div className="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">

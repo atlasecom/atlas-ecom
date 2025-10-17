@@ -33,11 +33,22 @@ const AllSellers = () => {
     try {
       setLoading(true);
       const token = getAuthToken();
-      const response = await axios.get(`${server}/admin/sellers`, {
+      console.log('📡 Fetching sellers...');
+      
+      const response = await axios.get(`${server}/api/admin/sellers`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
+      console.log('📦 Sellers response:', response.data);
+      
       if (response.data.success) {
+        console.log('✅ Setting sellers:', response.data.sellers.length, 'sellers');
+        console.log('📊 Sellers data:', response.data.sellers.map(s => ({
+          id: s._id,
+          name: s.name,
+          isApproved: s.isApproved,
+          shop: s.shop ? { id: s.shop._id, name: s.shop.name, isApproved: s.shop?.isApproved } : null
+        })));
         setSellers(response.data.sellers);
       } else {
         toast.error("Failed to fetch sellers");
@@ -99,12 +110,18 @@ const AllSellers = () => {
   const handleApprove = async (id) => {
     try {
       const token = getAuthToken();
-      await axios.post(`${server}/admin/sellers/${id}/approve`, {}, {
+      console.log('🔄 Approving seller:', id);
+      
+      const response = await axios.post(`${server}/api/admin/sellers/${id}/approve`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
+      console.log('✅ Approve response:', response.data);
       toast.success("Seller approved successfully!");
-      fetchSellers();
+      
+      // Wait for the sellers list to refresh
+      await fetchSellers();
+      console.log('✅ Sellers list refreshed');
     } catch (error) {
       console.error("Error approving seller:", error);
       toast.error(error.response?.data?.message || "Failed to approve seller");
@@ -114,12 +131,18 @@ const AllSellers = () => {
   const handleReject = async (id) => {
     try {
       const token = getAuthToken();
-      await axios.post(`${server}/admin/sellers/${id}/reject`, {}, {
+      console.log('🔄 Rejecting seller:', id);
+      
+      const response = await axios.post(`${server}/api/admin/sellers/${id}/reject`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
+      console.log('✅ Reject response:', response.data);
       toast.success("Seller rejected successfully!");
-      fetchSellers();
+      
+      // Wait for the sellers list to refresh
+      await fetchSellers();
+      console.log('✅ Sellers list refreshed');
     } catch (error) {
       console.error("Error rejecting seller:", error);
       toast.error(error.response?.data?.message || "Failed to reject seller");
@@ -129,7 +152,7 @@ const AllSellers = () => {
   const handleDelete = async (id) => {
     try {
       const token = getAuthToken();
-      await axios.delete(`${server}/admin/sellers/${id}`, {
+      await axios.delete(`${server}/api/admin/sellers/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       

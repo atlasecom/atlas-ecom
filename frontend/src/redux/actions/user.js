@@ -1,6 +1,8 @@
 import axios from "axios";
 import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
+import { loadWishlist } from "./wishlist";
+
 // load user (unified authentication)
 export const loadUser = () => async (dispatch) => {
   try {
@@ -17,6 +19,9 @@ export const loadUser = () => async (dispatch) => {
       type: "LoadUserSuccess",
       payload: data.user,
     });
+    
+    // Load wishlist after successful user load
+    dispatch(loadWishlist());
   } catch (error) {
     dispatch({
       type: "LoadUserFail",

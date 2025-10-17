@@ -9,7 +9,10 @@
     "client": "cd frontend && npm start",
     "build": "cd frontend && npm run build",
     "install-all": "npm install && cd backendd && npm install && cd ../frontend && npm install",
-    "start": "cd backendd && npm start"
+    "start": "cd backendd && npm start",
+    "local": "concurrently \"npm run local:server\" \"npm run local:client\"",
+    "local:server": "cd backendd && npm run local:dev",
+    "local:client": "cd frontend && npm start"
   },
   "keywords": [
     "ecommerce",

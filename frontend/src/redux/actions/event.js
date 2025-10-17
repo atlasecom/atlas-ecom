@@ -104,7 +104,7 @@ export const getAllEvents = () => async (dispatch) => {
       type: "getAlleventsRequest",
     });
 
-    const { data } = await axios.get(`${server}/events`);
+    const { data } = await axios.get(`${server}/events?limit=50`);
     dispatch({
       type: "getAlleventsSuccess",
       payload: data.events,

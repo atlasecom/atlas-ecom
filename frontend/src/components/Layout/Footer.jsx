@@ -9,13 +9,14 @@ import {
     footercompanyLinks,
     footerProductLinks,
     footerSupportLinks,
-    categoriesData,
 } from "../../static/data";
+import { useCategories } from "../../hooks/useCategories";
 import atlasLogo from "../../Assests/images/atlasEcom.png";
 
 
 const Footer = () => {
     const { t, i18n } = useTranslation();
+    const { categories, loading: categoriesLoading } = useCategories();
     
     return (
         <div className="bg-gradient-to-br from-orange-50 via-white to-orange-100 text-slate-800">
@@ -78,41 +79,57 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Categories - First Section (5 items) */}
+                    {/* Categories - First Section */}
                     <div className="text-center sm:text-start">
                         <h2 className="text-xl font-bold text-slate-800 mb-6 border-b-2 border-orange-200 pb-2">
                             {t('footer.categories', 'Categories')}
                         </h2>
                         <ul className="space-y-3">
-                            {categoriesData.slice(0, 5).map((category, index) => (
-                                <li key={category.id}>
-                                    <Link
-                                        className="text-slate-600 hover:text-orange-600 duration-300 text-sm cursor-pointer leading-6 block py-1 hover:translate-x-1 transition-all duration-300"
-                                        to={`/products?category=${encodeURIComponent(category.title.en)}`}
-                                    >
-                                        {category.title[i18n.language] || category.title.en}
-                                    </Link>
-                                </li>
-                            ))}
+                            {categoriesLoading ? (
+                                <li className="text-slate-500 text-sm">{t('footer.loading', 'Loading...')}</li>
+                            ) : categories.length > 0 ? (
+                                categories.slice(0, 5).map((category) => (
+                                    <li key={category._id}>
+                                        <Link
+                                            className="text-slate-600 hover:text-orange-600 duration-300 text-sm cursor-pointer leading-6 block py-1 hover:translate-x-1 transition-all duration-300"
+                                            to={`/products?category=${category._id}`}
+                                        >
+                                            {i18n.language === 'ar' ? category.nameAr : 
+                                             i18n.language === 'fr' ? category.nameFr : 
+                                             category.name}
+                                        </Link>
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="text-slate-500 text-sm">{t('footer.noCategories', 'No categories available')}</li>
+                            )}
                         </ul>
                     </div>
 
-                    {/* Categories - Second Section (6 items) */}
+                    {/* Categories - Second Section */}
                     <div className="text-center sm:text-start">
                         <h2 className="text-xl font-bold text-slate-800 mb-6 border-b-2 border-orange-200 pb-2">
-                            {t('footer.categories', 'Categories')}
+                            {t('footer.moreCategories', 'More Categories')}
                         </h2>
                         <ul className="space-y-3">
-                            {categoriesData.slice(5, 11).map((category, index) => (
-                                <li key={category.id}>
-                                    <Link
-                                        className="text-slate-600 hover:text-orange-600 duration-300 text-sm cursor-pointer leading-6 block py-1 hover:translate-x-1 transition-all duration-300"
-                                        to={`/products?category=${encodeURIComponent(category.title.en)}`}
-                                    >
-                                        {category.title[i18n.language] || category.title.en}
-                                    </Link>
-                                </li>
-                            ))}
+                            {categoriesLoading ? (
+                                <li className="text-slate-500 text-sm">{t('footer.loading', 'Loading...')}</li>
+                            ) : categories.length > 5 ? (
+                                categories.slice(5, 10).map((category) => (
+                                    <li key={category._id}>
+                                        <Link
+                                            className="text-slate-600 hover:text-orange-600 duration-300 text-sm cursor-pointer leading-6 block py-1 hover:translate-x-1 transition-all duration-300"
+                                            to={`/products?category=${category._id}`}
+                                        >
+                                            {i18n.language === 'ar' ? category.nameAr : 
+                                             i18n.language === 'fr' ? category.nameFr : 
+                                             category.name}
+                                        </Link>
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="text-slate-500 text-sm">{t('footer.noMoreCategories', 'No more categories')}</li>
+                            )}
                         </ul>
                     </div>
 

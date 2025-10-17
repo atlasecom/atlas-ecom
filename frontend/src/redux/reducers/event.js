@@ -5,6 +5,9 @@ const initialState = {
   message: null,
   error: null,
   success: false,
+  allEvents: [],
+  events: [],
+  event: null,
 };
 
 export const eventReducer = createReducer(initialState, {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from "react-redux";
 import { productData } from '../../static/data'
 import styles from "../../styles/styles";
-import ProductCard from "../Route/ProductCard/ProductCardNew";
+import ProductCard from "../Route/ProductCard/ProductCard";
 import { useTranslation } from "react-i18next";
 
 

@@ -5,8 +5,11 @@ import {
   FiUser, 
   FiSettings, 
   FiBarChart,
+  FiBarChart2,
   FiPackage,
-  FiX
+  FiX,
+  FiTag,
+  FiVideo
 } from "react-icons/fi";
 import { GrWorkshop } from "react-icons/gr";
 import { RxDashboard } from "react-icons/rx";
@@ -65,6 +68,42 @@ const AdminSideBar = () => {
     },
     {
       id: 6,
+      title: t("admin.sidebar.categories", "Categories"),
+      icon: FiTag,
+      path: '/admin-categories',
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50',
+      borderColor: 'border-orange-200'
+    },
+    {
+      id: 7,
+      title: t("admin.sidebar.analytics", "Analytics"),
+      icon: FiBarChart2,
+      path: '/admin-analytics',
+      color: 'text-cyan-600',
+      bgColor: 'bg-cyan-50',
+      borderColor: 'border-cyan-200'
+    },
+    {
+      id: 8,
+      title: t("admin.sidebar.payments", "Payments"),
+      icon: FiBarChart,
+      path: '/admin-payments',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      borderColor: 'border-green-200'
+    },
+    {
+      id: 9,
+      title: t("admin.sidebar.tutorials", "Tutorials"),
+      icon: FiVideo,
+      path: '/admin-tutorials',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+      borderColor: 'border-purple-200'
+    },
+    {
+      id: 10,
       title: t("admin.sidebar.settings", "Settings"),
       icon: FiSettings,
       path: '/admin-settings',
@@ -96,7 +135,7 @@ const AdminSideBar = () => {
     <>
       {/* Desktop Sidebar - Always visible on large screens */}
       <div className="hidden lg:block lg:w-[330px] lg:flex-shrink-0">
-        <div className="w-full h-[90vh] bg-white shadow-lg border-r border-gray-200 overflow-y-auto">
+        <div className="w-full h-screen bg-white shadow-lg border-r border-gray-200 overflow-y-auto sticky top-0">
           {/* Header */}
           <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
             <div className="flex items-center space-x-3">

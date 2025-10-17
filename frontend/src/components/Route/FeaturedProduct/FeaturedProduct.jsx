@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "../../../styles/styles";
-import ProductCard from "../ProductCard/ProductCardNew";
+import ProductCard from "../ProductCard/ProductCard";
 import axios from "axios";
 import { server } from "../../../server";
+import { shuffleArray } from "../../../utils/shuffle";
 
 const ITEMS_PER_PAGE = 50;
 
@@ -17,7 +18,7 @@ const FeaturedProduct = () => {
   const fetchAllProducts = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${server}/products`);
+      const response = await axios.get(`${server}/api/v2/products`);
       if (response.data.success) {
         setAllProducts(response.data.products);
       }
@@ -33,9 +34,33 @@ const FeaturedProduct = () => {
     fetchAllProducts();
   }, []);
 
-  const totalPages = Math.ceil((allProducts?.length || 0) / ITEMS_PER_PAGE);
+  // Sort products: boosted first, then random for normal products
+  const sortedProducts = (() => {
+    if (!allProducts || allProducts.length === 0) return [];
+    
+    // Separate boosted and normal products
+    const boostedProducts = allProducts.filter(product => product.isBoosted);
+    const normalProducts = allProducts.filter(product => !product.isBoosted);
+    
+    // Sort boosted products by priority (highest first)
+    boostedProducts.sort((a, b) => {
+      if (a.boostPriority !== b.boostPriority) {
+        return b.boostPriority - a.boostPriority;
+      }
+      // If same priority, sort by creation date (newer first)
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    
+    // Shuffle normal products for true randomization
+    const shuffledNormalProducts = shuffleArray(normalProducts);
+    
+    // Combine: boosted first, then shuffled normal products
+    return [...boostedProducts, ...shuffledNormalProducts];
+  })();
+
+  const totalPages = Math.ceil((sortedProducts?.length || 0) / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentProducts = allProducts?.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentProducts = sortedProducts?.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {

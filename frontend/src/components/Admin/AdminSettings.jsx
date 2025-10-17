@@ -87,7 +87,7 @@ const AdminSettings = () => {
   const fetchAdmins = async () => {
     try {
       const token = getAuthToken();
-      const response = await axios.get(`${server}/admin/users`, {
+      const response = await axios.get(`${server}/api/admin/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -124,7 +124,7 @@ const AdminSettings = () => {
     setIsCreatingAdmin(true);
     try {
       const token = getAuthToken();
-      const response = await axios.post(`${server}/admin/create-admin`, {
+      const response = await axios.post(`${server}/api/admin/create-admin`, {
         name: newAdminName,
         email: newAdminEmail,
         password: newAdminPassword,
@@ -164,7 +164,7 @@ const AdminSettings = () => {
 
     try {
       const token = getAuthToken();
-      const response = await axios.delete(`${server}/admin/users/${adminId}`, {
+      const response = await axios.delete(`${server}/api/admin/users/${adminId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

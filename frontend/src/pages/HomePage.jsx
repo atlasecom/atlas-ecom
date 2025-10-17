@@ -1,6 +1,5 @@
 import React from "react";
 import Header from "../components/Layout/Header";
-import BestDeals from "../components/Route/BestDeals/BestDeals";
 import Events from "../components/Events/Events";
 import FeaturedProduct from "../components/Route/FeaturedProduct/FeaturedProduct";
 import Features from "../components/Route/Features/Features";
@@ -69,7 +68,6 @@ const HomePage = () => {
       <div className="relative z-10">
         <CategorySlider />
         <FeaturedProduct />
-        <BestDeals />
         <Features />
         <Events />
         

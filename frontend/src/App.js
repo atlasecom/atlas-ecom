@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import "./App.css";
+import "./styles/mobile-utilities.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import ScrollToTop from "./components/Common/ScrollToTop";
@@ -35,7 +36,9 @@ import {
   ShopCreateEvents,
   ShopAllEvents,
   ShopPreviewPage,
+  ShopTutorialsPage,
   ShopSettingsPage,
+  DashboardSubscription,
 } from "./routes/ShopRoutes";
 
 import {
@@ -45,6 +48,10 @@ import {
   AdminDashboardProducts,
   AdminDashboardEvents,
   AdminDashboardSettings,
+  AdminDashboardCategories,
+  AdminDashboardAnalytics,
+  AdminDashboardTutorials,
+  AdminPaymentsPage,
 } from "./routes/AdminRoutes";
 
 import SearchResults from "./pages/SearchResults";
@@ -69,6 +76,8 @@ import {
   ShopDashboardEventsPage,
   ShopDashboardOrdersPage,
   ShopDashboardSettingsPage,
+  ShopDashboardEditProductPage,
+  ShopDashboardEditEventPage,
 } from "./routes/ShopRoutes";
 const App = () => {
   const dispatch = useDispatch();
@@ -200,6 +209,24 @@ const App = () => {
         />
 
         <Route
+          path="/dashboard-tutorials"
+          element={
+            <SellerProtectedRoute>
+              <ShopTutorialsPage />
+            </SellerProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard-subscription"
+          element={
+            <SellerProtectedRoute>
+              <DashboardSubscription />
+            </SellerProtectedRoute>
+          }
+        />
+
+        <Route
           path="/dashboard-products"
           element={
             <SellerProtectedRoute>
@@ -245,6 +272,24 @@ const App = () => {
         />
 
         <Route
+          path="/dashboard-edit-product/:id"
+          element={
+            <SellerProtectedRoute>
+              <ShopDashboardEditProductPage />
+            </SellerProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard-edit-event/:id"
+          element={
+            <SellerProtectedRoute>
+              <ShopDashboardEditEventPage />
+            </SellerProtectedRoute>
+          }
+        />
+
+        <Route
           path="/admin/dashboard"
           element={
             <ProtectedAdminRoute>
@@ -283,6 +328,42 @@ const App = () => {
           element={
             <ProtectedAdminRoute>
               <AdminDashboardEvents />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin-categories"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboardCategories />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin-analytics"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboardAnalytics />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin-payments"
+          element={
+            <ProtectedAdminRoute>
+              <AdminPaymentsPage />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin-tutorials"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboardTutorials />
             </ProtectedAdminRoute>
           }
         />

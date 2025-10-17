@@ -132,14 +132,6 @@ const CountDown = ({ data, t, isRTL }) => {
         </div>
       </div>
 
-      {/* Simple Urgency Message */}
-      {timeLeft.days <= 3 && timeLeft.days > 0 && (
-        <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded-lg text-center sm:text-left">
-          <span className="text-orange-700 text-xs">
-            {t ? t('countdown.endingSoon', 'Ending soon!') : 'Ending soon!'}
-          </span>
-        </div>
-      )}
     </div>
   );
 };

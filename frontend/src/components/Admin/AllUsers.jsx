@@ -27,7 +27,7 @@ const AllUsers = () => {
     try {
       setLoading(true);
       const token = getAuthToken();
-      const response = await axios.get(`${server}/admin/users`, {
+      const response = await axios.get(`${server}/api/admin/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -103,7 +103,7 @@ const AllUsers = () => {
   const handleDelete = async (id) => {
     try {
       const token = getAuthToken();
-      await axios.delete(`${server}/admin/users/${id}`, {
+      await axios.delete(`${server}/api/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -344,6 +344,16 @@ const AllUsers = () => {
                   <AiOutlineEye className="mr-1" />
                   View Profile
                 </button>
+                {user.role === 'seller' && user.shop?._id && (
+                  <button
+                    onClick={() => window.open(`/shop/preview/${user.shop._id}`, '_blank')}
+                    className="flex-1 bg-green-600 text-white text-sm py-2 px-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center"
+                    title={t("admin.allUsers.viewShop", "View Shop")}
+                  >
+                    <AiOutlineEye className="mr-1" />
+                    View Shop
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setUserId(user._id);

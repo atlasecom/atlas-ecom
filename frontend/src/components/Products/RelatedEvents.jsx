@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from "react-redux";
 import styles from "../../styles/styles";
 import EventCard from "../Events/EventCard";
-import ProductCardNew from "../Route/ProductCard/ProductCardNew";
+import ProductCard from "../Route/ProductCard/ProductCard";
 import { useTranslation } from "react-i18next";
 
 const RelatedEvents = ({ data, isEvent = false }) => {
@@ -46,7 +46,7 @@ const RelatedEvents = ({ data, isEvent = false }) => {
                             isEvent ? (
                                 <EventCard data={item} key={index} />
                             ) : (
-                                <ProductCardNew data={item} key={index} />
+                                <ProductCard data={item} key={index} />
                             )
                         ))}
                     </div>

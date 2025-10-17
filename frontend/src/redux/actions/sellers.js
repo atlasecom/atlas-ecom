@@ -10,7 +10,7 @@ export const getAllSellers = () => async (dispatch) => {
     });
 
     const token = getAuthToken();
-    const { data } = await axios.get(`${server}/admin/sellers`, {
+    const { data } = await axios.get(`${server}/api/admin/sellers`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

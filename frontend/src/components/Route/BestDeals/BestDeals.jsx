@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "../../../styles/styles";
-import ProductCard from "../ProductCard/ProductCardNew";
+import ProductCard from "../ProductCard/ProductCard";
 import axios from "axios";
 import { server } from "../../../server";
 

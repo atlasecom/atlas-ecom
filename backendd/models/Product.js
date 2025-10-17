@@ -36,26 +36,44 @@ const productSchema = new mongoose.Schema({
     maxLength: [2000, 'Product description cannot exceed 2000 characters']
   },
   category: {
-    type: String,
-    required: [true, 'Please select category for this product'],
-    enum: [
-      'Electronics',
-      'Fashion & Apparel',
-      'Home & Garden',
-      'Sports & Outdoors',
-      'Health & Beauty',
-      'Books & Media',
-      'Automotive',
-      'Toys & Games',
-      'Food & Beverages',
-      'Jewelry & Accessories',
-      'Pet Supplies'
-    ]
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: [true, 'Please select category for this product']
   },
-  tags: {
+  subcategory: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SubCategory',
+    required: [true, 'Please select subcategory for this product']
+  },
+  // Legacy category field for backward compatibility
+  legacyCategory: {
     type: String,
     trim: true
   },
+  // Enhanced tags system
+  tags: {
+    en: [{
+      type: String,
+      trim: true,
+      maxLength: [30, 'English tag cannot exceed 30 characters']
+    }],
+    ar: [{
+      type: String,
+      trim: true,
+      maxLength: [30, 'Arabic tag cannot exceed 30 characters']
+    }],
+    fr: [{
+      type: String,
+      trim: true,
+      maxLength: [30, 'French tag cannot exceed 30 characters']
+    }]
+  },
+  // Combined search tags (all languages combined for text search)
+  searchTags: [{
+    type: String,
+    trim: true,
+    lowercase: true
+  }],
   originalPrice: {
     type: Number,
     required: [true, 'Please enter product price']
@@ -107,6 +125,73 @@ const productSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  // Product approval system
+  isApproved: {
+    type: Boolean,
+    default: false
+  },
+  approvalStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
+  },
+  rejectionReason: {
+    type: String,
+    default: ''
+  },
+  approvedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  approvedAt: {
+    type: Date
+  },
+  // Boost system
+  isBoosted: {
+    type: Boolean,
+    default: false
+  },
+  boostPriority: {
+    type: Number,
+    default: 0
+  },
+  boostExpiresAt: Date,
+  boostClicksRemaining: {
+    type: Number,
+    default: 0
+  },
+  // Click tracking for boost system
+  clickTracking: {
+    whatsapp: {
+      type: Number,
+      default: 0
+    },
+    telegram: {
+      type: Number,
+      default: 0
+    },
+    total: {
+      type: Number,
+      default: 0
+    }
+  },
+  // Analytics tracking fields
+  viewCount: {
+    type: Number,
+    default: 0
+  },
+  whatsappClicks: {
+    type: Number,
+    default: 0
+  },
+  telegramClicks: {
+    type: Number,
+    default: 0
+  },
+  favoritesCount: {
+    type: Number,
+    default: 0
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -125,12 +210,29 @@ productSchema.pre('save', function(next) {
   next();
 });
 
+// Pre-save middleware to update searchTags
+productSchema.pre('save', function(next) {
+  // Combine all tags from all languages for search
+  const allTags = [
+    ...(this.tags.en || []),
+    ...(this.tags.ar || []),
+    ...(this.tags.fr || []),
+    this.name,
+    this.description
+  ].map(tag => tag.toLowerCase().trim()).filter(tag => tag.length > 0);
+  
+  this.searchTags = [...new Set(allTags)]; // Remove duplicates
+  next();
+});
+
 // Create indexes
 productSchema.index({ shop: 1 });
 productSchema.index({ category: 1 });
+productSchema.index({ subcategory: 1 });
 productSchema.index({ discountPrice: 1 });
 productSchema.index({ ratings: 1 });
 productSchema.index({ isActive: 1 });
+productSchema.index({ searchTags: 'text' }); // Text search index for multilingual tags
 productSchema.index({ name: 'text', description: 'text' });
 
 module.exports = mongoose.model('Product', productSchema);

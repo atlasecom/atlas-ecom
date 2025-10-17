@@ -16,12 +16,13 @@ import {
 import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "./Ratings";
-import axios from "axios";
 import { useTranslation } from "react-i18next";
 import Avatar from "../Common/Avatar";
 import Loader from "../Layout/Loader";
-import { categoriesData } from "../../static/data";
-import { getAuthToken } from "../../utils/auth";
+import { useCategories } from "../../hooks/useCategories";
+import axios from "axios";
+import BoostBadge from "../Common/BoostBadge";
+import VerifiedBadge from "../Common/VerifiedBadge";
 
 const ProductDetails = ({ data, isEvent = false }) => {
   const { t, i18n } = useTranslation();
@@ -35,24 +36,68 @@ const ProductDetails = ({ data, isEvent = false }) => {
 
   const [click, setClick] = useState(false);
   const [select, setSelect] = useState(0);
-  const [rating, setRating] = useState(1);
-  const [comment, setComment] = useState("");
-  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   const [countdown, setCountdown] = useState(0);
   const navigate = useNavigate();
+  
+  // Use dynamic categories from API
+  const { categories, subcategories, getCategoryById, getSubcategoryById } = useCategories();
+
+  // Debug product data
+  useEffect(() => {
+    if (data) {
+      console.log('🔍 Product Data:', data);
+      console.log('📦 Category:', data.category);
+      console.log('📦 Category Type:', typeof data.category);
+      console.log('📦 Subcategory:', data.subcategory);
+      console.log('📦 Subcategory Type:', typeof data.subcategory);
+    }
+  }, [data]);
 
   // Helper function to get internationalized category name
-  const getCategoryName = (categoryName) => {
-    if (!categoryName) return categoryName;
+  const getCategoryName = (categoryData) => {
+    if (!categoryData) return t("common.unknownCategory", "Unknown Category");
+    
+    // If category is already populated (object)
+    if (typeof categoryData === 'object' && categoryData !== null) {
+      return i18n.language === 'ar' ? categoryData.nameAr : 
+             i18n.language === 'fr' ? categoryData.nameFr : 
+             categoryData.name || categoryData.nameEn;
+    }
+    
+    // If category is just an ID (string), fetch from hook
+    const category = getCategoryById(categoryData);
+    if (!category) {
+      console.warn('Category not found for ID:', categoryData);
+      return t("common.unknownCategory", "Unknown Category");
+    }
+    
+    return i18n.language === 'ar' ? category.nameAr : 
+           i18n.language === 'fr' ? category.nameFr : 
+           category.name;
+  };
 
-    const category = categoriesData.find(
-      (cat) => cat.title.en.toLowerCase() === categoryName.toLowerCase()
-    );
-
-    return category
-      ? category.title[i18n.language] || category.title.en
-      : categoryName;
+  // Helper function to get internationalized subcategory name
+  const getSubcategoryName = (subcategoryData) => {
+    if (!subcategoryData) return null;
+    
+    // If subcategory is already populated (object)
+    if (typeof subcategoryData === 'object' && subcategoryData !== null) {
+      return i18n.language === 'ar' ? subcategoryData.nameAr : 
+             i18n.language === 'fr' ? subcategoryData.nameFr : 
+             subcategoryData.name || subcategoryData.nameEn;
+    }
+    
+    // If subcategory is just an ID (string), fetch from hook
+    const subcategory = getSubcategoryById(subcategoryData);
+    if (!subcategory) {
+      console.warn('Subcategory not found for ID:', subcategoryData);
+      return null;
+    }
+    
+    return i18n.language === 'ar' ? subcategory.nameAr : 
+           i18n.language === 'fr' ? subcategory.nameFr : 
+           subcategory.name;
   };
 
   // Helper function to format currency based on language
@@ -216,84 +261,29 @@ const ProductDetails = ({ data, isEvent = false }) => {
     toast.success(t("common.addedToCart", "Added to cart!"));
   };
 
-  // Handle review submission
-  const handleReviewSubmit = async () => {
-    if (!isAuthenticated) {
-      toast.error(t("common.pleaseLogin", "Please login first!"));
-      return;
-    }
-
-    if (!data?._id) {
-      toast.error(t("common.productNotFound", "Product not found!"));
-      return;
-    }
-
-    if (comment.trim().length < 10) {
-      toast.error(t("common.commentTooShort", "Comment must be at least 10 characters long!"));
-      return;
-    }
-
-    if (comment.trim().length > 500) {
-      toast.error(t("common.commentTooLong", "Comment must be less than 500 characters!"));
-      return;
-    }
-
-    setIsSubmittingReview(true);
-
-    try {
-      const token = getAuthToken();
-      
-      // Use different endpoints for products vs events
-      const endpoint = isEvent 
-        ? `${server}/events/${data._id}/reviews`
-        : `${server}/products/${data._id}/reviews`;
-      
-      console.log("Submitting review to:", endpoint);
-      console.log("Review data:", { rating: parseInt(rating), comment: comment.trim() });
-      console.log("User authenticated:", isAuthenticated);
-      console.log("User data:", user);
-      
-      const response = await axios.post(
-        endpoint,
-        {
-          rating: parseInt(rating),
-          comment: comment.trim(),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      console.log("Review submission response:", response.data);
-
-      if (response.data.message || response.status === 200) {
-        toast.success(response.data.message || t("common.reviewSubmitted", "Review submitted successfully!"));
-        setRating(1);
-        setComment("");
-        // Refresh the page to show the new review
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error("Review submission error:", error);
-      console.error("Error response:", error.response?.data);
-      console.error("Error status:", error.response?.status);
-      
-      const errorMessage = error.response?.data?.message || 
-                          error.response?.data?.error ||
-                          t("common.reviewSubmissionError", "Failed to submit review!");
-      
-      toast.error(errorMessage);
-    } finally {
-      setIsSubmittingReview(false);
-    }
-  };
 
   
 
 
+
+  // Track view when component mounts
+  useEffect(() => {
+    if (data?._id) {
+      const trackView = async () => {
+        try {
+          const endpoint = isEvent 
+            ? `${server}/events/${data._id}/view`
+            : `${server}/products/${data._id}/view`;
+          
+          await axios.post(endpoint);
+        } catch (error) {
+          console.error('Error tracking view:', error);
+        }
+      };
+      
+      trackView();
+    }
+  }, [data?._id, isEvent]);
 
   // Countdown timer for events
   useEffect(() => {
@@ -321,7 +311,7 @@ const ProductDetails = ({ data, isEvent = false }) => {
         {/* Breadcrumb */}
         <nav className="mb-6 sm:mb-8">
           <div className="bg-white rounded-lg p-3 sm:p-4 shadow-sm">
-            <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 flex-wrap">
               <Link to="/" className="hover:text-blue-600 transition-colors">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
@@ -331,6 +321,24 @@ const ProductDetails = ({ data, isEvent = false }) => {
               <Link to={isEvent ? "/events" : "/products"} className="hover:text-blue-600 transition-colors">
                 {isEvent ? t("common.events", "Events") : t("common.products", "Products")}
               </Link>
+              <span>/</span>
+              <Link 
+                to={`/products?category=${data.category}`} 
+                className="hover:text-blue-600 transition-colors"
+              >
+                {getCategoryName(data.category)}
+              </Link>
+              {data.subcategory && getSubcategoryName(data.subcategory) && (
+                <>
+                  <span>/</span>
+                  <Link 
+                    to={`/products?category=${data.category}&subcategory=${data.subcategory}`} 
+                    className="hover:text-blue-600 transition-colors"
+                  >
+                    {getSubcategoryName(data.subcategory)}
+                  </Link>
+                </>
+              )}
               <span>/</span>
               <span className="text-gray-900 font-medium">{data.name}</span>
             </div>
@@ -413,20 +421,72 @@ const ProductDetails = ({ data, isEvent = false }) => {
 
             {/* Right Product Info Section */}
             <div className="p-4 sm:p-6 lg:p-8 800px:pl-10">
-              {/* Category Badge */}
-              <div className="mb-4">
+              {/* Category and Subcategory Badges */}
+              <div className="mb-4 flex flex-wrap gap-2">
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md">
                   <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
                   </svg>
                   {getCategoryName(data.category)}
                 </span>
+                {data.subcategory && getSubcategoryName(data.subcategory) && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-md">
+                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {getSubcategoryName(data.subcategory)}
+                  </span>
+                )}
               </div>
 
               {/* Product/Event Title */}
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 leading-tight">
                 {data.name}
               </h1>
+
+              {/* Badges Section */}
+              <div className="mb-4 sm:mb-6 flex flex-wrap gap-3">
+                {/* Sponsored Badge */}
+                {data.isBoosted && (
+                  <div className="flex items-center">
+                    <BoostBadge type="sponsored" size="md" />
+                  </div>
+                )}
+                
+                {/* Verified Seller Badge */}
+                {data.shop?.verifiedBadge && (
+                  <div className="flex items-center">
+                    <VerifiedBadge size="md" />
+                  </div>
+                )}
+              </div>
+
+              {/* Product Description */}
+              {!isEvent && data.description && (
+                <div className="mb-4 sm:mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 sm:p-6 border border-blue-100">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                    {t("common.productDescription", "Product Description")}
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    {data.description}
+                  </p>
+                  {data.tags && data.tags.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {(Array.isArray(data.tags) ? data.tags : data.tags.split(',')).map((tag, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full font-medium"
+                        >
+                          {typeof tag === 'string' ? tag.trim() : tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Event Description */}
               {isEvent && data.description && (
@@ -440,14 +500,14 @@ const ProductDetails = ({ data, isEvent = false }) => {
                   <p className="text-gray-700 leading-relaxed">
                     {data.description}
                   </p>
-                  {data.tags && (
+                  {data.tags && data.tags.length > 0 && (
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {data.tags.split(',').map((tag, index) => (
+                      {(Array.isArray(data.tags) ? data.tags : data.tags.split(',')).map((tag, index) => (
                         <span
                           key={index}
                           className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full font-medium"
                         >
-                          {tag.trim()}
+                          {typeof tag === 'string' ? tag.trim() : tag}
                         </span>
                       ))}
                     </div>
@@ -614,9 +674,9 @@ const ProductDetails = ({ data, isEvent = false }) => {
                   </div>
 
                   {/* Seller Statistics */}
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
-                    <div className="bg-white rounded-xl p-3 sm:p-4 text-center border border-gray-200 shadow-sm">
-                      <div className="text-xl sm:text-2xl font-bold text-blue-600">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-3 md:p-4 text-center border border-gray-200 shadow-sm">
+                      <div className="text-lg sm:text-xl md:text-2xl font-bold text-blue-600 leading-tight">
                         {(() => {
                           if (!data?.shop?._id) return 0;
                           
@@ -633,10 +693,10 @@ const ProductDetails = ({ data, isEvent = false }) => {
                           return shopProducts.length + shopEvents.length;
                         })()}
                       </div>
-                      <div className="text-sm text-gray-600">{t("common.items", "Items")}</div>
+                      <div className="text-xs sm:text-sm text-gray-600 font-medium leading-tight">{t("common.items", "Items")}</div>
                     </div>
-                    <div className="bg-white rounded-xl p-3 sm:p-4 text-center border border-gray-200 shadow-sm">
-                      <div className="text-xl sm:text-2xl font-bold text-yellow-600">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-3 md:p-4 text-center border border-gray-200 shadow-sm">
+                      <div className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-600 leading-tight">
                         {(() => {
                           if (!data?.shop?._id) return "0.0";
                           
@@ -671,7 +731,7 @@ const ProductDetails = ({ data, isEvent = false }) => {
                           return averageRating.toFixed(1);
                         })()}
                       </div>
-                      <div className="text-sm text-gray-600">{t("common.rating", "Rating")}</div>
+                      <div className="text-xs sm:text-sm text-gray-600 font-medium leading-tight">{t("common.rating", "Rating")}</div>
                     </div>
                   </div>
 
@@ -695,8 +755,15 @@ const ProductDetails = ({ data, isEvent = false }) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     {data.shop?.phoneNumber && (
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           try {
+                            // Track WhatsApp click
+                            const endpoint = isEvent 
+                              ? `${server}/events/${data._id}/whatsapp-click`
+                              : `${server}/products/${data._id}/whatsapp-click`;
+                            
+                            await axios.post(endpoint);
+                            
                             const phoneNumber = data.shop.phoneNumber.replace(/\D/g, '');
                             const message = `Hi, I'm interested in ${data.name}`;
                             window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
@@ -774,128 +841,6 @@ const ProductDetails = ({ data, isEvent = false }) => {
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <div className="mt-8 bg-white rounded-2xl shadow-lg p-6">
-
-          {/* Review Form */}
-          {isAuthenticated && (
-            <div className="mb-8 bg-gray-50 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                {t("reviews.writeReview", "Write a Review")}
-              </h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("reviews.rating", "Rating")}
-                  </label>
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        onClick={() => setRating(star)}
-                        className={`text-2xl ${
-                          star <= rating ? "text-yellow-400" : "text-gray-300"
-                        } hover:text-yellow-400 transition-colors`}
-                      >
-                        ★
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("reviews.comment", "Comment")}
-                  </label>
-                  <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder={t("reviews.commentPlaceholder", "Share your experience with this product...")}
-                  />
-                  <div className="text-right text-xs text-gray-500 mt-1">
-                    {comment.length}/500
-                  </div>
-                </div>
-
-                <button
-                  onClick={handleReviewSubmit}
-                  disabled={isSubmittingReview}
-                  className={`px-6 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-                    isSubmittingReview 
-                      ? "bg-gray-400 cursor-not-allowed" 
-                      : "bg-blue-600 hover:bg-blue-700"
-                  } text-white`}
-                >
-                  {isSubmittingReview && (
-                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-                  )}
-                  {isSubmittingReview 
-                    ? t("reviews.submitting", "Submitting...") 
-                    : t("reviews.submitReview", "Submit Review")
-                  }
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Reviews Display */}
-          {data?.reviews && data.reviews.length > 0 ? (
-            <div className="space-y-6">
-              {data.reviews.map((review, index) => (
-                <div key={index} className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">
-                        {review.user?.name ? review.user.name[0].toUpperCase() : "U"}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-semibold text-gray-900">
-                        {review.user?.name || t("common.anonymous", "Anonymous")}
-                      </h4>
-                      <div className="flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <span
-                            key={star}
-                            className={`text-sm ${
-                              star <= review.rating ? "text-yellow-400" : "text-gray-300"
-                            }`}
-                          >
-                            ★
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-gray-700 leading-relaxed">
-                      {review.comment}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-2">
-                      {new Date(review.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <div className="text-gray-400 mb-4">
-                <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {t("product.noReviews", "No reviews for this product!")}
-              </h3>
-              <p className="text-gray-500">
-                {t("product.beFirstToReview", "Be the first to review this product!")}
-              </p>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { setAuthToken } from "../../utils/auth";
+import atlasLogo from "../../Assests/images/atlasEcom - Copie.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -82,21 +83,15 @@ const Login = () => {
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in">
           <div className="mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            <Link to="/" className="inline-block">
+              <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={atlasLogo} 
+                  alt="Atlas Ecom" 
+                  className="w-16 h-16 object-contain"
                 />
-              </svg>
-            </div>
+              </div>
+            </Link>
           </div>
           <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
             {t("login.welcomeBack", "Welcome Back!")}

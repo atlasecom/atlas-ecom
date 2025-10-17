@@ -4,6 +4,7 @@ import styles from "../../styles/styles";
 import EventCard from "./EventCard";
 import axios from "axios";
 import { server } from "../../server";
+import { shuffleArray } from "../../utils/shuffle";
 
 const ITEMS_PER_PAGE = 50;
 
@@ -17,15 +18,17 @@ const Events = () => {
   const fetchEvents = async () => {
     try {
       setIsLoading(true);
-      console.log('Fetching events from:', `${server}/events`);
-      const response = await axios.get(`${server}/events`);
-      console.log('Events API response:', response.data);
+      const response = await axios.get(`${server}/events?limit=50`);
       if (response.data.success) {
-        setAllEvents(response.data.events || []);
-        console.log('Events set to state:', response.data.events);
+        const allEvents = response.data.events || [];
+        
+        // Show all events (including future events)
+        const activeEvents = allEvents;
+        
+        setAllEvents(activeEvents);
       }
     } catch (error) {
-      console.error('Error fetching events:', error);
+      console.error('❌ Error fetching events:', error);
       setAllEvents([]);
     } finally {
       setIsLoading(false);
@@ -36,9 +39,33 @@ const Events = () => {
     fetchEvents();
   }, []);
 
-  const totalPages = Math.ceil((allEvents?.length || 0) / ITEMS_PER_PAGE);
+  // Sort events: boosted first, then random for normal events
+  const sortedEvents = (() => {
+    if (!allEvents || allEvents.length === 0) return [];
+    
+    // Separate boosted and normal events
+    const boostedEvents = allEvents.filter(event => event.isBoosted);
+    const normalEvents = allEvents.filter(event => !event.isBoosted);
+    
+    // Sort boosted events by priority (highest first)
+    boostedEvents.sort((a, b) => {
+      if (a.boostPriority !== b.boostPriority) {
+        return b.boostPriority - a.boostPriority;
+      }
+      // If same priority, sort by creation date (newer first)
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    
+    // Shuffle normal events for true randomization
+    const shuffledNormalEvents = shuffleArray(normalEvents);
+    
+    // Combine: boosted first, then shuffled normal events
+    return [...boostedEvents, ...shuffledNormalEvents];
+  })();
+
+  const totalPages = Math.ceil((sortedEvents?.length || 0) / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentEvents = allEvents?.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentEvents = sortedEvents?.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -47,6 +74,7 @@ const Events = () => {
     }
   };
 
+  
   return (
     <div className="bg-gradient-to-br from-purple-50 via-white to-purple-50 py-6 sm:py-8 xl:py-10 2xl:py-12">
       <div className="w-full px-0">

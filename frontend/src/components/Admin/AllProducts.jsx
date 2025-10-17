@@ -7,32 +7,54 @@ import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
 import { useTranslation } from "react-i18next";
 import Loader from "../Layout/Loader";
-import { FiPackage, FiDollarSign, FiStar, FiAlertTriangle, FiEye, FiTrash2 } from "react-icons/fi";
+import { FiPackage, FiDollarSign, FiStar, FiAlertTriangle, FiEye, FiTrash2, FiCheck, FiX, FiClock } from "react-icons/fi";
 import { backend_url } from "../../server";
+import { useSelector } from "react-redux";
 
 const AllProducts = () => {
   const { t } = useTranslation();
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [rejectOpen, setRejectOpen] = useState(false);
   const [productId, setProductId] = useState("");
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all"); // all, pending, approved, rejected
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
       const token = getAuthToken();
-      const response = await axios.get(`${server}/products/admin`, {
+      
+      if (!token) {
+        toast.error("Authentication token not found. Please login again.");
+        return;
+      }
+      
+      const statusParam = statusFilter !== "all" ? `?status=${statusFilter}` : "";
+      const response = await axios.get(`${server}/api/admin/products${statusParam}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       if (response.data.success) {
-        setData(response.data.products);
+        setData(response.data.products || []);
+        console.log(`✅ Fetched ${response.data.products?.length || 0} products`);
       } else {
-        toast.error(t("admin.allProducts.fetchError", "Failed to fetch products"));
+        console.error("API Error:", response.data);
+        toast.error(response.data.message || "Failed to fetch products");
       }
     } catch (error) {
       console.error("Error fetching products:", error);
-      toast.error(t("admin.allProducts.fetchError", "Failed to fetch products"));
+      
+      if (error.response?.status === 401) {
+        toast.error("Unauthorized. Please login as admin.");
+      } else if (error.response?.status === 403) {
+        toast.error("Access denied. Admin privileges required.");
+      } else {
+        toast.error(error.response?.data?.message || "Failed to fetch products");
+      }
+      setData([]);
     } finally {
       setLoading(false);
     }
@@ -41,7 +63,7 @@ const AllProducts = () => {
   // Fetch real products from database
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [statusFilter]);
 
   // Get image URL with multiple fallbacks and null checks
   const getImageUrl = (product) => {
@@ -71,7 +93,7 @@ const AllProducts = () => {
   const handleDelete = async (id) => {
     try {
       const token = getAuthToken();
-      await axios.delete(`${server}/products/admin/${id}`, {
+      await axios.delete(`${server}/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -82,6 +104,48 @@ const AllProducts = () => {
     } catch (error) {
       console.error("Error deleting product:", error);
       toast.error(t("admin.allProducts.deleteError", "Failed to delete product"));
+    }
+  };
+
+  const handleApprove = async (id) => {
+    try {
+      const token = getAuthToken();
+      const response = await axios.post(`${server}/api/admin/products/${id}/approve`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.data.success) {
+        toast.success("Product approved successfully!");
+        fetchProducts();
+      }
+    } catch (error) {
+      console.error("Error approving product:", error);
+      toast.error(error.response?.data?.message || "Failed to approve product");
+    }
+  };
+
+  const handleReject = async () => {
+    if (!rejectionReason.trim()) {
+      toast.error("Please provide a rejection reason");
+      return;
+    }
+
+    try {
+      const token = getAuthToken();
+      const response = await axios.post(`${server}/api/admin/products/${productId}/reject`, 
+        { reason: rejectionReason },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.success) {
+        toast.success("Product rejected successfully!");
+        setRejectOpen(false);
+        setRejectionReason("");
+        fetchProducts();
+      }
+    } catch (error) {
+      console.error("Error rejecting product:", error);
+      toast.error(error.response?.data?.message || "Failed to reject product");
     }
   };
 
@@ -106,6 +170,7 @@ const AllProducts = () => {
 
       {/* Main Content */}
       <div className="p-3 sm:p-4 lg:p-6">
+
       {/* Header */}
       <div className="mb-6 lg:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -118,6 +183,55 @@ const AllProducts = () => {
             </p>
           </div>
 
+        </div>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-2">
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setStatusFilter("all")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              statusFilter === "all"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            All Products ({data.length})
+          </button>
+          <button
+            onClick={() => setStatusFilter("pending")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+              statusFilter === "pending"
+                ? "bg-yellow-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            <FiClock size={16} />
+            Pending Approval
+          </button>
+          <button
+            onClick={() => setStatusFilter("approved")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+              statusFilter === "approved"
+                ? "bg-green-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            <FiCheck size={16} />
+            Approved
+          </button>
+          <button
+            onClick={() => setStatusFilter("rejected")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+              statusFilter === "rejected"
+                ? "bg-red-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            <FiX size={16} />
+            Rejected
+          </button>
         </div>
       </div>
 
@@ -179,8 +293,29 @@ const AllProducts = () => {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
-        {data.map((product) => (
+      {data.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+            <FiPackage className="mx-auto text-gray-400 mb-4" size={48} />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Products Found</h3>
+            <p className="text-gray-600 mb-4">
+              {statusFilter === "all" 
+                ? "No products are available at the moment." 
+                : `No ${statusFilter} products found.`}
+            </p>
+            {statusFilter !== "all" && (
+              <button
+                onClick={() => setStatusFilter("all")}
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
+                View All Products
+              </button>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+          {data.map((product) => (
           <div key={product._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6 hover:shadow-md transition-shadow">
             {/* Product Image */}
             <div className="relative mb-3 sm:mb-4">
@@ -194,10 +329,28 @@ const AllProducts = () => {
                 }}
                 loading="lazy"
               />
-              <div className="absolute top-2 right-2">
+              <div className="absolute top-2 right-2 flex flex-col gap-2">
                 <span className="px-2 py-1 bg-blue-500 text-white text-xs rounded-full">
-                  {product.category}
+                  {product.category?.name || product.category || 'Category'}
                 </span>
+                {product.approvalStatus === 'pending' && (
+                  <span className="px-2 py-1 bg-yellow-500 text-white text-xs rounded-full flex items-center gap-1">
+                    <FiClock size={12} />
+                    Pending
+                  </span>
+                )}
+                {product.approvalStatus === 'approved' && (
+                  <span className="px-2 py-1 bg-green-500 text-white text-xs rounded-full flex items-center gap-1">
+                    <FiCheck size={12} />
+                    Approved
+                  </span>
+                )}
+                {product.approvalStatus === 'rejected' && (
+                  <span className="px-2 py-1 bg-red-500 text-white text-xs rounded-full flex items-center gap-1">
+                    <FiX size={12} />
+                    Rejected
+                  </span>
+                )}
               </div>
             </div>
 
@@ -213,7 +366,7 @@ const AllProducts = () => {
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
                   <span className="text-base sm:text-lg font-bold text-orange-600">
-                    {product.originalPrice} - {product.discountPrice} DH
+                    {product.price || product.originalPrice} - {product.discountPrice || product.price} DH
                   </span>
                 </div>
                 <div className="flex items-center space-x-1">
@@ -243,28 +396,64 @@ const AllProducts = () => {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-2 sm:space-x-2">
-              <Link
-                to={`/product/${product._id}`}
-                className="w-full sm:flex-1 bg-blue-600 text-white text-xs sm:text-sm py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
-              >
-                <FiEye className="mr-1" size={14} />
-                Preview
-              </Link>
-              <button
-                onClick={() => {
-                  setProductId(product._id);
-                  setDeleteOpen(true);
-                }}
-                className="w-full sm:flex-1 bg-red-600 text-white text-xs sm:text-sm py-2 px-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center"
-              >
-                <FiTrash2 className="mr-1" size={14} />
-                Delete
-              </button>
+            <div className="flex flex-col gap-2">
+              {/* Approval Actions for Pending Products */}
+              {product.approvalStatus === 'pending' && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleApprove(product._id)}
+                    className="flex-1 bg-green-600 text-white text-xs sm:text-sm py-2 px-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center"
+                  >
+                    <FiCheck className="mr-1" size={14} />
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => {
+                      setProductId(product._id);
+                      setRejectOpen(true);
+                    }}
+                    className="flex-1 bg-red-600 text-white text-xs sm:text-sm py-2 px-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center"
+                  >
+                    <FiX className="mr-1" size={14} />
+                    Reject
+                  </button>
+                </div>
+              )}
+              
+              {/* Rejection Reason Display */}
+              {product.approvalStatus === 'rejected' && product.rejectionReason && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-2">
+                  <p className="text-xs text-red-800">
+                    <span className="font-semibold">Reason:</span> {product.rejectionReason}
+                  </p>
+                </div>
+              )}
+
+              {/* Standard Actions */}
+              <div className="flex gap-2">
+                <Link
+                  to={`/product/${product._id}`}
+                  className="flex-1 bg-blue-600 text-white text-xs sm:text-sm py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+                >
+                  <FiEye className="mr-1" size={14} />
+                  Preview
+                </Link>
+                <button
+                  onClick={() => {
+                    setProductId(product._id);
+                    setDeleteOpen(true);
+                  }}
+                  className="flex-1 bg-gray-600 text-white text-xs sm:text-sm py-2 px-3 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center"
+                >
+                  <FiTrash2 className="mr-1" size={14} />
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       {deleteOpen && (
@@ -284,6 +473,39 @@ const AllProducts = () => {
                 className="w-full sm:flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base"
               >
                 Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reject Product Modal */}
+      {rejectOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Reject Product</h3>
+            <p className="text-sm sm:text-base text-gray-600 mb-4">Please provide a reason for rejecting this product. The seller will see this message.</p>
+            <textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="Enter rejection reason..."
+              className="w-full border border-gray-300 rounded-lg p-3 text-sm sm:text-base mb-4 focus:outline-none focus:ring-2 focus:ring-red-500 min-h-[100px]"
+            />
+            <div className="flex flex-col sm:flex-row gap-2 sm:space-x-3">
+              <button
+                onClick={() => {
+                  setRejectOpen(false);
+                  setRejectionReason("");
+                }}
+                className="w-full sm:flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors text-sm sm:text-base"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReject}
+                className="w-full sm:flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base"
+              >
+                Reject Product
               </button>
             </div>
           </div>

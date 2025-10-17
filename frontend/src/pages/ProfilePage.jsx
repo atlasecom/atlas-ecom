@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
 import styles from "../styles/styles";
@@ -8,6 +10,21 @@ import ProfileContent from "../components/Profile/ProfileContent";
 
 const ProfilePage = () => {
     const [active, setActive] = useState(1);
+    const { user } = useSelector((state) => state.user);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // If user is a seller, redirect to settings page
+        if (user && user.role === 'seller') {
+            navigate('/settings');
+        }
+    }, [user, navigate]);
+
+    // If user is a seller, don't render anything (will redirect)
+    if (user && user.role === 'seller') {
+        return null;
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-orange-50">
             <Header />

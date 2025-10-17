@@ -90,6 +90,19 @@ const shopSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  hasApprovedProduct: {
+    type: Boolean,
+    default: false
+  },
+  // Analytics tracking fields
+  profileViews: {
+    type: Number,
+    default: 0
+  },
+  verifiedBadge: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now

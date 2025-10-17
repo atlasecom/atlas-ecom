@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles/styles";
-import { productData, categoriesData } from "../../static/data";
+import { productData } from "../../static/data";
 import { useLocation } from "react-router-dom";
 import {motion, AnimatePresence } from 'framer-motion'
 import {
@@ -19,11 +19,13 @@ import LanguageChanger from "./LanguageChanger";
 import { useSelector, useDispatch } from "react-redux";
 import { backend_url, server } from "../../server";
 import { addToWishlist, removeFromWishlist } from "../../redux/actions/wishlist";
+import { useCategories } from "../../hooks/useCategories";
 
 import { RxCross1 } from "react-icons/rx";
 import atlasLogo from "../../Assests/images/atlasEcom.png";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 import Avatar from "../Common/Avatar";
 
 // Add custom scrollbar styles
@@ -49,12 +51,14 @@ const Header = ({ activeHeading }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { allProducts } = useSelector((state) => state.products);
   const { wishlist } = useSelector((state) => state.wishlist);
+  const { categories, subcategories, loading: categoriesLoading } = useCategories();
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [active, setActive] = useState(false);
   const [dropDown, setDropDown] = useState(false);
+  const [hoveredCategory, setHoveredCategory] = useState(null);
   const [open, setOpen] = useState(false); // mobile menu
   const [showWishlist, setShowWishlist] = useState(false);
   const location = useLocation();
@@ -86,12 +90,34 @@ const Header = ({ activeHeading }) => {
     setShowWishlist(!showWishlist);
   };
 
-  const addToWishlistHandler = (product) => {
-    dispatch(addToWishlist(product));
+  const addToWishlistHandler = async (product) => {
+    try {
+      await dispatch(addToWishlist(product._id));
+      toast.success(t("wishlist.addedToWishlist", "Added to wishlist!"));
+    } catch (error) {
+      console.error('Header - Add to wishlist error:', error);
+      toast.error(error.response?.data?.message || t("wishlist.wishlistError", "Failed to add to wishlist"));
+    }
   };
 
-  const removeFromWishlistHandler = (product) => {
-    dispatch(removeFromWishlist(product));
+  const removeFromWishlistHandler = async (product) => {
+    try {
+      console.log('Header - Remove from wishlist called with:', product);
+      console.log('Header - Product ID:', product?._id);
+      console.log('Header - Product ID type:', typeof product?._id);
+      
+      if (!product || !product._id) {
+        toast.error(t("wishlist.invalidProduct", "Invalid product data"));
+        return;
+      }
+      
+      await dispatch(removeFromWishlist(product._id));
+      toast.success(t("wishlist.removedFromWishlist", "Removed from wishlist!"));
+    } catch (error) {
+      console.error('Header - Remove from wishlist error:', error);
+      console.error('Header - Error response:', error.response?.data);
+      toast.error(error.response?.data?.message || t("wishlist.wishlistError", "Failed to remove from wishlist"));
+    }
   };
   // Handle search change
   const searchTimeout = useRef();
@@ -158,7 +184,7 @@ const Header = ({ activeHeading }) => {
       {/* Inject custom scrollbar styles */}
       <style>{customScrollbarStyles}</style>
       
-      {/* Top Header Bar */}
+      {/* Top Header Bar - Desktop */}
       <div className="bg-gradient-to-r from-orange-600 to-orange-700 text-white py-2 hidden lg:block">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center text-sm">
           <div className="flex items-center space-x-6">
@@ -177,6 +203,45 @@ const Header = ({ activeHeading }) => {
           </div>
           <div className="flex items-center space-x-4">
             <LanguageChanger />
+          </div>
+        </div>
+      </div>
+
+      {/* Top Header Bar - Mobile */}
+      <div className="bg-gradient-to-r from-orange-600 to-orange-700 text-white py-1 lg:hidden">
+        <div className="px-3 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            {(isAuthenticated && (user?.role === "admin" || user?.role === "seller")) && (
+              <Link
+                to={user?.role === "admin" ? "/admin/dashboard" : "/dashboard"}
+                className="flex items-center gap-1 px-2 py-0.5 bg-white/20 hover:bg-white/30 rounded transition-colors text-xs font-medium"
+              >
+                {t("header.dashboard", "Dashboard")}
+              </Link>
+            )}
+          </div>
+          <div className="flex items-center gap-0.5">
+            {[
+              { code: 'en', flag: 'https://flagcdn.com/w20/us.png', alt: 'EN' },
+              { code: 'fr', flag: 'https://flagcdn.com/w20/fr.png', alt: 'FR' },
+              { code: 'ar', flag: 'https://flagcdn.com/w20/ma.png', alt: 'AR' }
+            ].map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => {
+                  i18n.changeLanguage(lang.code);
+                  document.dir = lang.code === "ar" ? "rtl" : "ltr";
+                }}
+                className={`p-0.2 rounded transition-all ${
+                  i18n.language === lang.code 
+                    ? 'bg-white/20 ring-1 ring-white/40 scale-105' 
+                    : 'bg-white/5 hover:bg-white/15'
+                }`}
+                title={lang.alt}
+              >
+                <img src={lang.flag} alt={lang.alt} className="w-5 h-3.5 object-cover rounded-[1px]" />
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -273,12 +338,22 @@ const Header = ({ activeHeading }) => {
                               <div className="flex-1 min-w-0">
                                 <h3 className="font-medium text-slate-800 truncate group-hover:text-orange-600 transition-colors text-sm">{i.name}</h3>
                                 <div className="flex items-center space-x-1 mt-1">
-                                  <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium">
-                                    {i.category}
-                                  </span>
-                                  {i.tags && (
+                                  {i.category && (
+                                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium">
+                                      {typeof i.category === 'object' 
+                                        ? (i18n.language === 'ar' ? i.category.nameAr : 
+                                           i18n.language === 'fr' ? i.category.nameFr : 
+                                           i.category.name)
+                                        : i.category}
+                                    </span>
+                                  )}
+                                  {i.subcategory && (
                                     <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
-                                      {i.tags}
+                                      {typeof i.subcategory === 'object' 
+                                        ? (i18n.language === 'ar' ? i.subcategory.nameAr : 
+                                           i18n.language === 'fr' ? i.subcategory.nameFr : 
+                                           i.subcategory.name)
+                                        : i.subcategory}
                                     </span>
                                   )}
                                 </div>
@@ -472,20 +547,38 @@ const Header = ({ activeHeading }) => {
                       <AiOutlineUser size={20} className="text-orange-600" />
                     </div>
                     <span className="hidden md:block text-sm font-medium text-slate-700">
-                      Sign In
+                      Sign In / Sign Up
                     </span>
                   </Link>
                 )}
               </div>
 
               {/* Get Started Button */}
-              <Link
-                to={!isAuthenticated ? "/login" : user && user.role === "admin" ? "/admin/dashboard" : user && user.role === "seller" ? "/dashboard" : "/shop-create"}
-                className="hidden md:inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                {!isAuthenticated ? t("header.getStarted", "Get Started") : user && user.role === "admin" ? t("header.goDashboard", "Go Dashboard") : user && user.role === "seller" ? t("header.goDashboard", "Go Dashboard") : t("header.becomeSeller", "Become a Seller")}
-                <IoIosArrowForward className="ml-2" />
-              </Link>
+              {!isAuthenticated ? (
+                <Link
+                  to="/login"
+                  className="hidden md:inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  {t("header.getStarted", "Sign In / Sign Up")}
+                  <IoIosArrowForward className="ml-2" />
+                </Link>
+              ) : user && user.role === "admin" ? (
+                <Link
+                  to="/admin/dashboard"
+                  className="hidden md:inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  {t("header.goDashboard", "Go Dashboard")}
+                  <IoIosArrowForward className="ml-2" />
+                </Link>
+              ) : user && user.role === "seller" ? (
+                <Link
+                  to="/dashboard"
+                  className="hidden md:inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  {t("header.goDashboard", "Go Dashboard")}
+                  <IoIosArrowForward className="ml-2" />
+                </Link>
+              ) : null}
 
               {/* Mobile Menu Button */}
               <button
@@ -503,36 +596,317 @@ const Header = ({ activeHeading }) => {
       <div className="bg-black text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between">
-            {/* Categories Dropdown */}
+            {/* Categories Dropdown - Desktop & Mobile */}
             <div className="relative">
               <button
                 onClick={() => setDropDown(!dropDown)}
-                className="flex items-center space-x-2 px-6 py-4 bg-orange-600 hover:bg-orange-500 transition-colors rounded-lg"
+                className={`flex items-center gap-2 px-4 lg:px-6 py-3 lg:py-4 bg-orange-600 hover:bg-orange-500 transition-colors rounded-lg ${i18n.language === 'ar' ? 'flex-row-reverse' : ''}`}
               >
-                <BiMenuAltLeft size={20} />
-                <span className="font-medium">{t("navbar.allCategories", "All Categories")}</span>
+                <BiMenuAltLeft size={20} className={i18n.language === 'ar' ? 'rotate-180' : ''} />
+                <span className="font-medium text-sm lg:text-base">{t("navbar.allCategories", "All Categories")}</span>
                 <IoIosArrowDown size={16} className={`transition-transform ${dropDown ? 'rotate-180' : ''}`} />
               </button>
 
-              {dropDown && (
-                <div className="absolute top-full left-0 z-50 w-64 bg-white shadow-2xl border border-orange-200 rounded-lg mt-2 overflow-hidden">
-                  {categoriesData.map((category) => (
-                    <Link
-                      key={category.id}
-                      to={`/products?category=${category.title[i18n.language] || category.title.en}`}
-                      className="flex items-center px-4 py-3 hover:bg-orange-50 transition-colors border-b border-orange-100 last:border-b-0"
-                      onClick={() => setDropDown(false)}
-                    >
-                      <img
-                        src={typeof category.image_Url === "string" ? category.image_Url : category.image_Url.default || category.image_Url}
-                        alt={category.title[i18n.language] || category.title.en}
-                        className="w-8 h-8 object-cover rounded mr-3"
-                      />
-                      <span className="text-slate-700 text-sm">
-                        {category.title[i18n.language] || category.title.en}
-                      </span>
-                    </Link>
-                  ))}
+        {dropDown && (
+          <div 
+            className={`absolute top-full z-50 bg-white shadow-2xl border border-gray-200 rounded-lg mt-2 overflow-hidden w-[95vw] lg:w-[900px] max-w-[95vw] ${i18n.language === 'ar' ? 'right-0' : 'left-0'}`}
+            onMouseLeave={() => setHoveredCategory(null)}
+          >
+                  {categoriesLoading ? (
+                    <div className="px-6 py-8 text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto mb-3"></div>
+                      <p className="text-slate-600 text-sm">{t("header.loadingCategories", "Loading categories...")}</p>
+                    </div>
+                  ) : categories.length > 0 ? (
+                    <>
+                      {/* Mobile Version - Professional List with expandable subcategories */}
+                      <div className="lg:hidden">
+                        {/* Header */}
+                        <div className={`sticky top-0 bg-gradient-to-r from-orange-50 to-red-50 border-b border-orange-100 px-4 py-3 z-10 ${i18n.language === 'ar' ? 'text-right' : ''}`}>
+                          <div className={`flex items-center justify-between ${i18n.language === 'ar' ? 'flex-row-reverse' : ''}`}>
+                            <div className={`flex items-center gap-2 ${i18n.language === 'ar' ? 'flex-row-reverse' : ''}`}>
+                              <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
+                                <BiMenuAltLeft className={`text-white ${i18n.language === 'ar' ? 'rotate-180' : ''}`} size={18} />
+                              </div>
+                              <div>
+                                <h3 className="text-sm font-bold text-gray-800">{t("header.allCategories", "All Categories")}</h3>
+                                <p className="text-xs text-gray-500">{categories.length} {t("header.categoriesAvailable", "categories available")}</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => setDropDown(false)}
+                              className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all"
+                            >
+                              <RxCross1 size={14} />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Categories List */}
+                        <div className="p-5 max-h-[65vh] overflow-y-auto custom-scrollbar">
+                          {categories.map((category, index) => {
+                            const categorySubcategories = subcategories.filter(sub => sub.category === category._id);
+                            return (
+                              <div 
+                                key={category._id} 
+                                className="mb-5 last:mb-0 animate-fadeIn"
+                                style={{ animationDelay: `${index * 0.05}s` }}
+                              >
+                                {/* Category Card */}
+                                <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-200 hover:border-orange-200 hover:shadow-lg transition-all duration-300 overflow-hidden">
+                                  {/* Category Header */}
+                                  <Link
+                                    to={`/products?category=${category._id}`}
+                                    className={`flex items-center p-5 group ${i18n.language === 'ar' ? 'flex-row-reverse' : ''}`}
+                                    onClick={() => setDropDown(false)}
+                                  >
+                                    {/* Category Image */}
+                                    <div className="relative flex-shrink-0">
+                                      <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl p-0.5 group-hover:scale-110 transition-transform duration-300">
+                                        <img
+                                          src={category.image?.url || '/default-product.png'}
+                                          alt={i18n.language === 'ar' ? category.nameAr : 
+                                               i18n.language === 'fr' ? category.nameFr : 
+                                               category.name}
+                                          className="w-full h-full object-cover rounded-lg"
+                                        />
+                                      </div>
+                                      {categorySubcategories.length > 0 && (
+                                        <div className={`absolute -top-1 w-6 h-6 bg-orange-600 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg ${i18n.language === 'ar' ? '-left-1' : '-right-1'}`}>
+                                          {categorySubcategories.length}
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    {/* Category Info */}
+                                    <div className={`flex-1 min-w-0 ${i18n.language === 'ar' ? 'mr-4 text-right' : 'ml-4'}`}>
+                                      <h4 className="text-base font-bold text-gray-800 group-hover:text-orange-600 transition-colors truncate">
+                                        {i18n.language === 'ar' ? category.nameAr : 
+                                         i18n.language === 'fr' ? category.nameFr : 
+                                         category.name}
+                                      </h4>
+                                      <p className="text-sm text-gray-500 mt-1">
+                                        {categorySubcategories.length > 0 
+                                          ? `${categorySubcategories.length} ${t("header.subcategories", "subcategories")}`
+                                          : t("header.viewAll", "View all products")
+                                        }
+                                      </p>
+                                    </div>
+
+                                    {/* Arrow Icon */}
+                                    <IoIosArrowForward 
+                                      className={`text-gray-400 group-hover:text-orange-600 transition-all flex-shrink-0 ${i18n.language === 'ar' ? 'mr-2 rotate-180 group-hover:-translate-x-1' : 'ml-2 group-hover:translate-x-1'}`}
+                                      size={20} 
+                                    />
+                                  </Link>
+                                  
+                                  {/* Subcategories Grid */}
+                                  {categorySubcategories.length > 0 && (
+                                    <div className="border-t border-gray-100 bg-white/50 backdrop-blur-sm">
+                                      <div className="p-4 grid grid-cols-2 gap-3">
+                                        {categorySubcategories.map((subcategory) => (
+                                          <Link
+                                            key={subcategory._id}
+                                            to={`/products?category=${category._id}&subcategory=${subcategory._id}`}
+                                            className={`group/sub flex items-start px-4 py-3 text-sm bg-white hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 border border-gray-100 hover:border-orange-200 rounded-lg transition-all duration-200 hover:shadow-md ${i18n.language === 'ar' ? 'flex-row-reverse text-right' : ''}`}
+                                            onClick={() => setDropDown(false)}
+                                          >
+                                            <div className={`w-2 h-2 bg-orange-400 rounded-full mt-1.5 flex-shrink-0 group-hover/sub:bg-orange-600 ${i18n.language === 'ar' ? 'ml-3' : 'mr-3'}`}></div>
+                                            <span className="text-gray-700 group-hover/sub:text-orange-600 group-hover/sub:font-medium transition-all line-clamp-2 leading-tight">
+                                              {i18n.language === 'ar' ? subcategory.nameAr : 
+                                               i18n.language === 'fr' ? subcategory.nameFr : 
+                                               subcategory.name}
+                                            </span>
+                                          </Link>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="sticky bottom-0 bg-gradient-to-t from-white via-white to-transparent border-t border-gray-100 px-4 py-3">
+                          <Link
+                            to="/products"
+                            onClick={() => setDropDown(false)}
+                            className={`flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] ${i18n.language === 'ar' ? 'flex-row-reverse' : ''}`}
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            {t("header.viewAllProducts", "View All Products")}
+                          </Link>
+                        </div>
+                      </div>
+
+                      {/* Desktop Version - Two Panel Layout */}
+                      <div className={`hidden lg:flex min-h-[400px] ${i18n.language === 'ar' ? 'flex-row-reverse' : ''}`}>
+                        {/* Categories Sidebar */}
+                        <div className={`w-64 bg-gray-50 ${i18n.language === 'ar' ? 'border-l' : 'border-r'} border-gray-200`}>
+                          <div className="p-4">
+                            <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">
+                              {t("header.allCategories", "All Categories")}
+                            </h3>
+                            <div className="space-y-1 max-h-80 overflow-y-auto custom-scrollbar">
+                              {categories.map((category) => {
+                                const categorySubcategories = subcategories.filter(sub => sub.category === category._id);
+                                const isHovered = hoveredCategory === category._id;
+                                return (
+                                  <div 
+                                    key={category._id} 
+                                    className="group"
+                                    onMouseEnter={() => setHoveredCategory(category._id)}
+                                  >
+                                    <Link
+                                      to={`/products?category=${category._id}`}
+                                      className={`flex items-center px-3 py-2.5 text-sm rounded-md transition-all duration-200 ${
+                                        isHovered 
+                                          ? 'text-orange-600 bg-white shadow-sm' 
+                                          : 'text-gray-700 hover:text-orange-600 hover:bg-white'
+                                      } ${i18n.language === 'ar' ? 'flex-row-reverse text-right' : ''}`}
+                                      onClick={() => setDropDown(false)}
+                                    >
+                                      <img
+                                        src={category.image?.url || '/default-product.png'}
+                                        alt={i18n.language === 'ar' ? category.nameAr : 
+                                             i18n.language === 'fr' ? category.nameFr : 
+                                             category.name}
+                                        className={`w-5 h-5 object-cover rounded flex-shrink-0 ${i18n.language === 'ar' ? 'ml-3' : 'mr-3'}`}
+                                      />
+                                      <span className="flex-1 truncate">
+                                        {i18n.language === 'ar' ? category.nameAr : 
+                                         i18n.language === 'fr' ? category.nameFr : 
+                                         category.name}
+                                      </span>
+                                      {categorySubcategories.length > 0 && (
+                                        <IoIosArrowForward size={12} className={`transition-colors ${i18n.language === 'ar' ? 'mr-2 rotate-180' : 'ml-2'} ${
+                                          isHovered ? 'text-orange-500' : 'text-gray-400'
+                                        }`} />
+                                      )}
+                                    </Link>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+
+                      {/* Subcategories Panel */}
+                      <div className="flex-1 min-w-0 bg-white">
+                        <div className="p-6">
+                          {hoveredCategory ? (
+                            (() => {
+                              const selectedCategory = categories.find(cat => cat._id === hoveredCategory);
+                              const categorySubcategories = subcategories.filter(sub => sub.category === hoveredCategory);
+                              
+                              if (!selectedCategory) return null;
+                              
+                              return (
+                                <div>
+                                  {/* Category Header */}
+                                  <div className="mb-6">
+                                    <div className={`flex items-center mb-3 ${i18n.language === 'ar' ? 'flex-row-reverse text-right' : ''}`}>
+                                      <img
+                                        src={selectedCategory.image?.url || '/default-product.png'}
+                                        alt={i18n.language === 'ar' ? selectedCategory.nameAr : 
+                                             i18n.language === 'fr' ? selectedCategory.nameFr : 
+                                             selectedCategory.name}
+                                        className={`w-8 h-8 object-cover rounded ${i18n.language === 'ar' ? 'ml-3' : 'mr-3'}`}
+                                      />
+                                      <h4 className="text-lg font-semibold text-gray-800">
+                                        {i18n.language === 'ar' ? selectedCategory.nameAr : 
+                                         i18n.language === 'fr' ? selectedCategory.nameFr : 
+                                         selectedCategory.name}
+                                      </h4>
+                                    </div>
+                                    <div className="h-px bg-gradient-to-r from-orange-200 to-transparent"></div>
+                                  </div>
+
+                                  {/* Subcategories Grid */}
+                                  {categorySubcategories.length > 0 ? (
+                                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                                      {categorySubcategories.map((subcategory) => (
+                                        <Link
+                                          key={subcategory._id}
+                                          to={`/products?category=${hoveredCategory}&subcategory=${subcategory._id}`}
+                                          className={`block p-3 text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 hover:shadow-sm border border-transparent hover:border-orange-200 cursor-pointer ${i18n.language === 'ar' ? 'text-right' : ''}`}
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            console.log('Subcategory clicked:', subcategory.name, 'ID:', subcategory._id);
+                                            console.log('Category ID:', hoveredCategory);
+                                            console.log('Navigation URL:', `/products?category=${hoveredCategory}&subcategory=${subcategory._id}`);
+                                            setDropDown(false);
+                                            // Navigate programmatically
+                                            window.location.href = `/products?category=${hoveredCategory}&subcategory=${subcategory._id}`;
+                                          }}
+                                        >
+                                          <div className={`flex items-center ${i18n.language === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                            <div className={`w-2 h-2 bg-orange-400 rounded-full ${i18n.language === 'ar' ? 'ml-3' : 'mr-3'}`}></div>
+                                            <span className="truncate">
+                                              {i18n.language === 'ar' ? subcategory.nameAr : 
+                                               i18n.language === 'fr' ? subcategory.nameFr : 
+                                               subcategory.name}
+                                            </span>
+                                          </div>
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <div className="text-center py-8">
+                                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                        </svg>
+                                      </div>
+                                      <p className="text-gray-500 text-sm">{t("header.noSubcategories", "No subcategories available")}</p>
+                                    </div>
+                                  )}
+
+                                  {/* View All Category Link */}
+                                  <div className="mt-6 pt-4 border-t border-gray-200">
+                                    <Link
+                                      to={`/products?category=${hoveredCategory}`}
+                                      className={`inline-flex items-center px-4 py-2 text-sm font-medium text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-all duration-200 ${i18n.language === 'ar' ? 'flex-row-reverse' : ''}`}
+                                      onClick={() => setDropDown(false)}
+                                    >
+                                      {t("header.viewAllInCategory", "View All Products in")} {i18n.language === 'ar' ? selectedCategory.nameAr : 
+                                       i18n.language === 'fr' ? selectedCategory.nameFr : 
+                                       selectedCategory.name}
+                                      <IoIosArrowForward size={14} className="ml-2" />
+                                    </Link>
+                                  </div>
+                                </div>
+                              );
+                            })()
+                          ) : (
+                            <div className="text-center py-12">
+                              <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                              </div>
+                              <h4 className="text-lg font-semibold text-gray-800 mb-2">{t("header.selectCategory", "Select a Category")}</h4>
+                              <p className="text-gray-500 text-sm">{t("header.hoverToSeeSubcategories", "Hover over a category to see its subcategories")}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="px-6 py-8 text-center">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                      </div>
+                      <p className="text-slate-600 text-sm">{t("header.noCategories", "No categories available")}</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -605,76 +979,116 @@ const Header = ({ activeHeading }) => {
 
                 <Navbar active={activeHeading} />
 
-                {/* Language Switcher for Mobile */}
+                {/* Categories Section for Mobile */}
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-slate-700">
-                      {t("header.language", "Language")}
+                      {t("header.categories", "Categories")}
                     </h3>
                   </div>
-                  <div className="space-y-2">
-                    {[
-                      { 
-                        code: 'en', 
-                        name: 'English', 
-                        flag: (
-                          <img 
-                            src="https://flagcdn.com/w20/us.png" 
-                            alt="US Flag" 
-                            className="w-5 h-3 object-cover"
-                          />
-                        )
-                      },
-                      { 
-                        code: 'fr', 
-                        name: 'Français', 
-                        flag: (
-                          <img 
-                            src="https://flagcdn.com/w20/fr.png" 
-                            alt="France Flag" 
-                            className="w-5 h-3 object-cover"
-                          />
-                        )
-                      },
-                      { 
-                        code: 'ar', 
-                        name: 'العربية', 
-                        flag: (
-                          <img 
-                            src="https://flagcdn.com/w20/ma.png" 
-                            alt="Morocco Flag" 
-                            className="w-5 h-3 object-cover"
-                          />
-                        )
-                      }
-                    ].map((lang) => (
-                      <button
-                        key={lang.code}
-                        onClick={() => {
-                          i18n.changeLanguage(lang.code);
-                          document.dir = lang.code === "ar" ? "rtl" : "ltr";
-                        }}
-                        className={`w-full flex items-center ${i18n.language === 'ar' ? 'space-x-reverse' : ''} space-x-3 px-4 py-3 rounded-lg text-left hover:bg-gray-50 transition-colors duration-150 ${
-                          i18n.language === lang.code ? 'bg-orange-50 text-orange-600 border border-orange-200' : 'text-gray-700 border border-transparent'
-                        }`}
-                      >
-                        <div className="flex items-center">{lang.flag}</div>
-                        <span className="text-sm font-medium">{lang.name}</span>
-                        {i18n.language === lang.code && (
-                          <span className={`${i18n.language === 'ar' ? 'mr-auto' : 'ml-auto'} text-orange-500`}>✓</span>
-                        )}
-                      </button>
-                    ))}
+                  <div className="space-y-3">
+                    {categoriesLoading ? (
+                      <div className="text-center py-6">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto mb-3"></div>
+                        <p className="text-slate-600 text-sm">{t("header.loadingCategories", "Loading categories...")}</p>
+                      </div>
+                    ) : categories.length > 0 ? (
+                      categories.map((category) => {
+                        const categorySubcategories = subcategories.filter(sub => sub.category === category._id);
+                        return (
+                          <div key={category._id} className="bg-gray-50 rounded-lg p-4">
+                            <Link
+                              to={`/products?category=${category._id}`}
+                              onClick={() => setOpen(false)}
+                              className="flex items-center px-2 py-2 text-slate-700 hover:text-orange-600 rounded-md transition-colors font-medium"
+                            >
+                              <img
+                                src={category.image?.url || '/default-product.png'}
+                                alt={i18n.language === 'ar' ? category.nameAr : 
+                                     i18n.language === 'fr' ? category.nameFr : 
+                                     category.name}
+                                className="w-6 h-6 object-cover rounded mr-3"
+                              />
+                              <span className="flex-1">
+                                {i18n.language === 'ar' ? category.nameAr : 
+                                 i18n.language === 'fr' ? category.nameFr : 
+                                 category.name}
+                              </span>
+                              {categorySubcategories.length > 0 && (
+                                <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-medium">
+                                  {categorySubcategories.length} {t("header.items", "items")}
+                                </span>
+                              )}
+                            </Link>
+                            {categorySubcategories.length > 0 && (
+                              <div className="mt-3 grid grid-cols-2 gap-2">
+                                {categorySubcategories.slice(0, 6).map((subcategory) => (
+                                  <Link
+                                    key={subcategory._id}
+                                    to={`/products?category=${category._id}&subcategory=${subcategory._id}`}
+                                    onClick={() => setOpen(false)}
+                                    className="block px-3 py-2 text-xs text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-md transition-colors border border-transparent hover:border-orange-200"
+                                  >
+                                    <div className="flex items-center">
+                                      <div className="w-1.5 h-1.5 bg-orange-400 rounded-full mr-2"></div>
+                                      <span className="truncate">
+                                        {i18n.language === 'ar' ? subcategory.nameAr : 
+                                         i18n.language === 'fr' ? subcategory.nameFr : 
+                                         subcategory.name}
+                                      </span>
+                                    </div>
+                                  </Link>
+                                ))}
+                                {categorySubcategories.length > 6 && (
+                                  <Link
+                                    to={`/products?category=${category._id}`}
+                                    onClick={() => setOpen(false)}
+                                    className="block px-3 py-2 text-xs text-orange-500 hover:text-orange-600 font-medium bg-orange-50 hover:bg-orange-100 rounded-md transition-colors"
+                                  >
+                                    +{categorySubcategories.length - 6} {t("header.more", "more")}
+                                  </Link>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-6">
+                        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                          </svg>
+                        </div>
+                        <p className="text-slate-600 text-sm">{t("header.noCategories", "No categories available")}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-orange-200">
-                  <Link
-                    to={!isAuthenticated ? "/login" : user && user.role === "admin" ? "/admin/dashboard" : user && user.role === "seller" ? "/dashboard" : "/shop-create"}
-                    className="block w-full text-center py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
-                  >
-                    {!isAuthenticated ? t("header.getStarted", "Get Started") : user && user.role === "admin" ? t("header.goDashboard", "Go Dashboard") : user && user.role === "seller" ? t("header.goDashboard", "Go Dashboard") : t("header.becomeSeller", "Become a Seller")}
-                  </Link>
+                <div className="mt-6 pt-6 border-t border-orange-200">
+                  {!isAuthenticated ? (
+                    <Link
+                      to="/login"
+                      className="block w-full text-center py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+                    >
+                      {t("header.getStarted", "Sign In / Sign Up")}
+                    </Link>
+                  ) : user && user.role === "admin" ? (
+                    <Link
+                      to="/admin/dashboard"
+                      className="block w-full text-center py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+                    >
+                      {t("header.goDashboard", "Go Dashboard")}
+                    </Link>
+                  ) : user && user.role === "seller" ? (
+                    <Link
+                      to="/dashboard"
+                      className="block w-full text-center py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+                    >
+                      {t("header.goDashboard", "Go Dashboard")}
+                    </Link>
+                  ) : null}
                 </div>
               </div>
             </motion.div>

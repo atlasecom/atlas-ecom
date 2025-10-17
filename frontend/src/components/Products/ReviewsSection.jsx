@@ -83,8 +83,21 @@ const ReviewsSection = ({ data, isEvent }) => {
 
   // Handle review submission
   const handleReviewSubmit = async () => {
+    console.log("=== Review Submission Started ===");
+    console.log("isAuthenticated:", isAuthenticated);
+    console.log("user:", user);
+    console.log("data:", data);
+    console.log("isEvent:", isEvent);
+    console.log("rating:", rating);
+    console.log("comment:", comment);
+
     if (!isAuthenticated) {
-      toast.error(t("common.loginToCreateConversation", "Please login to create a conversation"));
+      toast.error(t("common.pleaseLogin", "Please login first!"));
+      return;
+    }
+
+    if (!data?._id) {
+      toast.error(t("common.productNotFound", "Product not found!"));
       return;
     }
 
@@ -100,51 +113,87 @@ const ReviewsSection = ({ data, isEvent }) => {
 
     try {
       const token = getAuthToken();
+      console.log("Auth token:", token ? "Token exists" : "No token");
+      
+      // Use different endpoints for products vs events
+      const endpoint = isEvent 
+        ? `${server}/events/${data._id}/reviews`
+        : `${server}/products/${data._id}/reviews`;
+      
+      const requestData = {
+        rating: parseInt(rating),
+        comment: comment.trim(),
+      };
+
+      console.log("Submitting review to:", endpoint);
+      console.log("Request data:", requestData);
+      
       const response = await axios.post(
-        `${server}/products/${data._id}/reviews`,
-        {
-          rating: parseInt(rating),
-          comment: comment.trim(),
-        },
+        endpoint,
+        requestData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
         }
       );
 
-      if (response.data.message) {
+      console.log("Review submission response:", response.data);
+
+      if (response.data.success || response.status === 200 || response.status === 201) {
         toast.success(response.data.message || t("common.reviewSubmitted", "Review submitted successfully!"));
         setShowReviewForm(false);
         setRating(1);
         setComment("");
-        // Optionally refresh the page or update the data
+        // Refresh the page to show the new review
         window.location.reload();
       }
     } catch (error) {
-      console.error("Review submission error:", error);
-      toast.error(
-        error.response?.data?.message ||
-          t("common.reviewSubmissionError", "Failed to submit review!")
-      );
+      console.error("=== Review submission error ===");
+      console.error("Error:", error);
+      console.error("Error response:", error.response?.data);
+      console.error("Error status:", error.response?.status);
+      console.error("Error config:", error.config);
+      
+      let errorMessage = t("common.reviewSubmissionError", "Failed to submit review!");
+      
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response?.status === 401) {
+        errorMessage = t("common.pleaseLogin", "Please login first!");
+      } else if (error.response?.status === 403) {
+        errorMessage = t("common.notAuthorized", "You are not authorized to perform this action!");
+      } else if (error.response?.status === 404) {
+        errorMessage = isEvent 
+          ? t("common.eventNotFound", "Event not found!")
+          : t("common.productNotFound", "Product not found!");
+      } else if (error.response?.status === 400) {
+        errorMessage = error.response.data.message || t("common.invalidData", "Invalid data provided!");
+      }
+      
+      toast.error(errorMessage);
+      console.log("=== Review submission finished ===");
     }
   };
 
   return (
     <div className={`p-4 ${styles.section}`}>
       {/* Reviews Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className={`${styles.heading} text-[25px] font-[500] border-b`}>
-          {t("reviews.customerReviews", "Customer Reviews")} ({totalReviewsLength})
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-6">
+        <h2 className={`${styles.heading} text-base sm:text-lg md:text-xl lg:text-[25px] font-[500] border-b flex-shrink-0 leading-tight`}>
+          {t("reviews.customerReviews", "Customer Reviews")} <span className="inline-block whitespace-nowrap text-blue-600 font-semibold">({totalReviewsLength})</span>
         </h2>
         
         {isAuthenticated && (
           <button
             onClick={() => setShowReviewForm(!showReviewForm)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm md:text-base flex-shrink-0 w-full sm:w-auto justify-center"
           >
-            <AiOutlineMessage className="w-4 h-4" />
-            {showReviewForm ? t("common.cancel", "Cancel") : t("common.writeReview", "Write Review")}
+            <AiOutlineMessage className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+            <span className="whitespace-nowrap">{showReviewForm ? t("common.cancel", "Cancel") : t("common.writeReview", "Write Review")}</span>
           </button>
         )}
       </div>

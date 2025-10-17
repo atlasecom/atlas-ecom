@@ -9,6 +9,8 @@ import ReviewsSection from "../components/Products/ReviewsSection";
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllEvents } from '../redux/actions/event';
 import { getAllProducts } from '../redux/actions/product';
+import axios from 'axios';
+import { server } from '../server';
 
 
 
@@ -32,20 +34,59 @@ const ProductDetailsPage = () => {
     useEffect(() => {
         console.log("ProductDetailsPage useEffect triggered");
         console.log("ID from params:", id);
-        console.log("allProducts:", allProducts);
-        console.log("allEvents:", allEvents);
         console.log("eventData:", eventData);
         
-        if (eventData !== null) {
-            const data = allEvents && allEvents.find((i) => i._id === id);
-            console.log("Found event data:", data);
-            console.log("Event images:", data?.images);
-            setData(data);
-        } else {
-            const data = allProducts && allProducts.find((i) => i._id === id);
-            console.log("Found product data:", data);
-            console.log("Product images:", data?.images);
-            setData(data);
+        const fetchProductData = async () => {
+            try {
+                if (eventData !== null) {
+                    // For events, try to find in allEvents first, then fetch directly
+                    let data = allEvents && allEvents.find((i) => i._id === id);
+                    
+                    if (!data) {
+                        // Fetch event directly from API
+                        const response = await axios.get(`${server}/events/${id}`);
+                        data = response.data.event;
+                    }
+                    
+                    console.log("Found event data:", data);
+                    console.log("Event images:", data?.images);
+                    setData(data);
+                    
+                    // Track event view
+                    if (data?._id) {
+                        axios.post(`${server}/api/track/event/${data._id}/view`).catch(err => 
+                            console.log('Analytics tracking failed:', err)
+                        );
+                    }
+                } else {
+                    // For products, try to find in allProducts first, then fetch directly
+                    let data = allProducts && allProducts.find((i) => i._id === id);
+                    
+                    if (!data) {
+                        // Fetch product directly from API
+                        const response = await axios.get(`${server}/products/${id}`);
+                        data = response.data.product;
+                    }
+                    
+                    console.log("Found product data:", data);
+                    console.log("Product images:", data?.images);
+                    setData(data);
+                    
+                    // Track product view
+                    if (data?._id) {
+                        axios.post(`${server}/api/track/product/${data._id}/view`).catch(err => 
+                            console.log('Analytics tracking failed:', err)
+                        );
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching product/event data:", error);
+                setData(null);
+            }
+        };
+        
+        if (id) {
+            fetchProductData();
         }
         // Scroll to top is now handled globally by ScrollToTop component
         }, [id, eventData, allProducts, allEvents]);

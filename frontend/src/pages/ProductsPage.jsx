@@ -3,20 +3,22 @@ import { useSearchParams } from "react-router-dom";
 import Footer from "../components/Layout/Footer";
 import Header from "../components/Layout/Header";
 import Loader from "../components/Layout/Loader";
-import ProductCard from "../components/Route/ProductCard/ProductCardNew";
+import ProductCard from "../components/Route/ProductCard/ProductCard";
 import styles from "../styles/styles";
 import axios from "axios";
 import { server } from "../server";
 import { useTranslation } from "react-i18next";
-import { categoriesData } from "../static/data";
+import { useCategories } from "../hooks/useCategories";
 import { toast } from "react-toastify";
 import { getAuthToken } from "../utils/auth";
+import { shuffleArray } from "../utils/shuffle";
 
 const ProductsPage = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
   const [searchParams] = useSearchParams();
   const categoryData = searchParams.get("category");
+  const subcategoryData = searchParams.get("subcategory");
 
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,7 +29,11 @@ const ProductsPage = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(categoryData || "");
+  const [selectedSubcategory, setSelectedSubcategory] = useState(subcategoryData || "");
   const [selectedSeller, setSelectedSeller] = useState("");
+  
+  // Use dynamic categories from API
+  const { categories, subcategories, getSubcategoriesByCategory } = useCategories();
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,7 +67,7 @@ const ProductsPage = () => {
     setLoading(true);
     try {
       const token = getAuthToken();
-      const { data } = await axios.get(`${server}/products`, {
+      const { data } = await axios.get(`${server}/api/v2/products`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAllProducts(data.products || []);
@@ -78,34 +84,100 @@ const ProductsPage = () => {
 
   // Fetch products when component mounts or URL params change
   useEffect(() => {
-    // Set category from URL if present
-    if (categoryData) {
-      setSelectedCategory(categoryData);
-    }
     fetchProducts();
-  }, [categoryData]);
+  }, []);
+
+  // Update selected category and subcategory when URL params change or categories load
+  useEffect(() => {
+    console.log('🔍 URL Params:', { categoryData, subcategoryData });
+    console.log('📦 Categories loaded:', categories.length);
+    console.log('📦 Subcategories loaded:', subcategories.length);
+    
+    if (categoryData && categories.length > 0) {
+      // Find category by name or ID
+      const category = categories.find(cat => 
+        cat._id === categoryData || 
+        cat.name === categoryData || 
+        cat.nameAr === categoryData || 
+        cat.nameFr === categoryData
+      );
+      console.log('🎯 Found category:', category);
+      if (category) {
+        setSelectedCategory(category._id);
+        console.log('✅ Set selected category ID:', category._id);
+      }
+    }
+    
+    if (subcategoryData && subcategories.length > 0) {
+      // Find subcategory by name or ID
+      const subcategory = subcategories.find(sub => 
+        sub._id === subcategoryData || 
+        sub.name === subcategoryData || 
+        sub.nameAr === subcategoryData || 
+        sub.nameFr === subcategoryData
+      );
+      console.log('🎯 Found subcategory:', subcategory);
+      if (subcategory) {
+        setSelectedSubcategory(subcategory._id);
+        console.log('✅ Set selected subcategory ID:', subcategory._id);
+        // Also set the category if subcategory is found
+        if (subcategory.category && !selectedCategory) {
+          setSelectedCategory(subcategory.category);
+          console.log('✅ Auto-set category from subcategory:', subcategory.category);
+        }
+      }
+    }
+  }, [categoryData, subcategoryData, categories, subcategories]);
 
   // Client-side filtering logic
-  const filteredProducts = allProducts.filter(product => {
-    const matchesSearch = !searchTerm || 
-      product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.category?.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredProducts = (() => {
+    const filtered = allProducts.filter(product => {
+      const matchesSearch = !searchTerm || 
+        product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (typeof product.category === 'object' ? product.category?.name?.toLowerCase().includes(searchTerm.toLowerCase()) : product.category?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (typeof product.subcategory === 'object' ? product.subcategory?.name?.toLowerCase().includes(searchTerm.toLowerCase()) : product.subcategory?.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesCategory = !selectedCategory || 
-      product.category?.toLowerCase() === selectedCategory.toLowerCase();
+      const matchesCategory = !selectedCategory || 
+        (typeof product.category === 'object' ? product.category?._id === selectedCategory : product.category === selectedCategory);
 
-    const matchesSeller = !selectedSeller || 
-      product.shop?._id === selectedSeller;
+      const matchesSubcategory = !selectedSubcategory || 
+        (typeof product.subcategory === 'object' ? product.subcategory?._id === selectedSubcategory : product.subcategory === selectedSubcategory);
 
-    const matchesMinPrice = !minPrice || 
-      (product.discountPrice || product.originalPrice) >= parseFloat(minPrice);
+      const matchesSeller = !selectedSeller || 
+        product.shop?._id === selectedSeller;
 
-    const matchesMaxPrice = !maxPrice || 
-      (product.discountPrice || product.originalPrice) <= parseFloat(maxPrice);
+      const matchesMinPrice = !minPrice || 
+        (product.discountPrice || product.originalPrice) >= parseFloat(minPrice);
 
-    return matchesSearch && matchesCategory && matchesSeller && matchesMinPrice && matchesMaxPrice;
-  });
+      const matchesMaxPrice = !maxPrice || 
+        (product.discountPrice || product.originalPrice) <= parseFloat(maxPrice);
+
+      return matchesSearch && matchesCategory && matchesSubcategory && matchesSeller && matchesMinPrice && matchesMaxPrice;
+    });
+
+    // Apply randomization: boosted first, then random for normal products
+    if (!filtered || filtered.length === 0) return [];
+    
+    // Separate boosted and normal products
+    const boostedProducts = filtered.filter(product => product.isBoosted);
+    const normalProducts = filtered.filter(product => !product.isBoosted);
+    
+    // Sort boosted products by priority (highest first)
+    boostedProducts.sort((a, b) => {
+      if (a.boostPriority !== b.boostPriority) {
+        return b.boostPriority - a.boostPriority;
+      }
+      // If same priority, sort by creation date (newer first)
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    
+    // Shuffle normal products for true randomization
+    const shuffledNormalProducts = shuffleArray(normalProducts);
+    
+    // Combine: boosted first, then shuffled normal products
+    return [...boostedProducts, ...shuffledNormalProducts];
+  })();
 
   // Pagination logic
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -119,6 +191,7 @@ const ProductsPage = () => {
     setMinPrice("");
     setMaxPrice("");
     setSelectedCategory(categoryData || ""); // Keep URL category if present
+    setSelectedSubcategory(subcategoryData || ""); // Keep URL subcategory if present
     setSelectedSeller("");
     setCurrentPage(1);
   };
@@ -134,11 +207,12 @@ const ProductsPage = () => {
       {loading ? (
         <Loader />
       ) : (
-        <div className={isRTL ? "rtl" : "ltr"}>
-          <Header activeHeading={3} />
-          
-          {/* Compact Hero Section */}
-          <div className="relative bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 overflow-hidden">
+        <>
+          <div className={isRTL ? "rtl" : "ltr"}>
+            <Header activeHeading={3} />
+            
+            {/* Compact Hero Section */}
+            <div className="relative bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 bg-black/10">
               <div className="absolute inset-0" style={{
@@ -163,7 +237,7 @@ const ProductsPage = () => {
                     <div className="text-orange-200 text-xs font-medium">{t("productsPage.sellers", "Sellers")}</div>
                   </div>
                   <div className="text-center px-2">
-                    <div className="text-lg sm:text-xl font-bold text-white">{categoriesData.length}</div>
+                    <div className="text-lg sm:text-xl font-bold text-white">{categories.length}</div>
                     <div className="text-orange-200 text-xs font-medium">{t("productsPage.categories", "Categories")}</div>
                   </div>
                 </div>
@@ -212,13 +286,34 @@ const ProductsPage = () => {
                     <div className="grid grid-cols-1 gap-3">
                       <select
                         value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        onChange={(e) => {
+                          setSelectedCategory(e.target.value);
+                          setSelectedSubcategory(""); // Reset subcategory when category changes
+                        }}
                         className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
                       >
                         <option value="">{t("productsPage.allCategories", "All Categories")}</option>
-                        {categoriesData.map((cat) => (
-                          <option key={cat.id} value={cat.title.en}>
-                            {cat.title[i18n.language] || cat.title.en}
+                        {categories.map((cat) => (
+                          <option key={cat._id} value={cat._id}>
+                            {i18n.language === 'ar' ? cat.nameAr : 
+                             i18n.language === 'fr' ? cat.nameFr : 
+                             cat.name}
+                          </option>
+                        ))}
+                      </select>
+                      
+                      <select
+                        value={selectedSubcategory}
+                        onChange={(e) => setSelectedSubcategory(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
+                        disabled={!selectedCategory}
+                      >
+                        <option value="">{t("productsPage.allSubcategories", "All Subcategories")}</option>
+                        {selectedCategory && getSubcategoriesByCategory(selectedCategory).map((sub) => (
+                          <option key={sub._id} value={sub._id}>
+                            {i18n.language === 'ar' ? sub.nameAr : 
+                             i18n.language === 'fr' ? sub.nameFr : 
+                             sub.name}
                           </option>
                         ))}
                       </select>
@@ -268,13 +363,34 @@ const ProductsPage = () => {
                 <div className="hidden sm:flex flex-1 items-center gap-3">
                   <select
                     value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedCategory(e.target.value);
+                      setSelectedSubcategory(""); // Reset subcategory when category changes
+                    }}
                     className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
                   >
                     <option value="">{t("productsPage.allCategories", "All Categories")}</option>
-                    {categoriesData.map((cat) => (
-                      <option key={cat.id} value={cat.title.en}>
-                        {cat.title[i18n.language] || cat.title.en}
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat._id}>
+                        {i18n.language === 'ar' ? cat.nameAr : 
+                         i18n.language === 'fr' ? cat.nameFr : 
+                         cat.name}
+                      </option>
+                    ))}
+                  </select>
+                  
+                  <select
+                    value={selectedSubcategory}
+                    onChange={(e) => setSelectedSubcategory(e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-200 transition-all duration-300 text-sm"
+                    disabled={!selectedCategory}
+                  >
+                    <option value="">{t("productsPage.allSubcategories", "All Subcategories")}</option>
+                    {selectedCategory && getSubcategoriesByCategory(selectedCategory).map((sub) => (
+                      <option key={sub._id} value={sub._id}>
+                        {i18n.language === 'ar' ? sub.nameAr : 
+                         i18n.language === 'fr' ? sub.nameFr : 
+                         sub.name}
                       </option>
                     ))}
                   </select>
@@ -332,13 +448,22 @@ const ProductsPage = () => {
                       : t("productsPage.productsFoundPlural", "{{count}} Products Found", { count: filteredProducts.length }) + ` - ${i18n.language}`
                   )}
                 </h3>
-                {(searchTerm || selectedSeller || selectedCategory || minPrice || maxPrice) && (
+                {(searchTerm || selectedSeller || selectedCategory || selectedSubcategory || minPrice || maxPrice) && (
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500 hidden sm:inline">•</span>
                     <span className="text-xs text-gray-600">
                       {searchTerm && t("productsPage.searchFilter", "Search: \"{{term}}\"", { term: searchTerm })}
                       {selectedSeller && ` • ${t("productsPage.sellerFilter", "Seller: {{name}}", { name: sellers.find(s => s._id === selectedSeller)?.name || 'Selected' })}`}
-                      {selectedCategory && ` • ${t("productsPage.categoryFilter", "Category: {{category}}", { category: selectedCategory })}`}
+                      {selectedCategory && (() => {
+                        const cat = categories.find(c => c._id === selectedCategory);
+                        const catName = cat ? (i18n.language === 'ar' ? cat.nameAr : i18n.language === 'fr' ? cat.nameFr : cat.name) : selectedCategory;
+                        return ` • ${t("productsPage.categoryFilter", "Category: {{category}}", { category: catName })}`;
+                      })()}
+                      {selectedSubcategory && (() => {
+                        const sub = subcategories.find(s => s._id === selectedSubcategory);
+                        const subName = sub ? (i18n.language === 'ar' ? sub.nameAr : i18n.language === 'fr' ? sub.nameFr : sub.name) : selectedSubcategory;
+                        return ` • ${t("productsPage.subcategoryFilter", "Subcategory: {{subcategory}}", { subcategory: subName })}`;
+                      })()}
                       {(minPrice || maxPrice) && ` • ${t("productsPage.priceFilter", "Price: {{min}} - {{max}}", { min: minPrice || '0', max: maxPrice || '∞' })}`}
                     </span>
                   </div>
@@ -365,12 +490,12 @@ const ProductsPage = () => {
                     {t("productsPage.noProductsFound", "No products found")}
                   </h3>
                   <p className="text-sm text-gray-600 mb-4 sm:mb-6 leading-relaxed">
-                    {(searchTerm || selectedSeller || selectedCategory || minPrice || maxPrice)
+                    {(searchTerm || selectedSeller || selectedCategory || selectedSubcategory || minPrice || maxPrice)
                       ? t("productsPage.tryAdjustingFilters", "Try adjusting your search criteria or filters to find more products")
                       : t("productsPage.noProductsAvailable", "No products are currently available. Check back soon for new products!")
                     }
                   </p>
-                  {(searchTerm || selectedSeller || selectedCategory || minPrice || maxPrice) && (
+                  {(searchTerm || selectedSeller || selectedCategory || selectedSubcategory || minPrice || maxPrice) && (
                     <button
                       onClick={resetFilters}
                       className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
@@ -381,7 +506,7 @@ const ProductsPage = () => {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4 xl:gap-8 mb-8 sm:mb-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 xl:gap-6 mb-8 sm:mb-12">
                 {currentItems &&
                   currentItems.map((i, index) => (
                     <ProductCard data={i} isEvent={false} key={index} />
@@ -441,9 +566,11 @@ const ProductsPage = () => {
                 </div>
               </div>
             )}
+            </div>
           </div>
+          
           <Footer />
-        </div>
+        </>
       )}
     </>
   );

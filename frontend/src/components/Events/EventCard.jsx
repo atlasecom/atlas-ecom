@@ -6,13 +6,19 @@ import {
   AiOutlineEye,
   AiOutlineHeart,
 } from "react-icons/ai";
+import { FaWhatsapp, FaTelegram } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist, removeFromWishlist } from "../../redux/actions/wishlist";
+import { toast } from "react-toastify";
+import axios from "axios";
 import CountDown from "./CountDown";
-import { backend_url } from "../../server";
+import { backend_url, server } from "../../server";
+import BoostBadge from "../Common/BoostBadge";
+import VerifiedBadge from "../Common/VerifiedBadge";
 
 const EventCard = ({ data, isEvent = true }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
+  const { isAuthenticated } = useSelector((state) => state.user);
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
   const [click, setClick] = useState(false);
@@ -37,14 +43,96 @@ const EventCard = ({ data, isEvent = true }) => {
     return null;
   }
 
-  const removeFromWishlistHandler = (data) => {
-    setClick(!click);
-    dispatch(removeFromWishlist(data));
+  const removeFromWishlistHandler = async (data) => {
+    if (!isAuthenticated) {
+      toast.error(t("common.pleaseLogin", "Please login first!"));
+      return;
+    }
+    
+    try {
+      await dispatch(removeFromWishlist(data._id));
+      
+      // Track favorite removal
+      await axios.post(`${server}/api/track/event/${data._id}/favorite`, { action: 'remove' }).catch(err => 
+        console.log('Analytics tracking failed:', err)
+      );
+      
+      toast.success(t("eventCard.removedFromWishlist", "Removed from wishlist!"));
+    } catch (error) {
+      console.error("Remove from wishlist error:", error);
+      toast.error(error.response?.data?.message || t("eventCard.wishlistError", "Failed to remove from wishlist"));
+    }
   };
 
-  const addToWishlistHandler = (data) => {
-    setClick(!click);
-    dispatch(addToWishlist(data));
+  const addToWishlistHandler = async (data) => {
+    if (!isAuthenticated) {
+      toast.error(t("common.pleaseLogin", "Please login first!"));
+      return;
+    }
+    
+    try {
+      await dispatch(addToWishlist(data._id));
+      
+      // Track favorite addition
+      await axios.post(`${server}/api/track/event/${data._id}/favorite`, { action: 'add' }).catch(err => 
+        console.log('Analytics tracking failed:', err)
+      );
+      
+      toast.success(t("eventCard.addedToWishlist", "Added to wishlist!"));
+    } catch (error) {
+      console.error("Add to wishlist error:", error);
+      toast.error(error.response?.data?.message || t("eventCard.wishlistError", "Failed to add to wishlist"));
+    }
+  };
+
+  // WhatsApp handler
+  const handleWhatsAppClick = async () => {
+    try {
+      if (data.shop?.phoneNumber) {
+        // Track WhatsApp click
+        await axios.post(`${server}/api/track/event/${data._id}/whatsapp`).catch(err => 
+          console.log('Analytics tracking failed:', err)
+        );
+        
+        const phoneNumber = data.shop.phoneNumber.replace(/\D/g, '');
+        window.open(`https://wa.me/${phoneNumber}`, "_blank");
+      } else {
+        toast.error(
+          t(
+            "eventCard.noWhatsAppInfo",
+            "Seller has not provided a WhatsApp number."
+          )
+        );
+      }
+    } catch (error) {
+      console.error("WhatsApp error:", error);
+      toast.error(t("common.whatsappError", "Failed to open WhatsApp"));
+    }
+  };
+
+  // Telegram handler
+  const handleTelegramClick = async () => {
+    try {
+      if (data.shop?.telegram) {
+        // Track Telegram click
+        await axios.post(`${server}/api/track/event/${data._id}/telegram`).catch(err => 
+          console.log('Analytics tracking failed:', err)
+        );
+        
+        const telegramUsername = data.shop.telegram.replace('@', '');
+        window.open(`https://t.me/${telegramUsername}`, "_blank");
+      } else {
+        toast.error(
+          t(
+            "eventCard.noTelegramInfo",
+            "Seller has not provided a Telegram username."
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Telegram error:", error);
+      toast.error(t("common.telegramError", "Failed to open Telegram"));
+    }
   };
 
   const eventLink = `/product/${data._id}?isEvent=true`;
@@ -81,140 +169,136 @@ const EventCard = ({ data, isEvent = true }) => {
   const stock = data?.stock || 0;
 
   return (
-    <>
-      <div className="w-full bg-white rounded-xl xl:rounded-2xl shadow-md hover:shadow-lg xl:hover:shadow-xl 2xl:hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 xl:border-gray-200 2xl:border-gray-300 group xl:group-hover:scale-[1.01] 2xl:group-hover:scale-[1.02]">
-        {/* Image Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
-          <Link to={eventLink} className="block">
-            <img
-              src={getImageUrl()}
-              alt={eventName}
-              className="w-full h-32 sm:h-36 lg:h-40 xl:h-40 2xl:h-40 object-cover group-hover:scale-105 xl:group-hover:scale-110 2xl:group-hover:scale-110 transition-transform duration-700 ease-out bg-white"
-              onError={(e) => {
-                console.log('Image failed to load:', e.target.src);
-                e.target.src = '/default-event.png';
-                e.target.onerror = null;
-              }}
-              loading="lazy"
-            />
-          </Link>
-
-          {/* Quick Actions Overlay */}
-          <div className="absolute top-1 right-1 xl:top-2 xl:right-2 2xl:top-2 2xl:right-2 flex flex-col gap-1 xl:gap-1.5 2xl:gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-3 group-hover:translate-y-0">
-            {/* Quick View Button */}
-            <Link to={eventLink}>
-              <button
-                className="bg-white/95 backdrop-blur-sm rounded-full p-1.5 xl:p-2 2xl:p-2.5 shadow-md hover:shadow-lg xl:hover:shadow-xl 2xl:hover:shadow-2xl transition-all duration-300 hover:scale-110 xl:hover:scale-115 2xl:hover:scale-120 active:scale-95 border-0 min-w-[28px] min-h-[28px] xl:min-w-[32px] xl:min-h-[32px] 2xl:min-w-[36px] 2xl:min-h-[36px] flex items-center justify-center hover:bg-blue-50 xl:hover:bg-blue-100"
-                aria-label={t("eventCard.quickView", "Quick view")}
-              >
-                <AiOutlineEye size={12} className="xl:w-3 xl:h-3 2xl:w-4 2xl:h-4 text-gray-700 group-hover:text-blue-600 xl:group-hover:text-blue-700 transition-colors duration-300" />
-              </button>
-            </Link>
-          </div>
-
-          {/* Discount Badge */}
-          {originalPrice > 0 && originalPrice > discountPrice && (
-            <div className="absolute top-1 left-1 xl:top-2 xl:left-2 2xl:top-2 2xl:left-2">
-              <span className="bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white text-xs xl:text-xs 2xl:text-sm font-bold px-2 py-0.5 xl:px-2.5 xl:py-1 2xl:px-3 2xl:py-1.5 rounded-full shadow-md xl:shadow-lg 2xl:shadow-xl">
-                -
-                {Math.round(
-                  ((originalPrice - discountPrice) / originalPrice) * 100
-                )}
-                %
-              </span>
+    <div className={`w-full h-full bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden group flex flex-col ${isRTL ? 'rtl' : 'ltr'}`}>
+      {/* Clickable Link for entire card */}
+      <Link to={eventLink} className="block flex-grow">
+        {/* Image Container */}
+        <div className="relative w-full h-48 sm:h-56 lg:h-64 overflow-hidden cursor-pointer">
+          <img
+            src={getImageUrl()}
+            alt={eventName}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => {
+              e.target.src = '/default-event.png';
+            }}
+          />
+          
+          {/* Discount Badge - Top Right */}
+          {originalPrice > discountPrice && (
+            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-gradient-to-br from-red-500 via-red-600 to-red-700 text-white text-xs font-bold px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg shadow-xl border border-red-400 z-20 transform hover:scale-105 transition-transform duration-200">
+              <div className="flex items-center justify-center">
+                <span className="text-white font-black drop-shadow-sm text-xs sm:text-sm">
+                  -{Math.round(((originalPrice - discountPrice) / originalPrice) * 100)}%
+                </span>
+              </div>
             </div>
           )}
 
-          {/* Stock Status Badge */}
+          {/* Stock Status Badge - Top Right */}
           {stock === 0 && (
-            <div className="absolute top-1 left-1 xl:top-2 xl:left-2 2xl:top-2 2xl:left-2">
-              <span className="bg-gradient-to-r from-gray-600 via-gray-700 to-gray-800 text-white text-xs xl:text-xs 2xl:text-sm font-bold px-2 py-0.5 xl:px-2.5 xl:py-1 2xl:px-3 2xl:py-1.5 rounded-full shadow-md xl:shadow-lg 2xl:shadow-xl">
-                {t("eventCard.outOfStock", "Out of Stock")}
-              </span>
+            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-gradient-to-br from-gray-600 to-gray-700 text-white text-xs font-bold px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-md sm:rounded-lg shadow-lg border border-gray-500 z-20">
+              <span className="text-xs sm:text-sm">{t("eventCard.outOfStock", "Out of Stock")}</span>
             </div>
           )}
+
+          {/* Floating Badges on Image - Top Left */}
+          <div className="absolute top-1 left-1 sm:top-2 sm:left-2 flex flex-col gap-1 z-10">
+            {data.isBoosted && (
+              <div className="bg-white/95 backdrop-blur-sm rounded-md sm:rounded-lg p-1 sm:p-1.5 shadow-lg border border-yellow-200">
+                <BoostBadge type="sponsored" size="xs" />
+              </div>
+            )}
+            {data.shop?.verifiedBadge && (
+              <div className="bg-white/95 backdrop-blur-sm rounded-md sm:rounded-lg p-1 sm:p-1.5 shadow-lg border border-blue-200">
+                <VerifiedBadge size="xs" />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Content Section */}
-        <div className="p-2 sm:p-3 xl:p-3 2xl:p-4">
+        <div className="p-3 sm:p-4 flex-grow flex flex-col">
           {/* Event Name */}
-          <Link to={eventLink} className="block group">
-            <h4 className="font-bold text-gray-900 hover:text-orange-600 transition-colors duration-300 line-clamp-2 text-sm sm:text-base xl:text-base 2xl:text-lg leading-tight mb-1.5 sm:mb-2 xl:mb-2 2xl:mb-3 group-hover:text-orange-600">
-              {eventName && typeof eventName === 'string' && eventName.length > 40 ? eventName.slice(0, 40) + "..." : eventName}
-            </h4>
-          </Link>
+          <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-200 line-clamp-2 text-xs sm:text-sm md:text-base leading-tight mb-1 sm:mb-2 group-hover:text-blue-600 cursor-pointer">
+            {eventName.length > 40 ? eventName.slice(0, 40) + "..." : eventName}
+          </h3>
 
           {/* Enhanced Countdown Timer Section */}
-          <div className="mb-2 sm:mb-3 xl:mb-3 2xl:mb-4 p-2 sm:p-2.5 xl:p-3 2xl:p-3.5 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg xl:rounded-xl 2xl:rounded-2xl border border-orange-200 shadow-sm xl:shadow-sm 2xl:shadow-md">
+          <div className="mb-2 sm:mb-3 p-2 sm:p-2.5 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg border border-orange-200 shadow-sm">
             <CountDown data={data} t={t} isRTL={isRTL} />
           </div>
 
-          {/* Price Section */}
-          <div className="flex items-center gap-1 sm:gap-1.5 xl:gap-2 2xl:gap-3 mb-1.5 sm:mb-2 xl:mb-2 2xl:mb-3">
-            <h5 className="text-lg sm:text-xl xl:text-xl 2xl:text-2xl font-bold text-orange-600">
+          {/* Price */}
+          <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
+            <span className="text-sm sm:text-lg font-bold text-orange-600">
               {originalPrice} - {discountPrice} {getCurrency()}
-            </h5>
+            </span>
           </div>
 
           {/* Stock Indicator */}
           {stock < 10 && stock > 0 && (
-            <div className="mb-2 sm:mb-3 xl:mb-3 2xl:mb-4">
-              <span className="inline-flex items-center gap-1 xl:gap-1.5 2xl:gap-2 bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 text-xs sm:text-xs xl:text-xs 2xl:text-sm font-medium px-2 sm:px-2.5 xl:px-3 2xl:px-4 py-0.5 sm:py-1 xl:py-1.5 2xl:py-2 rounded-md xl:rounded-lg 2xl:rounded-xl border border-orange-200 shadow-sm xl:shadow-sm 2xl:shadow-md">
-                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 xl:w-2.5 xl:h-2.5 bg-orange-500 rounded-full animate-pulse"></div>
-                {t("eventCard.onlyLeft", "Only {{count}} left", {
-                  count: stock,
-                })}
+            <div className="mb-2 sm:mb-3">
+              <span className="inline-flex items-center gap-1 bg-orange-100 text-orange-700 text-xs font-medium px-2 py-1 rounded-md">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                <span className="text-xs">{t("eventCard.onlyLeft", "Only {{count}} left", { count: stock })}</span>
               </span>
             </div>
           )}
+        </div>
+      </Link>
 
-          {/* Professional Favorites Button */}
-          <div className="mt-2 sm:mt-3 xl:mt-3 2xl:mt-4">
-            <button
-              className={`w-full font-bold py-2 sm:py-2.5 xl:py-2.5 2xl:py-3 px-2 sm:px-3 xl:px-3 2xl:px-4 rounded-lg xl:rounded-lg 2xl:rounded-xl transition-all duration-500 hover:shadow-md xl:hover:shadow-lg 2xl:hover:shadow-xl active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group border-0 ${
-                click
-                  ? 'bg-gradient-to-br from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:via-red-700 hover:to-red-800 text-white shadow-md xl:shadow-lg 2xl:shadow-xl'
-                  : 'bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 hover:from-orange-600 hover:via-orange-700 hover:to-orange-800 text-white shadow-md xl:shadow-lg 2xl:shadow-xl'
-              }`}
-              onClick={() => click ? removeFromWishlistHandler(data) : addToWishlistHandler(data)}
-              disabled={!stock || stock === 0}
-            >
-              {/* Enhanced Shimmer Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
+      {/* Action Buttons */}
+      <div className="px-3 sm:px-4 pb-3 sm:pb-4 space-y-1.5 sm:space-y-3">
+        {/* Add to Wishlist Button */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            click ? removeFromWishlistHandler(data) : addToWishlistHandler(data);
+          }}
+          className={`w-full py-1.5 sm:py-2.5 px-3 sm:px-4 rounded-lg font-medium text-white transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 ${
+            click 
+              ? 'bg-red-500 hover:bg-red-600 shadow-lg' 
+              : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-md hover:shadow-lg'
+          }`}
+        >
+          {click ? (
+            <AiFillHeart size={16} className="w-4 h-4 sm:w-5 sm:h-5" />
+          ) : (
+            <AiOutlineHeart size={16} className="w-4 h-4 sm:w-5 sm:h-5" />
+          )}
+          <span className="text-xs sm:text-sm font-semibold">
+            {click ? t("eventCard.removeFromWishlist", "Remove") : t("eventCard.addToWishlist", "Add to wishlist")}
+          </span>
+        </button>
 
-              {/* Subtle Glow Effect */}
-              <div className={`absolute inset-0 rounded-2xl blur-sm opacity-20 group-hover:opacity-30 transition-opacity duration-500 ${
-                click ? 'bg-red-400' : 'bg-orange-400'
-              }`}></div>
-
-              {click ? (
-                <>
-                  <div className="relative z-10 flex items-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2">
-                    <div className="relative">
-                      <AiFillHeart size={14} className="sm:w-4 sm:h-4 xl:w-5 xl:h-5 2xl:w-6 2xl:h-6 text-red-100 drop-shadow-sm" />
-                      <div className="absolute inset-0 bg-red-300 rounded-full blur-md opacity-40 animate-ping"></div>
-                      <div className="absolute inset-0 bg-red-200 rounded-full blur-sm opacity-60 animate-pulse"></div>
-                    </div>
-                    <span className="font-bold text-xs sm:text-xs xl:text-xs 2xl:text-sm tracking-wide">{t("eventCard.removeFromFavorites", "Remove from Favorites")}</span>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="relative z-10 flex items-center gap-1 sm:gap-1.5 xl:gap-1.5 2xl:gap-2">
-                    <div className="relative">
-                      <AiOutlineHeart size={14} className="sm:w-4 sm:h-4 xl:w-5 xl:h-5 2xl:w-6 2xl:h-6 text-orange-100 drop-shadow-sm" />
-                      <div className="absolute inset-0 bg-orange-300 rounded-full blur-md opacity-30 group-hover:opacity-50 transition-all duration-500"></div>
-                      <div className="absolute inset-0 bg-orange-200 rounded-full blur-sm opacity-40 group-hover:opacity-60 transition-all duration-500"></div>
-                    </div>
-                    <span className="font-bold text-xs sm:text-xs xl:text-xs 2xl:text-sm tracking-wide">{t("eventCard.addToFavorites", "Add to Favorites")}</span>
-                  </div>
-                </>
-              )}
-            </button>
-          </div>
+        {/* WhatsApp and Telegram Buttons */}
+        <div className="flex gap-1">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleWhatsAppClick();
+            }}
+            className="flex-1 bg-green-500 hover:bg-green-600 text-white py-0.5 sm:py-2.5 px-1.5 sm:px-3 rounded-lg sm:rounded-l-lg transition-colors duration-200 flex items-center justify-center gap-1 sm:gap-2 shadow-md hover:shadow-lg"
+          >
+            <FaWhatsapp size={14} className="hidden sm:block w-4 h-4 text-white" />
+            <span className="text-xs sm:text-sm font-medium">{t("common.whatsapp", "WhatsApp")}</span>
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleTelegramClick();
+            }}
+            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-0.5 sm:py-2.5 px-1.5 sm:px-3 rounded-lg sm:rounded-r-lg transition-colors duration-200 flex items-center justify-center gap-1 sm:gap-2 shadow-md hover:shadow-lg"
+          >
+            <FaTelegram size={14} className="hidden sm:block w-4 h-4 text-white" />
+            <span className="text-xs sm:text-sm font-medium">{t("common.telegram", "Telegram")}</span>
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

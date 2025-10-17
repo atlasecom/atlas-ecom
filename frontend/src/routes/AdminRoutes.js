@@ -4,6 +4,10 @@ import AdminDashboardSellers from "../pages/AdminDashboardSellers";
 import AdminDashboardProducts from "../pages/AdminDashboardProducts";
 import AdminDashboardEvents from "../pages/AdminDashboardEvents";
 import AdminDashboardSettings from "../pages/AdminDashboardSettings";
+import AdminDashboardCategories from "../pages/AdminDashboardCategories";
+import AdminDashboardAnalytics from "../pages/AdminDashboardAnalytics";
+import AdminDashboardTutorials from "../pages/AdminDashboardTutorials";
+import AdminPaymentsPage from "../pages/AdminPaymentsPage";
 
 export {
   AdminDashboardPage,
@@ -12,4 +16,8 @@ export {
   AdminDashboardProducts,
   AdminDashboardEvents,
   AdminDashboardSettings,
+  AdminDashboardCategories,
+  AdminDashboardAnalytics,
+  AdminDashboardTutorials,
+  AdminPaymentsPage,
 };

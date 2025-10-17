@@ -40,21 +40,14 @@ const eventSchema = new mongoose.Schema({
     maxLength: [2000, 'Event description cannot exceed 2000 characters']
   },
   category: {
-    type: String,
-    required: [true, 'Please select category for this event'],
-    enum: [
-      'Electronics',
-      'Fashion & Apparel',
-      'Home & Garden',
-      'Sports & Outdoors',
-      'Health & Beauty',
-      'Books & Media',
-      'Automotive',
-      'Toys & Games',
-      'Food & Beverages',
-      'Jewelry & Accessories',
-      'Pet Supplies'
-    ]
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: [true, 'Please select category for this event']
+  },
+  subcategory: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SubCategory',
+    required: [true, 'Please select subcategory for this event']
   },
   start_Date: {
     type: Date,
@@ -123,6 +116,73 @@ const eventSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
+  },
+  isApproved: {
+    type: Boolean,
+    default: true
+  },
+  // Admin approval system
+  approvalStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'approved'
+  },
+  rejectionReason: {
+    type: String,
+    default: ''
+  },
+  approvedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  approvedAt: {
+    type: Date
+  },
+  // Boost system
+  isBoosted: {
+    type: Boolean,
+    default: false
+  },
+  boostPriority: {
+    type: Number,
+    default: 0
+  },
+  boostExpiresAt: Date,
+  boostClicksRemaining: {
+    type: Number,
+    default: 0
+  },
+  // Click tracking for boost system
+  clickTracking: {
+    whatsapp: {
+      type: Number,
+      default: 0
+    },
+    telegram: {
+      type: Number,
+      default: 0
+    },
+    total: {
+      type: Number,
+      default: 0
+    }
+  },
+  // Analytics tracking fields
+  viewCount: {
+    type: Number,
+    default: 0
+  },
+  whatsappClicks: {
+    type: Number,
+    default: 0
+  },
+  telegramClicks: {
+    type: Number,
+    default: 0
+  },
+  favoritesCount: {
+    type: Number,
+    default: 0
   },
   createdAt: {
     type: Date,

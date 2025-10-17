@@ -17,33 +17,36 @@ const Ratings = ({ rating }) => {
             stars.push(
                 <AiFillStar
                     key={i}
-                    size={20}
+                    size={16}
                     color="#f6b100"
-                    className={`${isRTL ? 'ml-2' : 'mr-2'} cursor-pointer`}
+                    className="star-icon flex-shrink-0 w-3 h-3 sm:w-4 sm:h-4"
+                    style={{ marginRight: isRTL ? '0' : '2px', marginLeft: isRTL ? '2px' : '0' }}
                 />
             );
         } else if (i === Math.ceil(actualRating) && !Number.isInteger(actualRating) && actualRating > 0) {
             stars.push(
                 <BsStarHalf
                     key={i}
-                    size={17}
+                    size={14}
                     color="#f6ba00"
-                    className={`${isRTL ? 'ml-2' : 'mr-2'} cursor-pointer`}
+                    className="star-icon flex-shrink-0 w-3 h-3 sm:w-4 sm:h-4"
+                    style={{ marginRight: isRTL ? '0' : '2px', marginLeft: isRTL ? '2px' : '0' }}
                 />
             );
         } else {
             stars.push(
                 <AiOutlineStar
                     key={i}
-                    size={20}
+                    size={16}
                     color="#f6ba00"
-                    className={`${isRTL ? 'ml-2' : 'mr-2'} cursor-pointer`}
+                    className="star-icon flex-shrink-0 w-3 h-3 sm:w-4 sm:h-4"
+                    style={{ marginRight: isRTL ? '0' : '2px', marginLeft: isRTL ? '2px' : '0' }}
                 />
             );
         }
     }
 
-    return <div className={`flex ${isRTL ? 'flex-row-reverse' : ''}`}> {stars}</div>;
+    return <div className={`star-rating inline-flex items-center gap-0.5 ${isRTL ? 'flex-row-reverse' : ''}`}> {stars}</div>;
 
 }
 

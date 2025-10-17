@@ -142,10 +142,10 @@ const DashboardHeader = () => {
             <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-3 sm:py-4 lg:py-5 bg-gray-50 border-t border-gray-200">
                 <nav className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3 text-xs sm:text-sm lg:text-base text-gray-600">
                     <Link to="/dashboard" className="hover:text-blue-600 transition-colors duration-200 truncate">
-                        Dashboard
+                        {t("dashboardHeader.dashboard", "Dashboard")}
                     </Link>
                     <span className="text-gray-400">/</span>
-                    <span className="text-gray-900 font-medium truncate">Seller Portal</span>
+                    <span className="text-gray-900 font-medium truncate">{t("dashboardHeader.sellerPortal", "Seller Portal")}</span>
                 </nav>
             </div>
         </div>

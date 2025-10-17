@@ -4,10 +4,13 @@ import Footer from "../components/Layout/Footer";
 import { useSelector } from "react-redux";
 import Loader from "../components/Layout/Loader";
 import styles from "../styles/styles";
-import ProductCard from "../components/Route/ProductCard/ProductCardNew";
+import ProductCard from "../components/Route/ProductCard/ProductCard";
 import { useTranslation } from "react-i18next";
-import { FiTrendingUp, FiStar, FiShoppingBag, FiFilter } from "react-icons/fi";
-import { categoriesData } from "../static/data";
+import { FiTrendingUp, FiStar, FiShoppingBag, FiFilter, FiEye, FiHeart, FiMessageCircle } from "react-icons/fi";
+import { FaWhatsapp, FaTelegram } from "react-icons/fa";
+import axios from "axios";
+import { server } from "../server";
+import { useCategories } from "../hooks/useCategories";
 
 const BestSellingPage = () => {
   const [data, setData] = useState([]);
@@ -17,43 +20,51 @@ const BestSellingPage = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 20;
   
-  const { allProducts, isLoading } = useSelector((state) => state.products);
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
+  const { categories } = useCategories();
 
-  // Get unique categories from products and match with categoriesData
-  const productCategories = [...new Set((allProducts || []).map(product => product.category).filter(Boolean))];
-  const categories = categoriesData.filter(cat => 
-    productCategories.includes(cat.title.en) || 
-    productCategories.includes(cat.title.fr) || 
-    productCategories.includes(cat.title.ar)
-  );
-
+  // Fetch products sorted by engagement
   useEffect(() => {
-    if (Array.isArray(allProducts)) {
-      const sortedProducts = [...allProducts].sort(
-        (a, b) => b.sold_out - a.sold_out
-      );
-      setData(sortedProducts);
-      setFilteredData(sortedProducts);
-      window.scrollTo(0, 0);
-    }
-  }, [allProducts]);
+    const fetchBestProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get(`${server}/api/public/best-products?sortBy=engagement&limit=100`);
+        
+        if (response.data.success) {
+          const products = response.data.products;
+          setData(products);
+          setFilteredData(products);
+        }
+      } catch (error) {
+        console.error("Error fetching best products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBestProducts();
+    window.scrollTo(0, 0);
+  }, []);
 
   // Filter products based on selected filters
   useEffect(() => {
     let filtered = [...data];
 
     if (selectedCategory) {
-      filtered = filtered.filter(product => 
-        product.category === selectedCategory ||
-        categoriesData.find(cat => 
-          cat.title[i18n.language] === selectedCategory && 
-          (product.category === cat.title.en || product.category === cat.title.fr || product.category === cat.title.ar)
-        )
-      );
+      filtered = filtered.filter(product => {
+        // Check if product.category is an object (populated) or string (ID)
+        if (typeof product.category === 'object' && product.category !== null) {
+          const categoryName = product.category.name || product.category.nameEn;
+          const categoryNameAr = product.category.nameAr;
+          const categoryNameFr = product.category.nameFr;
+          return categoryName === selectedCategory || categoryNameAr === selectedCategory || categoryNameFr === selectedCategory;
+        }
+        return product.category === selectedCategory;
+      });
     }
 
     if (minPrice) {
@@ -74,7 +85,7 @@ const BestSellingPage = () => {
 
     setFilteredData(filtered);
     setCurrentPage(1);
-  }, [data, selectedCategory, minPrice, maxPrice]);
+  }, [data, selectedCategory, minPrice, maxPrice, i18n.language]);
 
   // Pagination logic
   const totalPages = Math.ceil((filteredData?.length || 0) / itemsPerPage);
@@ -126,17 +137,19 @@ const BestSellingPage = () => {
                 <div className="flex flex-wrap justify-center gap-3 sm:gap-4 lg:gap-6">
                   <div className="text-center px-2">
                     <div className="text-lg sm:text-xl font-bold text-white">{filteredData?.length || 0}</div>
-                    <div className="text-orange-200 text-xs font-medium">{t("bestSellingPage.bestSellers", "Best Sellers")}</div>
+                    <div className="text-orange-200 text-xs font-medium">{t("bestSellingPage.topProducts", "Top Products")}</div>
                   </div>
                   <div className="text-center px-2">
                     <div className="text-lg sm:text-xl font-bold text-white">
-                      {data.length > 0 ? data[0]?.sold_out || 0 : 0}
+                      {data.length > 0 ? data[0]?.totalEngagement || 0 : 0}
                     </div>
-                    <div className="text-orange-200 text-xs font-medium">{t("bestSellingPage.topSellerUnits", "Top Seller Units")}</div>
+                    <div className="text-orange-200 text-xs font-medium">{t("bestSellingPage.topEngagement", "Top Engagement")}</div>
                   </div>
                   <div className="text-center px-2">
-                    <div className="text-lg sm:text-xl font-bold text-white">{categories?.length || 0}</div>
-                    <div className="text-orange-200 text-xs font-medium">{t("bestSellingPage.categories", "Categories")}</div>
+                    <div className="text-lg sm:text-xl font-bold text-white">
+                      {data.length > 0 ? data.reduce((sum, p) => sum + (p.totalEngagement || 0), 0) : 0}
+                    </div>
+                    <div className="text-orange-200 text-xs font-medium">{t("bestSellingPage.totalInteractions", "Total Interactions")}</div>
                   </div>
                 </div>
               </div>
@@ -185,11 +198,14 @@ const BestSellingPage = () => {
                         className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm sm:text-base"
                       >
                         <option value="">{t("bestSellingPage.allCategories", "All Categories")}</option>
-                        {categories && categories.length > 0 ? categories.map((category) => (
-                          <option key={category.id} value={category.title[i18n.language] || category.title.en}>
-                            {category.title[i18n.language] || category.title.en}
-                          </option>
-                        )) : null}
+                        {categories && categories.length > 0 ? categories.map((category) => {
+                          const categoryName = i18n.language === 'ar' ? category.nameAr : i18n.language === 'fr' ? category.nameFr : category.name;
+                          return (
+                            <option key={category._id} value={categoryName}>
+                              {categoryName}
+                            </option>
+                          );
+                        }) : null}
                       </select>
                     </div>
 
@@ -288,6 +304,13 @@ const BestSellingPage = () => {
                     <div className="absolute -top-2 -left-2 z-10 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs sm:text-sm font-bold px-2 sm:px-3 py-1 rounded-full shadow-lg">
                       #{indexOfFirstItem + index + 1}
                     </div>
+                    
+                    {/* Engagement Badge */}
+                    <div className="absolute -top-2 -right-2 z-10 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg flex items-center gap-1">
+                      <FiTrendingUp size={12} />
+                      {product.totalEngagement || 0}
+                    </div>
+                    
                     <ProductCard data={product} key={product._id} />
                   </div>
                 )) : (

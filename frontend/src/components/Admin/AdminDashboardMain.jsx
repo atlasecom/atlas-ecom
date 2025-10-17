@@ -8,6 +8,7 @@ import { server } from "../../server";
 import { getAuthToken } from "../../utils/auth";
 import Loader from "../Layout/Loader";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 const AdminDashboardMain = () => {
   const { t } = useTranslation();
@@ -31,24 +32,29 @@ const AdminDashboardMain = () => {
       const token = getAuthToken();
       
       // Fetch users count
-      const usersResponse = await axios.get(`${server}/users`, {
+      const usersResponse = await axios.get(`${server}/api/admin/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       // Fetch sellers count
-      const sellersResponse = await axios.get(`${server}/admin/sellers`, {
+      const sellersResponse = await axios.get(`${server}/api/admin/sellers`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       // Fetch products count
-      const productsResponse = await axios.get(`${server}/products`, {
+      const productsResponse = await axios.get(`${server}/api/products`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Fetch events count
+      const eventsResponse = await axios.get(`${server}/api/events`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       // Fetch orders count (if endpoint exists)
       let ordersCount = 0;
       try {
-        const ordersResponse = await axios.get(`${server}/orders`, {
+        const ordersResponse = await axios.get(`${server}/api/orders`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (ordersResponse.data.success) {
@@ -56,11 +62,13 @@ const AdminDashboardMain = () => {
         }
       } catch (error) {
         console.log("Orders endpoint not available yet");
+        ordersCount = 0; // Set default value
       }
 
       const sellers = sellersResponse.data.success ? sellersResponse.data.sellers : [];
       const users = usersResponse.data.success ? usersResponse.data.users : [];
       const products = productsResponse.data.success ? productsResponse.data.products : [];
+      const events = eventsResponse.data.success ? eventsResponse.data.events : [];
 
       setStats({
         totalUsers: users.length,
@@ -72,6 +80,7 @@ const AdminDashboardMain = () => {
       });
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);
+      toast.error("Failed to load dashboard statistics");
     } finally {
       setLoading(false);
     }

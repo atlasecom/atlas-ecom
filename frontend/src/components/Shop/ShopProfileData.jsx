@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { getAllProductsShop } from "../../redux/actions/product";
 import styles from "../../styles/styles";
-import ProductCard from "../Route/ProductCard/ProductCardNew";
+import ProductCard from "../Route/ProductCard/ProductCard";
 import { backend_url, server } from "../../server";
 import Ratings from "../Products/Ratings";
 import { getAllEventsShop } from "../../redux/actions/event";

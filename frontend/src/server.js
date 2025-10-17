@@ -1,10 +1,18 @@
 // Production Configuration - Uses environment variables
 const getBackendUrl = () => {
-  const url = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
-  // Force HTTPS for production URLs
-  if (url.includes('onrender.com') && url.startsWith('http://')) {
-    return url.replace('http://', 'https://');
+  // Check if we're in production (deployed on Render)
+  if (window.location.hostname === 'atlas-ecom-frontend.onrender.com') {
+    const url = "https://atlas-ecom-1.onrender.com";
+    console.log('Production Backend URL configured as:', url);
+    return url;
   }
+  
+  // Local development
+  const url = "http://localhost:5000";
+
+  console.log('Local Backend URL configured as:', url);
+  console.log('Current hostname:', window.location.hostname);
+  
   return url;
 };
 

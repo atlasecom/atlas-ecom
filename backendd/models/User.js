@@ -71,6 +71,35 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  isApproved: {
+    type: Boolean,
+    default: false
+  },
+  // Badge vérifié (payant)
+  verifiedBadge: {
+    type: Boolean,
+    default: false
+  },
+  verifiedBadgeExpiresAt: Date,
+  // Statistiques de boost
+  boostStats: {
+    totalSpent: {
+      type: Number,
+      default: 0
+    },
+    totalClicks: {
+      type: Number,
+      default: 0
+    },
+    activeBoosts: {
+      type: Number,
+      default: 0
+    }
+  },
+  wishlist: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product'
+  }],
   resetPasswordToken: String,
   resetPasswordTime: Date,
   createdAt: {
@@ -131,12 +160,12 @@ userSchema.virtual('fallbackAvatar').get(function() {
   ];
   const colorIndex = this.name ? this.name.charCodeAt(0) % colors.length : 0;
   
-  return `data:image/svg+xml;base64,${btoa(`
-    <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100" height="100" fill="${colors[colorIndex]}" rx="50"/>
-      <text x="50" y="65" font-family="Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="white">${firstLetter}</text>
-    </svg>
-  `)}`;
+  const svgString = `<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="${colors[colorIndex]}" rx="50"/>
+    <text x="50" y="65" font-family="Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="white">${firstLetter}</text>
+  </svg>`;
+  
+  return `data:image/svg+xml;base64,${Buffer.from(svgString).toString('base64')}`;
 });
 
 // Ensure virtual fields are serialized

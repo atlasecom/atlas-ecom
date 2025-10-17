@@ -16,6 +16,8 @@ const AllEvents = () => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [eventId, setEventId] = useState("");
+  const [approvalStatus, setApprovalStatus] = useState("all");
+  const [rejectionReason, setRejectionReason] = useState("");
   
   // Filter states
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,15 +33,15 @@ const AllEvents = () => {
 
   const fetchEvents = async () => {
     setLoading(true);
-      try {
-        const token = getAuthToken();
-      const response = await axios.get(`${server}/events/admin`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setEvents(response.data.events || []);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-        toast.error(t("admin.allEvents.fetchError", "Failed to fetch events"));
+    try {
+      const token = getAuthToken();
+      const response = await axios.get(`${server}/api/admin/events`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setEvents(response.data.events || []);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      toast.error(t("admin.allEvents.fetchError", "Failed to fetch events"));
     } finally {
       setLoading(false);
     }
@@ -62,12 +64,13 @@ const AllEvents = () => {
 
     const matchesCategory = !selectedCategory || event.category === selectedCategory;
     const matchesStatus = !selectedStatus || (event.status || 'active') === selectedStatus;
+    const matchesApprovalStatus = approvalStatus === "all" || event.approvalStatus === approvalStatus;
     
     const eventPrice = event.discountPrice || event.originalPrice || 0;
     const matchesMinPrice = !minPrice || eventPrice >= parseFloat(minPrice);
     const matchesMaxPrice = !maxPrice || eventPrice <= parseFloat(maxPrice);
 
-    return matchesSearch && matchesCategory && matchesStatus && matchesMinPrice && matchesMaxPrice;
+    return matchesSearch && matchesCategory && matchesStatus && matchesApprovalStatus && matchesMinPrice && matchesMaxPrice;
   });
 
   // Pagination logic
@@ -86,10 +89,41 @@ const AllEvents = () => {
     setCurrentPage(1);
   };
 
+  const handleApprove = async (id) => {
+    try {
+      const token = getAuthToken();
+      const response = await axios.post(`${server}/api/admin/events/${id}/approve`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success(response.data.message || t("admin.allEvents.approveSuccess", "Event approved successfully"));
+      fetchEvents(); // Refresh the events list
+    } catch (error) {
+      console.error("Error approving event:", error);
+      toast.error(t("admin.allEvents.approveError", "Failed to approve event"));
+    }
+  };
+
+  const handleReject = async (id) => {
+    try {
+      const token = getAuthToken();
+      const response = await axios.post(`${server}/api/admin/events/${id}/reject`, {
+        rejectionReason: rejectionReason
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success(response.data.message || t("admin.allEvents.rejectSuccess", "Event rejected successfully"));
+      setRejectionReason("");
+      fetchEvents(); // Refresh the events list
+    } catch (error) {
+      console.error("Error rejecting event:", error);
+      toast.error(t("admin.allEvents.rejectError", "Failed to reject event"));
+    }
+  };
+
   const handleDelete = async (id) => {
     try {
       const token = getAuthToken();
-      const response = await axios.delete(`${server}/events/admin/${id}`, {
+      const response = await axios.delete(`${server}/api/admin/events/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success(response.data.message || t("admin.allEvents.deleteSuccess", "Event deleted successfully"));
@@ -262,6 +296,24 @@ const AllEvents = () => {
                 </select>
               </div>
 
+              {/* Approval Status Filter */}
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                  <FiCalendar className="inline mr-2 text-xs sm:text-sm" />
+                  {t("admin.allEvents.approvalStatus", "Approval Status")}
+                </label>
+                <select
+                  value={approvalStatus}
+                  onChange={(e) => setApprovalStatus(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                >
+                  <option value="all">{t("admin.allEvents.allApprovalStatuses", "All Approval Statuses")}</option>
+                  <option value="pending">{t("admin.allEvents.pending", "Pending")}</option>
+                  <option value="approved">{t("admin.allEvents.approved", "Approved")}</option>
+                  <option value="rejected">{t("admin.allEvents.rejected", "Rejected")}</option>
+                </select>
+              </div>
+
               {/* Min Price */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
@@ -366,10 +418,23 @@ const AllEvents = () => {
                       {event.status || 'active'}
                     </span>
                   </div>
+
+                  {/* Approval Status Badge */}
+                  <div className="absolute top-3 right-3">
+                    <span className={`px-3 py-1 text-xs font-medium rounded-full shadow-sm ${
+                      event.approvalStatus === 'approved' 
+                        ? 'bg-green-100 text-green-800 border border-green-200' 
+                        : event.approvalStatus === 'rejected'
+                        ? 'bg-red-100 text-red-800 border border-red-200'
+                        : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
+                    }`}>
+                      {event.approvalStatus || 'pending'}
+                    </span>
+                  </div>
                   
                   {/* Stock Badge */}
                   {event.stock === 0 && (
-                    <div className="absolute top-3 right-3">
+                    <div className="absolute bottom-3 right-3">
                       <span className="bg-red-100 text-red-800 text-xs font-medium px-3 py-1 rounded-full border border-red-200 shadow-sm">
                         Out of Stock
                       </span>
@@ -396,7 +461,7 @@ const AllEvents = () => {
                     {event.category && (
                       <div className="flex items-center text-xs sm:text-sm text-gray-600">
                         <FiTag className="mr-2 text-xs sm:text-sm" size={14} />
-                        <span className="truncate">{event.category}</span>
+                        <span className="truncate">{event.category?.name || event.category}</span>
                       </div>
                     )}
                     {event.location && (
@@ -414,29 +479,58 @@ const AllEvents = () => {
                   {/* Price */}
                   <div className="flex items-center gap-2 mb-3 sm:mb-4">
                     <span className="text-lg sm:text-xl font-bold text-orange-600">
-                      {event.originalPrice} - {event.discountPrice} DH
+                      {event.price || event.originalPrice} - {event.discountPrice || event.price} DH
                     </span>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <Link
-                      to={`/product/${event._id}?isEvent=true`}
-                      className="w-full sm:flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm"
-                    >
-                      <AiOutlineEye size={16} />
-                      <span>View</span>
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setEventId(event._id);
-                        setOpen(true);
-                      }}
-                      className="w-full sm:flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-xs sm:text-sm"
-                    >
-                      <AiOutlineDelete size={16} />
-                      <span>Delete</span>
-                    </button>
+                  <div className="space-y-2">
+                    {/* Approval Actions */}
+                    {event.approvalStatus === 'pending' && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleApprove(event._id)}
+                          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-xs sm:text-sm"
+                        >
+                          <span>✓</span>
+                          <span>Approve</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            const reason = prompt("Enter rejection reason (optional):");
+                            if (reason !== null) {
+                              setRejectionReason(reason);
+                              handleReject(event._id);
+                            }
+                          }}
+                          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-xs sm:text-sm"
+                        >
+                          <span>✗</span>
+                          <span>Reject</span>
+                        </button>
+                      </div>
+                    )}
+                    
+                    {/* Standard Actions */}
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Link
+                        to={`/product/${event._id}?isEvent=true`}
+                        className="w-full sm:flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm"
+                      >
+                        <AiOutlineEye size={16} />
+                        <span>View</span>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setEventId(event._id);
+                          setOpen(true);
+                        }}
+                        className="w-full sm:flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-xs sm:text-sm"
+                      >
+                        <AiOutlineDelete size={16} />
+                        <span>Delete</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

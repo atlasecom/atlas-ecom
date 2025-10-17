@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import EventCard from "../components/Events/EventCard";
 import Header from "../components/Layout/Header";
 import Footer from "../components/Layout/Footer";
@@ -8,10 +8,13 @@ import { useTranslation } from "react-i18next";
 import { FiSearch, FiFilter, FiX, FiCalendar, FiMapPin, FiTag } from "react-icons/fi";
 import { AiOutlineEye } from "react-icons/ai";
 import { categoriesData } from "../static/data";
+import { getAllEvents } from "../redux/actions/event";
+import { shuffleArray } from "../utils/shuffle";
 
 const EventsPage = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const dispatch = useDispatch();
   const { allEvents, isLoading } = useSelector((state) => state.events);
   
   // Filter states
@@ -26,17 +29,23 @@ const EventsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
+  // Fetch events on component mount
+  useEffect(() => {
+    dispatch(getAllEvents());
+  }, [dispatch]);
+
   // Get unique categories and locations from events
-  const eventCategories = [...new Set(allEvents.map(event => event.category).filter(Boolean))];
+  const eventCategories = [...new Set((allEvents || []).map(event => event.category).filter(Boolean))];
   const categories = categoriesData.filter(cat =>
     eventCategories.includes(cat.title.en) ||
     eventCategories.includes(cat.title.fr) ||
     eventCategories.includes(cat.title.ar)
   );
-  const locations = [...new Set(allEvents.map(event => event.location).filter(Boolean))];
+  const locations = [...new Set((allEvents || []).map(event => event.location).filter(Boolean))];
 
   // Filter events based on search and filters
-  const filteredEvents = allEvents.filter(event => {
+  const filteredEvents = (allEvents || []).filter(event => {
+    // Apply search and other filters (show all events including future ones)
     const matchesSearch = !searchTerm || 
       event.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -52,11 +61,35 @@ const EventsPage = () => {
     return matchesSearch && matchesCategory && matchesLocation && matchesMinPrice && matchesMaxPrice;
   });
 
+  // Sort events: boosted first, then random for normal events (same logic as products)
+  const sortedEvents = (() => {
+    if (!filteredEvents || filteredEvents.length === 0) return [];
+    
+    // Separate boosted and normal events
+    const boostedEvents = filteredEvents.filter(event => event.isBoosted);
+    const normalEvents = filteredEvents.filter(event => !event.isBoosted);
+    
+    // Sort boosted events by priority (highest first)
+    boostedEvents.sort((a, b) => {
+      if (a.boostPriority !== b.boostPriority) {
+        return b.boostPriority - a.boostPriority;
+      }
+      // If same priority, sort by creation date (newer first)
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    
+    // Shuffle normal events for true randomization
+    const shuffledNormalEvents = shuffleArray(normalEvents);
+    
+    // Combine: boosted first, then shuffled normal events
+    return [...boostedEvents, ...shuffledNormalEvents];
+  })();
+
   // Pagination logic
-  const totalPages = Math.ceil(filteredEvents.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedEvents.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredEvents.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = sortedEvents.slice(indexOfFirstItem, indexOfLastItem);
 
   // Reset filters
   const resetFilters = () => {
@@ -79,11 +112,12 @@ const EventsPage = () => {
   }
 
   return (
-    <div className={isRTL ? 'rtl' : 'ltr'}>
-      <Header activeHeading={4} />
-      
-                {/* Compact Hero Section */}
-          <div className="relative bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 overflow-hidden">
+    <>
+      <div className={isRTL ? 'rtl' : 'ltr'}>
+        <Header activeHeading={4} />
+        
+        {/* Compact Hero Section */}
+        <div className="relative bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 bg-black/10">
               <div className="absolute inset-0" style={{
@@ -250,8 +284,8 @@ const EventsPage = () => {
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <h3 className="text-lg sm:text-xl font-bold text-gray-800">
 {t("eventsPage.eventsFound", "{{count}} Event{{plural}} Found", { 
-                count: filteredEvents.length, 
-                plural: filteredEvents.length !== 1 ? 's' : '' 
+                count: sortedEvents.length, 
+                plural: sortedEvents.length !== 1 ? 's' : '' 
               })} - {i18n.language}
             </h3>
             {(searchTerm || selectedCategory || selectedLocation || minPrice || maxPrice) && (
@@ -267,7 +301,7 @@ const EventsPage = () => {
             )}
           </div>
           
-          {filteredEvents.length > 0 && (
+          {sortedEvents.length > 0 && (
             <div className="text-xs text-gray-500">
 {t("eventsPage.pageOf", "Page {{current}} of {{total}}", { current: currentPage, total: totalPages })}
             </div>
@@ -275,7 +309,7 @@ const EventsPage = () => {
         </div>
 
         {/* Events Grid */}
-        {filteredEvents.length === 0 ? (
+        {sortedEvents.length === 0 ? (
           <div className="text-center py-8 sm:py-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200">
             <div className="max-w-md mx-auto px-4">
               <div className="text-gray-400 mb-3 sm:mb-4">
@@ -302,15 +336,15 @@ const EventsPage = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
-              {currentItems && currentItems.length > 0 ? currentItems.map((event) => (
-                <EventCard key={event._id} data={event} isEvent={true} />
-              )) : (
-                <div className="col-span-full text-center py-8">
-                  <p className="text-gray-500">No events found</p>
-                </div>
-              )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 xl:gap-6 mb-8 sm:mb-12">
+          {currentItems && currentItems.length > 0 ? currentItems.map((event) => (
+            <EventCard key={event._id} data={event} isEvent={true} />
+          )) : (
+            <div className="col-span-full text-center py-8">
+              <p className="text-gray-500">No events found</p>
             </div>
+          )}
+        </div>
 
             {/* Professional Pagination */}
             {totalPages > 1 && (
@@ -366,10 +400,11 @@ const EventsPage = () => {
             )}
           </>
         )}
+        </div>
       </div>
       
       <Footer />
-    </div>
+    </>
   );
 };
 

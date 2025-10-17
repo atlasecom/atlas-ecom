@@ -7,14 +7,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeFromWishlist } from "../../redux/actions/wishlist";
 import { backend_url } from "../../server";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 const Wishlist = ({ setOpenWishlist }) => {
   const { t } = useTranslation();
   const { wishlist } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
 
-  const removeFromWishlistHandler = (data) => {
-    dispatch(removeFromWishlist(data));
+  const removeFromWishlistHandler = async (data) => {
+    try {
+      console.log('Wishlist - Removing item with ID:', data._id);
+      await dispatch(removeFromWishlist(data._id));
+      toast.success(t("wishlist.removedFromWishlist", "Removed from wishlist!"));
+    } catch (error) {
+      console.error('Wishlist - Remove error:', error);
+      console.error('Wishlist - Error response:', error.response?.data);
+      toast.error(error.response?.data?.message || error.message || t("wishlist.wishlistError", "Failed to remove from wishlist"));
+    }
   };
 
   return (
