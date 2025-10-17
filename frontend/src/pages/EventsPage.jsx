@@ -36,10 +36,10 @@ const EventsPage = () => {
 
   // Get unique categories and locations from events
   const eventCategories = [...new Set((allEvents || []).map(event => event.category).filter(Boolean))];
-  const categories = categoriesData.filter(cat =>
-    eventCategories.includes(cat.title.en) ||
-    eventCategories.includes(cat.title.fr) ||
-    eventCategories.includes(cat.title.ar)
+  const categories = (categoriesData || []).filter(cat =>
+    eventCategories.includes(cat.title?.en) ||
+    eventCategories.includes(cat.title?.fr) ||
+    eventCategories.includes(cat.title?.ar)
   );
   const locations = [...new Set((allEvents || []).map(event => event.location).filter(Boolean))];
 

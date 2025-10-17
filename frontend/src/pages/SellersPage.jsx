@@ -220,9 +220,9 @@ const SellersPage = () => {
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300"
                 >
                   <option value="all">{t("sellersPage.allCategories", "All Categories")}</option>
-                  {categoriesData.map((cat) => (
-                    <option key={cat.id} value={cat.title.en}>
-                      {cat.title[i18n.language] || cat.title.en}
+                  {(categoriesData || []).map((cat) => (
+                    <option key={cat.id} value={cat.title?.en}>
+                      {cat.title?.[i18n.language] || cat.title?.en}
                     </option>
                   ))}
                 </select>

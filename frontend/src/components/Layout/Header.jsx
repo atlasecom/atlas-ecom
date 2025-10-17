@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles/styles";
-import { productData } from "../../static/data";
 import { useLocation } from "react-router-dom";
 import {motion, AnimatePresence } from 'framer-motion'
 import {
