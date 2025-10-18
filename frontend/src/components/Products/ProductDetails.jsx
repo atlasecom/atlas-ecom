@@ -470,7 +470,7 @@ const ProductDetails = ({ data, isEvent = false }) => {
                     </svg>
                     {t("common.productDescription", "Product Description")}
                   </h3>
-                  <div className="text-gray-700 leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere">
+                  <div className="text-gray-700 leading-relaxed product-description-mobile">
                     {data.description}
                   </div>
                   {data.tags && data.tags.length > 0 && (
@@ -497,7 +497,7 @@ const ProductDetails = ({ data, isEvent = false }) => {
                     </svg>
                     {t("common.eventDescription", "Event Description")}
                   </h3>
-                  <div className="text-gray-700 leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere">
+                  <div className="text-gray-700 leading-relaxed product-description-mobile">
                     {data.description}
                   </div>
                   {data.tags && data.tags.length > 0 && (

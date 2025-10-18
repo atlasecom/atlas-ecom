@@ -209,6 +209,29 @@
   font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
 }
 
+/* Fix for long text overflow on mobile */
+.mobile-text-wrap {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Ensure product descriptions don't overflow on mobile */
+.product-description-mobile {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  white-space: pre-wrap;
+  max-width: 100%;
+  overflow: hidden;
+  display: block;
+}
+
 /* Better image rendering on Samsung AMOLED */
 img {
   image-rendering: -webkit-optimize-contrast;
