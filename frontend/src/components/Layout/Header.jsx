@@ -546,7 +546,7 @@ const Header = ({ activeHeading }) => {
                       <AiOutlineUser size={20} className="text-orange-600" />
                     </div>
                     <span className="hidden md:block text-sm font-medium text-slate-700">
-                      Sign In / Sign Up
+                      {t("header.getStarted", "Sign In / Sign Up")}
                     </span>
                   </Link>
                 )}
