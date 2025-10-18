@@ -202,7 +202,15 @@ This email was sent to ${email} at ${new Date().toLocaleString()}
             });
             
           } catch (emailError) {
-            console.error('Email sending error:', emailError);
+            console.error('❌ Email sending failed:', emailError.message);
+            console.error('❌ Email error details:', emailError);
+            
+            // Check if it's a Gmail authentication error
+            if (emailError.code === 'EAUTH') {
+              console.error('❌ Gmail authentication failed. Check EMAIL_USER and EMAIL_PASS environment variables.');
+            } else if (emailError.code === 'ECONNECTION') {
+              console.error('❌ SMTP connection failed. Check network and SMTP settings.');
+            }
             
             // Fallback: return code in response if email fails
             res.status(200).json({

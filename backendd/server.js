@@ -116,31 +116,15 @@ app.use('/uploads', (req, res, next) => {
   next();
 }, express.static(path.join(__dirname, 'uploads')));
 
-// Health check endpoint
-app.get('/health', async (req, res) => {
-  try {
-    const whatsappHealth = await whatsappService.healthCheck();
-    
-    res.json({
-      success: true,
-      message: 'Atlas Ecom Backend is running',
-      timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'development',
-      services: {
-        whatsapp: whatsappHealth
-      }
-    });
-  } catch (error) {
-    res.json({
-      success: true,
-      message: 'Atlas Ecom Backend is running',
-      timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'development',
-      services: {
-        whatsapp: { error: error.message }
-      }
-    });
-  }
+// Health check endpoint (simple, no dependencies)
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Atlas Ecom Backend is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    status: 'OK'
+  });
 });
 
 // Test email endpoint
