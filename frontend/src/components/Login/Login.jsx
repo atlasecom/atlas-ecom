@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../../styles/styles";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { server, backend_url } from "../../server";
 import { toast } from "react-toastify";
@@ -13,6 +13,7 @@ import atlasLogo from "../../Assests/images/atlasEcom - Copie.png";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -21,6 +22,47 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const isRTL = i18n.language === "ar";
+
+  // Handle Google OAuth success
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const googleSuccess = searchParams.get("google_success");
+    const token = searchParams.get("token");
+    const userParam = searchParams.get("user");
+    const error = searchParams.get("error");
+
+    if (error === 'oauth_failed') {
+      toast.error(t("login.googleLoginError", "Google authentication failed. Please try again."));
+      // Clean up URL
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    if (googleSuccess === 'true' && token && userParam) {
+      try {
+        const user = JSON.parse(decodeURIComponent(userParam));
+        console.log('✅ Google OAuth success:', user.email, user.role);
+        
+        // Set auth token
+        setAuthToken(token);
+        
+        // Set user in Redux store
+        dispatch({
+          type: "LoadUserSuccess",
+          payload: user,
+        });
+        
+        toast.success(t("login.googleLoginSuccess", "Welcome! You've been successfully logged in with Google."));
+        
+        // Clean up URL and navigate to home
+        navigate("/", { replace: true });
+      } catch (parseError) {
+        console.error('❌ Error parsing Google OAuth user data:', parseError);
+        toast.error(t("login.googleLoginError", "Google authentication failed. Please try again."));
+        navigate("/login", { replace: true });
+      }
+    }
+  }, [location.search, navigate, dispatch, t]);
 
 
 
