@@ -470,9 +470,9 @@ const ProductDetails = ({ data, isEvent = false }) => {
                     </svg>
                     {t("common.productDescription", "Product Description")}
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">
+                  <div className="text-gray-700 leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere">
                     {data.description}
-                  </p>
+                  </div>
                   {data.tags && data.tags.length > 0 && (
                     <div className="mt-4 flex flex-wrap gap-2">
                       {(Array.isArray(data.tags) ? data.tags : data.tags.split(',')).map((tag, index) => (
@@ -497,9 +497,9 @@ const ProductDetails = ({ data, isEvent = false }) => {
                     </svg>
                     {t("common.eventDescription", "Event Description")}
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">
+                  <div className="text-gray-700 leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere">
                     {data.description}
-                  </p>
+                  </div>
                   {data.tags && data.tags.length > 0 && (
                     <div className="mt-4 flex flex-wrap gap-2">
                       {(Array.isArray(data.tags) ? data.tags : data.tags.split(',')).map((tag, index) => (
