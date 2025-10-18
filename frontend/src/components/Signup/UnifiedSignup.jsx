@@ -80,23 +80,36 @@ const UnifiedSignup = () => {
 
   // Send verification code
   const handleSendVerificationCode = async () => {
+    console.log('🔍 Send verification code clicked');
+    console.log('🔍 Email:', email);
+    console.log('🔍 User type:', userType);
+    console.log('🔍 Server URL:', server);
+    
     if (!email) {
+      console.log('❌ No email provided');
       toast.error(t("signup.enterEmailFirst", "Please enter your email address first"));
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log('❌ Invalid email format');
       toast.error(t("signup.enterValidEmail", "Please enter a valid email address"));
       return;
     }
 
+    console.log('✅ Email validation passed, sending request...');
     setSendingCode(true);
     try {
-      const response = await axios.post(`${server}/api/auth/users/send-verification-code`, {
+      const requestUrl = `${server}/api/auth/users/send-verification-code`;
+      console.log('🌐 Making request to:', requestUrl);
+      
+      const response = await axios.post(requestUrl, {
         email: email,
         type: userType
       });
+      
+      console.log('📨 Response received:', response.data);
 
       if (response.data.success) {
         if (response.data.fallback && response.data.code) {
@@ -110,9 +123,13 @@ const UnifiedSignup = () => {
         }
       }
     } catch (error) {
-      console.error('Send verification code error:', error);
+      console.error('❌ Send verification code error:', error);
+      console.error('❌ Error response:', error.response?.data);
+      console.error('❌ Error status:', error.response?.status);
+      console.error('❌ Error message:', error.message);
       toast.error(error.response?.data?.message || "Failed to send verification code. Please try again.");
     } finally {
+      console.log('🏁 Request completed, setting sendingCode to false');
       setSendingCode(false);
     }
   };
