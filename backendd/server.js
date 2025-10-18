@@ -1410,8 +1410,9 @@ io.on('connection', (socket) => {
   });
 });
 
-// Initialize WhatsApp Service (only in development)
+// Initialize WhatsApp Service
 if (process.env.NODE_ENV !== 'production') {
+  // Development: Use whatsapp-web.js with QR code
   whatsappService.initialize().then((isReady) => {
     if (isReady) {
       console.log('✅ WhatsApp service initialized and ready');
@@ -1422,7 +1423,17 @@ if (process.env.NODE_ENV !== 'production') {
     console.error('❌ WhatsApp service initialization failed:', error);
   });
 } else {
-  console.log('⚠️ WhatsApp service disabled in production');
+  // Production: Use Twilio WhatsApp API
+  const twilioWhatsAppService = require('./services/twilioWhatsappService');
+  twilioWhatsAppService.initialize().then((isReady) => {
+    if (isReady) {
+      console.log('✅ Twilio WhatsApp service initialized and ready');
+    } else {
+      console.log('⚠️ Twilio WhatsApp service not configured - check environment variables');
+    }
+  }).catch((error) => {
+    console.error('❌ Twilio WhatsApp service initialization failed:', error);
+  });
 }
 
 // Start the server

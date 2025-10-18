@@ -2,6 +2,7 @@ const { Client, MessageMedia, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const path = require('path');
+const twilioWhatsAppService = require('./twilioWhatsappService');
 
 class WhatsAppService {
   constructor() {
@@ -138,15 +139,10 @@ class WhatsAppService {
   }
 
   async sendMessage(phoneNumber, message) {
-    // In production, return a fallback response
+    // In production, use Twilio WhatsApp API
     if (process.env.NODE_ENV === 'production') {
-      console.log('⚠️ WhatsApp service not available in production - using fallback');
-      return {
-        success: false,
-        error: 'WhatsApp service not available in production',
-        phoneNumber: phoneNumber,
-        fallback: true
-      };
+      console.log('📱 Using Twilio WhatsApp API for production');
+      return await twilioWhatsAppService.sendMessage(phoneNumber, message);
     }
 
     try {
