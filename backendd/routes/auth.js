@@ -23,7 +23,14 @@ const phoneVerificationCodes = new Map();
 
 // Email transporter configuration
 const createEmailTransporter = () => {
-  return nodemailer.createTransport({
+  console.log('🔧 Creating email transporter...');
+  console.log('EMAIL_USER:', process.env.EMAIL_USER);
+  console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'SET' : 'NOT SET');
+  console.log('SMTP_HOST:', process.env.SMTP_HOST);
+  console.log('SMTP_PORT:', process.env.SMTP_PORT);
+  
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT) || 587,
     secure: false, // true for 465, false for other ports
@@ -32,9 +39,18 @@ const createEmailTransporter = () => {
       pass: process.env.EMAIL_PASS
     },
     tls: {
-      rejectUnauthorized: false
-    }
+      rejectUnauthorized: false,
+      ciphers: 'SSLv3'
+    },
+    // Additional options for better Gmail compatibility
+    pool: true,
+    maxConnections: 1,
+    maxMessages: 1,
+    rateDelta: 20000,
+    rateLimit: 5
   });
+  
+  return transporter;
 };
 
 // Cloudinary upload is configured in ../config/cloudinary.js
@@ -74,8 +90,16 @@ router.post('/send-verification-code', async (req, res) => {
 
           // Send email
           try {
+            console.log('📧 Attempting to send verification email...');
             const transporter = createEmailTransporter();
-      await transporter.sendMail({
+            
+            // Test the connection first
+            console.log('🔌 Testing SMTP connection...');
+            await transporter.verify();
+            console.log('✅ SMTP connection verified successfully!');
+            
+            console.log('📤 Sending verification email to:', email);
+            await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: email,
         subject: 'Email Verification Code - Atlas Ecommerce',
@@ -166,6 +190,10 @@ Atlas Ecommerce Team
 This email was sent to ${email} at ${new Date().toLocaleString()}
         `
             });
+            
+            console.log('✅ Verification email sent successfully!');
+            console.log('📧 Email sent to:', email);
+            console.log('🔑 Verification code:', verificationCode);
             
             res.status(200).json({
               success: true,
