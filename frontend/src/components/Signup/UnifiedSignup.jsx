@@ -100,6 +100,16 @@ const UnifiedSignup = () => {
 
     console.log('✅ Email validation passed, sending request...');
     setSendingCode(true);
+    
+    // Test basic connectivity first
+    try {
+      console.log('🔍 Testing basic connectivity...');
+      const testResponse = await axios.get(`${server}/health`, { timeout: 5000 });
+      console.log('✅ Health check passed:', testResponse.data);
+    } catch (testError) {
+      console.error('❌ Health check failed:', testError.message);
+    }
+    
     try {
       const requestUrl = `${server}/api/auth/users/send-verification-code`;
       console.log('🌐 Making request to:', requestUrl);
@@ -107,6 +117,11 @@ const UnifiedSignup = () => {
       const response = await axios.post(requestUrl, {
         email: email,
         type: userType
+      }, {
+        timeout: 10000, // 10 second timeout
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
       
       console.log('📨 Response received:', response.data);
@@ -127,7 +142,17 @@ const UnifiedSignup = () => {
       console.error('❌ Error response:', error.response?.data);
       console.error('❌ Error status:', error.response?.status);
       console.error('❌ Error message:', error.message);
-      toast.error(error.response?.data?.message || "Failed to send verification code. Please try again.");
+      console.error('❌ Error code:', error.code);
+      
+      if (error.code === 'ECONNABORTED') {
+        toast.error("Request timed out. Please check your internet connection and try again.");
+      } else if (error.response?.status === 401) {
+        toast.error("Unauthorized. Please refresh the page and try again.");
+      } else if (error.response?.status === 500) {
+        toast.error("Server error. Please try again later.");
+      } else {
+        toast.error(error.response?.data?.message || "Failed to send verification code. Please try again.");
+      }
     } finally {
       console.log('🏁 Request completed, setting sendingCode to false');
       setSendingCode(false);
