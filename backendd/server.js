@@ -56,6 +56,7 @@ app.use(cors({
   origin: [
     "http://localhost:3000", 
     "http://localhost:3001",
+    "https://atlas-ecom.onrender.com",
     "https://atlas-ecom-1.onrender.com",
     "https://atlas-ecom-frontend.onrender.com",
     "https://atlasecom.ma"
@@ -1367,6 +1368,7 @@ const io = new Server(httpServer, {
     origin: [
       "http://localhost:3000", 
       "http://localhost:3001",
+      "https://atlas-ecom.onrender.com",
       "https://atlas-ecom-1.onrender.com",
       "https://atlas-ecom-frontend.onrender.com",
       "https://atlasecom.ma"
@@ -1426,7 +1428,7 @@ if (process.env.NODE_ENV !== 'production') {
 // Start the server
 httpServer.listen(PORT, () => {
   const serverUrl = process.env.NODE_ENV === 'production' 
-    ? `https://atlas-ecom-1.onrender.com` 
+    ? `https://atlas-ecom.onrender.com` 
     : `http://localhost:${PORT}`;
     
   console.log(`🚀 Atlas Ecom Backend Server running on port ${PORT}`);
