@@ -65,11 +65,10 @@ app.use(cors({
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
 }));
 
-// Global CORS headers for all responses
+// Global CORS headers for all responses (excluding Access-Control-Allow-Origin to avoid conflicts with credentials)
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  // Don't set Access-Control-Allow-Origin here - let the cors() middleware handle it
+  // res.header('Access-Control-Allow-Origin', '*'); // ❌ REMOVED - conflicts with credentials: true
   res.header('Cross-Origin-Resource-Policy', 'cross-origin');
   res.header('Cross-Origin-Embedder-Policy', 'unsafe-none');
   res.header('Cross-Origin-Opener-Policy', 'unsafe-none');
@@ -1286,6 +1285,16 @@ app.get('/events/get-all-events/:shopId', async (req, res) => {
   }
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'Atlas Ecom Backend is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
@@ -1359,7 +1368,8 @@ const io = new Server(httpServer, {
       "http://localhost:3000", 
       "http://localhost:3001",
       "https://atlas-ecom-1.onrender.com",
-      "https://atlas-ecom-frontend.onrender.com"
+      "https://atlas-ecom-frontend.onrender.com",
+      "https://atlasecom.ma"
     ],
     methods: ["GET", "POST"],
     credentials: true
