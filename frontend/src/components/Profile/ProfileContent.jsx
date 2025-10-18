@@ -78,7 +78,7 @@ const ProfileContent = ({ active }) => {
         setLoading(true);
         
         try {
-            const response = await apiClient.put(`/users/profile`, {
+            const response = await apiClient.put(`/api/auth/profile`, {
                 name: name.trim(), 
                 phoneNumber: phoneNumber || '', 
                 address: address || ''
@@ -924,7 +924,7 @@ const ChangePassword = () => {
 
         try {
             const response = await apiClient.put(
-                `/users/change-password`,
+                `/api/auth/change-password`,
                 { currentPassword: oldPassword, newPassword }
             );
             

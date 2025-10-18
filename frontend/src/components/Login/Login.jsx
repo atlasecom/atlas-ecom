@@ -76,7 +76,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        `${server}/users/login`,
+        `${server}/api/auth/login`,
         { email, password },
         // {withCredentials:true}
       );

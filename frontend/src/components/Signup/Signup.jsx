@@ -114,7 +114,7 @@ const Signup = () => {
       newForm.append("phoneNumber", phoneNumber || '');
       newForm.append("address", address || '');
 
-      const res = await axios.post(`${server}/users/register`, newForm, config);
+      const res = await axios.post(`${server}/api/auth/register`, newForm, config);
 
       toast.success(
         t("signup.accountCreated", "Account created successfully! Please log in to continue.")

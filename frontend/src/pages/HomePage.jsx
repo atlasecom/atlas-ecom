@@ -22,6 +22,7 @@ const HomePage = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
+    const googleSuccess = searchParams.get("google_success");
     const token = searchParams.get("token");
     const userParam = searchParams.get("user");
     const error = searchParams.get("error");
@@ -30,7 +31,7 @@ const HomePage = () => {
       toast.error(t("login.googleLoginError", "Google login failed. Please try again."));
       // Clean up URL
       navigate('/', { replace: true });
-    } else if (token && userParam) {
+    } else if ((googleSuccess === 'true' || token) && userParam) {
       try {
         const user = JSON.parse(decodeURIComponent(userParam));
         

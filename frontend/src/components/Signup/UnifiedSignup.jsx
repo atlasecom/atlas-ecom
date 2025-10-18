@@ -93,7 +93,7 @@ const UnifiedSignup = () => {
 
     setSendingCode(true);
     try {
-      const response = await axios.post(`${server}/users/send-verification-code`, {
+      const response = await axios.post(`${server}/api/auth/users/send-verification-code`, {
         email: email,
         type: userType
       });
@@ -130,7 +130,7 @@ const UnifiedSignup = () => {
     }
 
     try {
-      const response = await axios.post(`${server}/users/verify-email`, {
+      const response = await axios.post(`${server}/api/auth/users/verify-email`, {
         email: email,
         code: verificationCode,
         type: userType

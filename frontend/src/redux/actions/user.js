@@ -10,7 +10,7 @@ export const loadUser = () => async (dispatch) => {
       type: "LoadUserRequest",
     });
     const token = getAuthToken();
-    const { data } = await axios.get(`${server}/users/me`, {
+    const { data } = await axios.get(`${server}/api/auth/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -64,7 +64,7 @@ export const updateUserInformation =
       });
       const token = getAuthToken();
       const { data } = await axios.put(
-        `${server}/users/profile`,
+        `${server}/api/auth/profile`,
         {
           name,
           phoneNumber,
@@ -196,7 +196,7 @@ export const changePassword = (currentPassword, newPassword) => async (dispatch)
     });
     const token = getAuthToken();
     const { data } = await axios.put(
-      `${server}/users/change-password`,
+      `${server}/api/auth/change-password`,
       {
         currentPassword,
         newPassword,
