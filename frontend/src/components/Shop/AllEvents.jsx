@@ -293,20 +293,25 @@ const AllEvents = () => {
                 )}
                 <div className="absolute top-2 right-2">
                   <span className="px-2 py-1 bg-orange-500 text-white text-xs rounded-full">
-                    {event.category?.name || event.category || 'Category'}
+                    {event.category?.name || event.category || t("allEvents.category", "Category")}
                   </span>
                 </div>
                 <div className="absolute top-2 left-2 flex flex-col gap-1">
                   <span className={`px-2 py-1 text-white text-xs rounded-full w-fit ${
                     event.isActive ? 'bg-green-500' : 'bg-red-500'
                   }`}>
-                    {event.isActive ? t("allEvents.active", "Live") : t("allEvents.inactive", "Hidden")}
+                    {event.isActive ? t("allEvents.live", "Live") : t("allEvents.hidden", "Hidden")}
                   </span>
                   <span className={`px-2 py-1 text-white text-xs rounded-full ${
                     event.status === 'Running' ? 'bg-green-500' :
                     event.status === 'Ended' ? 'bg-red-500' : 'bg-yellow-500'
                   }`}>
-                    {event.status}
+                    {event.status === 'Running' ? t("allEvents.running", "Running") :
+                     event.status === 'Ended' ? t("allEvents.ended", "Ended") :
+                     event.status === 'Pending' ? t("allEvents.pending", "Pending") :
+                     event.status === 'Scheduled' ? t("allEvents.scheduled", "Scheduled") :
+                     event.status === 'Cancelled' ? t("allEvents.cancelled", "Cancelled") :
+                     event.status}
                   </span>
                 </div>
                 {/* Show expiration warning if event ends within 24 hours */}
