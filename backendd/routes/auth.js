@@ -31,23 +31,16 @@ const createEmailTransporter = () => {
   
   const transporter = nodemailer.createTransport({
     service: 'gmail',
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT) || 587,
+    host: 'smtp.gmail.com',
+    port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS
     },
     tls: {
-      rejectUnauthorized: false,
-      ciphers: 'SSLv3'
-    },
-    // Additional options for better Gmail compatibility
-    pool: true,
-    maxConnections: 1,
-    maxMessages: 1,
-    rateDelta: 20000,
-    rateLimit: 5
+      rejectUnauthorized: false
+    }
   });
   
   return transporter;

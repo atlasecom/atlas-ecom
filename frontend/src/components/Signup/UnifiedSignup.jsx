@@ -101,15 +101,6 @@ const UnifiedSignup = () => {
     console.log('✅ Email validation passed, sending request...');
     setSendingCode(true);
     
-    // Test basic connectivity first
-    try {
-      console.log('🔍 Testing basic connectivity...');
-      const testResponse = await axios.get(`${server}/health`, { timeout: 5000 });
-      console.log('✅ Health check passed:', testResponse.data);
-    } catch (testError) {
-      console.error('❌ Health check failed:', testError.message);
-    }
-    
     try {
       const requestUrl = `${server}/api/auth/users/send-verification-code`;
       console.log('🌐 Making request to:', requestUrl);
@@ -118,7 +109,7 @@ const UnifiedSignup = () => {
         email: email,
         type: userType
       }, {
-        timeout: 10000, // 10 second timeout
+        timeout: 15000, // 15 second timeout
         headers: {
           'Content-Type': 'application/json'
         }
