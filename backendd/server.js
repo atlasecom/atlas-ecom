@@ -339,6 +339,7 @@ app.post('/api/contact', async (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/auth/users', authRoutes); // Add this for WhatsApp verification
 app.use('/api/shops', shopRoutes);
 app.use('/api/v2/shops', shopRoutes); // V2 route for frontend compatibility
 app.use('/api/products', productRoutes);
