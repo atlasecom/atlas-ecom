@@ -293,7 +293,7 @@ const AllEvents = () => {
                 )}
                 <div className="absolute top-2 right-2">
                   <span className="px-2 py-1 bg-orange-500 text-white text-xs rounded-full">
-                    {event.category?.name || event.category || 'Category'}
+                    {event.category?.name || event.category || t("allEvents.category", "Category")}
                   </span>
                 </div>
                 <div className="absolute top-2 left-2 flex flex-col gap-1">
