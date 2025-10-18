@@ -18,6 +18,14 @@ class WhatsAppService {
       return this.isReady;
     }
 
+    // Skip WhatsApp initialization in production
+    if (process.env.NODE_ENV === 'production') {
+      console.log('⚠️ WhatsApp service disabled in production environment');
+      this.isInitialized = true;
+      this.isReady = false;
+      return false;
+    }
+
     try {
       console.log('🔧 Initializing WhatsApp Service...');
       
@@ -130,6 +138,17 @@ class WhatsAppService {
   }
 
   async sendMessage(phoneNumber, message) {
+    // In production, return a fallback response
+    if (process.env.NODE_ENV === 'production') {
+      console.log('⚠️ WhatsApp service not available in production - using fallback');
+      return {
+        success: false,
+        error: 'WhatsApp service not available in production',
+        phoneNumber: phoneNumber,
+        fallback: true
+      };
+    }
+
     try {
       if (!this.isReady) {
         const initialized = await this.initialize();
