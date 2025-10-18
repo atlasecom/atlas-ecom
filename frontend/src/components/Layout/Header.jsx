@@ -531,7 +531,7 @@ const Header = ({ activeHeading }) => {
                 )}
               </div>
 
-              {/* User Profile */}
+              {/* Sign In / Sign Up Button (with icon) */}
               <div className="relative group">
                 {isAuthenticated ? (
                   <Link to="/profile" className="flex items-center space-x-2 p-3 rounded-lg hover:bg-orange-50 transition-colors border border-transparent hover:border-orange-200">
@@ -546,7 +546,7 @@ const Header = ({ activeHeading }) => {
                       <AiOutlineUser size={20} className="text-orange-600" />
                     </div>
                     <span className="hidden md:block text-sm font-medium text-slate-700">
-                      {t("header.getStarted", "Sign In / Sign Up")}
+                      {t("header.signInSignUp", "Sign In / Sign Up")}
                     </span>
                   </Link>
                 )}
@@ -558,7 +558,7 @@ const Header = ({ activeHeading }) => {
                   to="/login"
                   className="hidden md:inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
-                  {t("header.getStarted", "Sign In / Sign Up")}
+                  {t("header.getStarted", "Get Started")}
                   <IoIosArrowForward className="ml-2" />
                 </Link>
               ) : user && user.role === "admin" ? (
@@ -1071,7 +1071,7 @@ const Header = ({ activeHeading }) => {
                       to="/login"
                       className="block w-full text-center py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
                     >
-                      {t("header.getStarted", "Sign In / Sign Up")}
+                      {t("header.getStarted", "Get Started")}
                     </Link>
                   ) : user && user.role === "admin" ? (
                     <Link
