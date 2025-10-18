@@ -1152,9 +1152,9 @@ router.get('/google/callback', passport.authenticate('google', { session: false 
       console.log('✅ Shop populated for seller');
     }
     
-    // Redirect to frontend login page with success message and token
+    // Redirect to frontend home page with success message and token
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-    const redirectUrl = `${frontendUrl}/login?google_success=true&token=${token}&user=${encodeURIComponent(JSON.stringify(userResponse))}`;
+    const redirectUrl = `${frontendUrl}/?google_success=true&token=${token}&user=${encodeURIComponent(JSON.stringify(userResponse))}`;
     
     console.log('🚀 Redirecting to:', redirectUrl);
     console.log('🚀 Frontend URL:', frontendUrl);
@@ -1162,8 +1162,8 @@ router.get('/google/callback', passport.authenticate('google', { session: false 
   } catch (error) {
     console.error('❌ Google OAuth callback error:', error);
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-    console.log('❌ Redirecting to error page:', `${frontendUrl}/login?error=oauth_failed`);
-    res.redirect(`${frontendUrl}/login?error=oauth_failed`);
+    console.log('❌ Redirecting to error page:', `${frontendUrl}/?error=oauth_failed`);
+    res.redirect(`${frontendUrl}/?error=oauth_failed`);
   }
 });
 
