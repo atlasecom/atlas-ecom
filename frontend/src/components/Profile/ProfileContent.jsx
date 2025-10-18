@@ -166,10 +166,10 @@ const ProfileContent = ({ active }) => {
                         {/* Profile Header */}
                         <div className="text-center mb-8">
                             <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-                                Personal Information
+                                {t("profile.content.personalInformation", "Personal Information")}
                             </h2>
                             <p className="text-gray-600">
-                                Update your profile information and manage your account
+                                {t("profile.content.personalInformationSubtitle", "Update your profile information and manage your account")}
                             </p>
                         </div>
 
@@ -325,7 +325,7 @@ const ProfileContent = ({ active }) => {
                                             value={email}
                                             placeholder="Email cannot be changed"
                                         />
-                                        <p className="mt-1 text-xs text-gray-500">Email address cannot be modified for security reasons</p>
+                                        <p className="mt-1 text-xs text-gray-500">{t("profile.content.emailSecurityNote", "Email address cannot be modified for security reasons")}</p>
                                     </div>
                                 </div>
 
@@ -341,10 +341,10 @@ const ProfileContent = ({ active }) => {
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-gray-900 placeholder-gray-400"
                                             value={phoneNumber}
                                             onChange={(e) => setPhoneNumber(e.target.value)}
-                                            placeholder="Enter your phone number (optional)"
+                                            placeholder={t("profile.content.phonePlaceholder", "Enter your phone number (optional)")}
                                         />
                                         <p className="mt-1 text-xs text-gray-500">
-                                            We'll use this to contact you about your orders
+                                            {t("profile.content.phoneNote", "We'll use this to contact you about your orders")}
                                         </p>
                                     </div>
 
@@ -358,10 +358,10 @@ const ProfileContent = ({ active }) => {
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-gray-900 placeholder-gray-400"
                                             value={address}
                                             onChange={(e) => setAddress(e.target.value)}
-                                            placeholder="Enter your address (optional)"
+                                            placeholder={t("profile.content.addressPlaceholder", "Enter your address (optional)")}
                                         />
                                         <p className="mt-1 text-xs text-gray-500">
-                                            This helps us deliver your orders to the right place
+                                            {t("profile.content.addressNote", "This helps us deliver your orders to the right place")}
                                         </p>
                                     </div>
                                 </div>
@@ -381,7 +381,7 @@ const ProfileContent = ({ active }) => {
                                                 {t('profile.content.updating') || 'Updating...'}
                                             </div>
                                         ) : (
-                                            t('profile.content.update') || 'Update Profile'
+                                            t('profile.content.updateProfile', 'Update Profile')
                                         )}
                                     </button>
                                 </div>
@@ -445,10 +445,10 @@ const ProfileContent = ({ active }) => {
                 <div>
                     <div className="mb-6">
                         <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-                            Change Password
+                            {t("profile.content.changePasswordTitle", "Change Password")}
                         </h2>
                         <p className="text-gray-600">
-                            Update your account password for enhanced security
+                            {t("profile.content.passwordSecurityNote", "Update your account password for enhanced security")}
                         </p>
                     </div>
                     <ChangePassword />
@@ -1031,7 +1031,7 @@ const ChangePassword = () => {
                                 {t('profile.changePassword.updating') || 'Updating...'}
                             </div>
                         ) : (
-                            t('profile.changePassword.update') || 'Update Password'
+                            t('profile.content.updatePassword', 'Update Password')
                         )}
                     </button>
                 </div>

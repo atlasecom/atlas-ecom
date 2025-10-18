@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
 import styles from "../styles/styles";
@@ -12,6 +13,8 @@ const ProfilePage = () => {
     const [active, setActive] = useState(1);
     const { user } = useSelector((state) => state.user);
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
+    const isRTL = i18n.language === 'ar';
 
     useEffect(() => {
         // If user is a seller, redirect to settings page
@@ -26,16 +29,16 @@ const ProfilePage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-orange-50">
+        <div className={`min-h-screen bg-gradient-to-br from-gray-50 via-white to-orange-50 ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
             <Header />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
                 {/* Page Header */}
                 <div className="mb-8 lg:mb-12">
                     <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-                        My Profile
+                        {t("profile.title", "My Profile")}
                     </h1>
                     <p className="text-lg text-gray-600">
-                        Manage your account settings and preferences
+                        {t("profile.subtitle", "Manage your account settings and preferences")}
                     </p>
                 </div>
                 

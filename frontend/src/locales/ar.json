@@ -1706,6 +1706,8 @@
     }
   },
   "profile": {
+    "title": "ملفي الشخصي",
+    "subtitle": "إدارة إعدادات حسابك وتفضيلاتك",
     "sidebar": {
       "profile": "الملف الشخصي",
       "inbox": "صندوق الوارد",
@@ -1718,6 +1720,8 @@
       "logoutError": "فشل تسجيل الخروج. يرجى المحاولة مرة أخرى."
     },
     "content": {
+      "personalInformation": "المعلومات الشخصية",
+      "personalInformationSubtitle": "تحديث معلومات ملفك الشخصي وإدارة حسابك",
       "fullName": "الاسم الكامل",
       "emailAddress": "عنوان البريد الإلكتروني",
       "phoneNumber": "رقم الهاتف",
@@ -1732,7 +1736,16 @@
       "changePasswordTitle": "تغيير كلمة المرور",
       "enterOldPassword": "أدخل كلمة المرور القديمة",
       "enterNewPassword": "أدخل كلمة المرور الجديدة",
-      "enterConfirmPassword": "أكد كلمة المرور"
+      "enterConfirmPassword": "أكد كلمة المرور",
+      "emailCannotBeChanged": "لا يمكن تغيير البريد الإلكتروني",
+      "emailSecurityNote": "لا يمكن تعديل عنوان البريد الإلكتروني لأسباب أمنية",
+      "phonePlaceholder": "أدخل رقم هاتفك (اختياري)",
+      "phoneNote": "سنستخدم هذا للتواصل معك حول طلباتك",
+      "addressPlaceholder": "أدخل عنوانك (اختياري)",
+      "addressNote": "هذا يساعدنا في توصيل طلباتك إلى المكان الصحيح",
+      "updateProfile": "تحديث الملف الشخصي",
+      "updatePassword": "تحديث كلمة المرور",
+      "passwordSecurityNote": "تحديث كلمة مرور حسابك لتعزيز الأمان"
     },
     "changePassword": {
       "title": "تغيير كلمة المرور",
