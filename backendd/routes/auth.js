@@ -24,10 +24,18 @@ const phoneVerificationCodes = new Map();
 // Email transporter configuration
 const createEmailTransporter = () => {
   console.log('🔧 Creating email transporter...');
+  console.log('NODE_ENV:', process.env.NODE_ENV);
   console.log('EMAIL_USER:', process.env.EMAIL_USER);
   console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'SET' : 'NOT SET');
   console.log('SMTP_HOST:', process.env.SMTP_HOST);
   console.log('SMTP_PORT:', process.env.SMTP_PORT);
+  
+  // Check if all required environment variables are set
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.error('❌ Missing email environment variables!');
+    console.error('Required: EMAIL_USER, EMAIL_PASS');
+    throw new Error('Email configuration missing');
+  }
   
   const transporter = nodemailer.createTransport({
     service: 'gmail',

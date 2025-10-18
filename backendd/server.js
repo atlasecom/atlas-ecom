@@ -6,7 +6,15 @@ const helmet = require('helmet');
 const compression = require('compression');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
-require('dotenv').config({ path: './config.env' });
+// Load environment variables
+if (process.env.NODE_ENV === 'production') {
+  // In production, environment variables are set by Render
+  console.log('🔧 Production mode: Using environment variables from Render');
+} else {
+  // In development, load from config.env file
+  require('dotenv').config({ path: './config.env' });
+  console.log('🔧 Development mode: Using config.env file');
+}
 
 // Import database connection
 const connectDB = require('./config/database');
