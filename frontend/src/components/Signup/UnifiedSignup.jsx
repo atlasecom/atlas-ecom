@@ -80,42 +80,29 @@ const UnifiedSignup = () => {
 
   // Send verification code
   const handleSendVerificationCode = async () => {
-    console.log('🔍 Send verification code clicked');
-    console.log('🔍 Email:', email);
-    console.log('🔍 User type:', userType);
-    console.log('🔍 Server URL:', server);
-    
     if (!email) {
-      console.log('❌ No email provided');
       toast.error(t("signup.enterEmailFirst", "Please enter your email address first"));
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      console.log('❌ Invalid email format');
       toast.error(t("signup.enterValidEmail", "Please enter a valid email address"));
       return;
     }
 
-    console.log('✅ Email validation passed, sending request...');
     setSendingCode(true);
     
     try {
-      const requestUrl = `${server}/api/auth/users/send-verification-code`;
-      console.log('🌐 Making request to:', requestUrl);
-      
-      const response = await axios.post(requestUrl, {
+      const response = await axios.post(`${server}/api/auth/users/send-verification-code`, {
         email: email,
         type: userType
       }, {
-        timeout: 15000, // 15 second timeout
+        timeout: 20000, // 20 second timeout
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
-      console.log('📨 Response received:', response.data);
 
       if (response.data.success) {
         if (response.data.fallback && response.data.code) {
@@ -129,23 +116,16 @@ const UnifiedSignup = () => {
         }
       }
     } catch (error) {
-      console.error('❌ Send verification code error:', error);
-      console.error('❌ Error response:', error.response?.data);
-      console.error('❌ Error status:', error.response?.status);
-      console.error('❌ Error message:', error.message);
-      console.error('❌ Error code:', error.code);
+      console.error('Send verification code error:', error);
       
       if (error.code === 'ECONNABORTED') {
-        toast.error("Request timed out. Please check your internet connection and try again.");
-      } else if (error.response?.status === 401) {
-        toast.error("Unauthorized. Please refresh the page and try again.");
+        toast.error("Request timed out. Please try again.");
       } else if (error.response?.status === 500) {
         toast.error("Server error. Please try again later.");
       } else {
         toast.error(error.response?.data?.message || "Failed to send verification code. Please try again.");
       }
     } finally {
-      console.log('🏁 Request completed, setting sendingCode to false');
       setSendingCode(false);
     }
   };

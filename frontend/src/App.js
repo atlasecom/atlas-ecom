@@ -4,6 +4,7 @@ import "./styles/mobile-utilities.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import ScrollToTop from "./components/Common/ScrollToTop";
+import ErrorBoundary from "./components/Common/ErrorBoundary";
 import VerifyEmail from "./pages/VerifyEmail";
 import {
   LoginPage,
@@ -91,9 +92,10 @@ const App = () => {
 
 
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <Routes>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <ScrollToTop />
+        <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/oauth-callback" element={<GoogleAuthHandler />} />
         <Route path="/login" element={<LoginPage />} />
@@ -396,7 +398,8 @@ const App = () => {
         pauseOnHover
         theme="dark"
       />
-    </BrowserRouter>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 };
 
