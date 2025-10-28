@@ -259,16 +259,22 @@ app.get('/api/public/best-products', async (req, res) => {
 app.get('/products', async (req, res) => {
   try {
     const Product = require('./models/Product');
-    const products = await Product.find({ isActive: true, isApproved: true })
+    const products = await Product.find({ 
+      isActive: true, 
+      isApproved: true
+    })
       .populate('shop', 'name avatar phoneNumber telegram')
       .populate('category', 'name nameAr nameFr')
       .populate('subcategory', 'name nameAr nameFr')
       .limit(20)
       .sort({ createdAt: -1 });
 
+    // Filter out products with null shops
+    const validProducts = products.filter(product => product.shop != null);
+    
     res.json({
       success: true,
-      products: products.map(product => ({
+      products: validProducts.map(product => ({
         _id: product._id,
         name: product.name,
         description: product.description,
@@ -308,7 +314,10 @@ app.get('/api/v2/products', async (req, res) => {
     const SubCategory = require('./models/SubCategory');
     const { page = 1, limit = 12, category, search } = req.query;
     
-    const query = { isActive: true, isApproved: true };
+    const query = { 
+      isActive: true, 
+      isApproved: true
+    };
     
     if (category) {
       query.category = category;
@@ -344,9 +353,12 @@ app.get('/api/v2/products', async (req, res) => {
 
     const total = await Product.countDocuments(query);
 
+    // Filter out any products that still have null shops (shop is required for display)
+    const validProducts = products.filter(product => product.shop != null);
+
     res.json({
       success: true,
-      products: products.map(product => ({
+      products: validProducts.map(product => ({
         _id: product._id,
         name: product.name,
         description: product.description,
@@ -356,22 +368,27 @@ app.get('/api/v2/products', async (req, res) => {
         images: product.images.map(img => img.url),
         category: product.category, // Already populated
         subcategory: product.subcategory, // Already populated
+        tags: product.tags || [],
         stock: product.stock,
         sold: product.sold_out,
         sold_out: product.sold_out,
         ratings: product.ratings,
+        reviews: product.reviews,
         numOfReviews: product.numOfReviews,
+        isBoosted: product.isBoosted,
+        boostPriority: product.boostPriority,
         shop: {
           _id: product.shop._id,
           name: product.shop.name,
           avatar: product.shop.avatar?.url,
           phoneNumber: product.shop.phoneNumber,
-          telegram: product.shop.telegram
+          telegram: product.shop.telegram,
+          verifiedBadge: product.shop.verifiedBadge
         }
       })),
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.ceil(validProducts.length / limit),
       currentPage: page,
-      total
+      total: validProducts.length
     });
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -388,20 +405,37 @@ app.get('/events', async (req, res) => {
     const Event = require('./models/Event');
     const { limit = 50 } = req.query;
     
-    // Get all active and approved events (including future events)
-    const events = await Event.find({ 
+    // Get current date/time
+    const now = new Date();
+    console.log('🕐 Current date/time:', now);
+    console.log('🕐 Current date ISO:', now.toISOString());
+    
+    // First, get all active and approved events
+    const allEvents = await Event.find({ 
       isActive: true,
       isApproved: true
     })
       .populate('shop', 'name avatar phoneNumber telegram verifiedBadge')
       .populate('category', 'name nameAr nameFr image')
       .populate('subcategory', 'name nameAr nameFr image tags')
-      .limit(parseInt(limit))
       .sort({ 
         isBoosted: -1,        // Boosted events first
         boostPriority: -1,    // Higher priority first
         createdAt: -1         // Then by creation date
       });
+    
+    // Filter events that have started (client-side to handle any timezone issues)
+    const events = allEvents.filter(event => {
+      const startDate = new Date(event.start_Date);
+      const hasStarted = startDate <= now;
+      console.log(`  📅 Event: ${event.name}`);
+      console.log(`     Start: ${startDate.toISOString()} (${startDate.toLocaleString()})`);
+      console.log(`     Now:   ${now.toISOString()} (${now.toLocaleString()})`);
+      console.log(`     Show?: ${hasStarted ? '✅ YES' : '❌ NO'}`);
+      return hasStarted;
+    }).slice(0, parseInt(limit));
+    
+    console.log(`📅 Found ${events.length} events that will be shown to customers`);
 
     res.json({
       success: true,
@@ -665,6 +699,48 @@ httpServer.listen(PORT, () => {
   console.log(`🔑 JWT Expire: ${process.env.JWT_EXPIRE || 'Not set'}`);
   console.log(`🔌 Socket.IO server running on port ${PORT}`);
   console.log(`⚠️  WARNING: This is a LOCAL TESTING server with production database access!`);
+});
+
+// Function to automatically delete expired events
+const deleteExpiredEvents = async () => {
+  try {
+    const Event = require('./models/Event');
+    const now = new Date();
+    const expiredEvents = await Event.find({
+      Finish_Date: { $lt: now },
+      isActive: true
+    });
+
+    if (expiredEvents.length > 0) {
+      console.log(`🕐 Found ${expiredEvents.length} expired events to delete`);
+      
+      // Delete expired events
+      const deleteResult = await Event.deleteMany({
+        Finish_Date: { $lt: now },
+        isActive: true
+      });
+
+      console.log(`✅ Successfully deleted ${deleteResult.deletedCount} expired events`);
+      return deleteResult.deletedCount;
+    }
+    return 0;
+  } catch (error) {
+    console.error('❌ Error deleting expired events:', error);
+    return 0;
+  }
+};
+
+// Schedule automatic cleanup of expired events (every hour)
+setInterval(async () => {
+  console.log('🕐 Running scheduled cleanup of expired events...');
+  await deleteExpiredEvents();
+}, 60 * 60 * 1000); // Run every hour
+
+// Initial cleanup on server start
+deleteExpiredEvents().then(deletedCount => {
+  if (deletedCount > 0) {
+    console.log(`🚀 Initial cleanup: Deleted ${deletedCount} expired events on startup`);
+  }
 });
 
 // Graceful shutdown

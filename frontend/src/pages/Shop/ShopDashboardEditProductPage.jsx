@@ -27,8 +27,8 @@ const ShopDashboardEditProductPage = () => {
     description: '',
     category: '',
     subcategory: '',
-    originalPrice: '',
-    discountPrice: '',
+    minPrice: '',
+    maxPrice: '',
     stock: '',
     minOrderQuantity: '1'
   });
@@ -56,14 +56,14 @@ const ShopDashboardEditProductPage = () => {
             description: productData.description || '',
             category: productData.category?._id || productData.category || '',
             subcategory: productData.subcategory?._id || productData.subcategory || '',
-            originalPrice: productData.originalPrice || '',
-            discountPrice: productData.discountPrice || '',
+            minPrice: productData.originalPrice || '',
+            maxPrice: productData.discountPrice || '',
             stock: productData.stock || '',
             minOrderQuantity: productData.minOrderQuantity || '1'
           });
           setExistingImages(productData.images || []);
         } else {
-          toast.error('Product not found');
+          toast.error(t('editProduct.notFound', 'Product not found'));
           navigate('/dashboard-products');
         }
       } catch (error) {
@@ -167,18 +167,19 @@ const ShopDashboardEditProductPage = () => {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.name.trim()) newErrors.name = 'Product name is required';
-    if (!formData.description.trim()) newErrors.description = 'Description is required';
-    if (!formData.category) newErrors.category = 'Category is required';
-    if (!formData.subcategory) newErrors.subcategory = 'Subcategory is required';
-    if (!formData.originalPrice || formData.originalPrice <= 0) newErrors.originalPrice = 'Valid original price is required';
-    if (!formData.discountPrice || formData.discountPrice <= 0) newErrors.discountPrice = 'Valid discount price is required';
-    if (!formData.stock || formData.stock < 0) newErrors.stock = 'Valid stock quantity is required';
-    if (formData.minOrderQuantity < 1) newErrors.minOrderQuantity = 'Minimum order quantity must be at least 1';
+    if (!formData.name.trim()) newErrors.name = t('editProduct.nameRequired', 'Product name is required');
+    if (!formData.description.trim()) newErrors.description = t('editProduct.descriptionRequired', 'Description is required');
+    if (!formData.category) newErrors.category = t('editProduct.categoryRequired', 'Category is required');
+    if (!formData.subcategory) newErrors.subcategory = t('editProduct.subcategoryRequired', 'Subcategory is required');
+    if (!formData.minPrice || formData.minPrice <= 0) newErrors.minPrice = t('editProduct.minPriceRequired', 'Valid minimum price is required');
+    if (!formData.maxPrice || formData.maxPrice <= 0) newErrors.maxPrice = t('editProduct.maxPriceRequired', 'Valid maximum price is required');
+    if (parseFloat(formData.minPrice) >= parseFloat(formData.maxPrice)) newErrors.maxPrice = t('editProduct.priceRangeInvalid', 'Maximum price must be greater than minimum price');
+    if (!formData.stock || formData.stock < 0) newErrors.stock = t('editProduct.stockRequired', 'Valid stock quantity is required');
+    if (formData.minOrderQuantity < 1) newErrors.minOrderQuantity = t('editProduct.minOrderQuantityRequired', 'Minimum order quantity must be at least 1');
     
     // Check if we have at least one image (existing or new)
     if (existingImages.length === 0 && selectedImages.length === 0) {
-      newErrors.images = 'At least one image is required';
+      newErrors.images = t('editProduct.imageRequired', 'At least one image is required');
     }
     
     setErrors(newErrors);
@@ -200,10 +201,15 @@ const ShopDashboardEditProductPage = () => {
       const token = getAuthToken();
       const submitData = new FormData();
       
-      // Add form data
-      Object.keys(formData).forEach(key => {
-        submitData.append(key, formData[key]);
-      });
+      // Add form data - map minPrice/maxPrice to originalPrice/discountPrice for backend
+      submitData.append('name', formData.name);
+      submitData.append('description', formData.description);
+      submitData.append('category', formData.category);
+      submitData.append('subcategory', formData.subcategory);
+      submitData.append('originalPrice', formData.minPrice); // Map minPrice to originalPrice
+      submitData.append('discountPrice', formData.maxPrice); // Map maxPrice to discountPrice
+      submitData.append('stock', formData.stock);
+      submitData.append('minOrderQuantity', formData.minOrderQuantity);
       
       // Add images to keep (existing images that weren't removed)
       console.log('🔍 Frontend: Sending imagesToKeep:', existingImages);
@@ -284,8 +290,8 @@ const ShopDashboardEditProductPage = () => {
                   <FiArrowLeft size={20} />
                 </button>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Edit Product</h1>
-                  <p className="text-gray-600">Update your product information</p>
+                  <h1 className="text-2xl font-bold text-gray-900">{t('editProduct.title', 'Edit Product')}</h1>
+                  <p className="text-gray-600">{t('editProduct.subtitle', 'Update your product information')}</p>
                 </div>
               </div>
             </div>
@@ -294,13 +300,13 @@ const ShopDashboardEditProductPage = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Basic Information */}
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('editProduct.basicInformation', 'Basic Information')}</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Product Name */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Product Name *
+                      {t('editProduct.productName', 'Product Name')} *
                     </label>
                     <input
                       type="text"
@@ -310,7 +316,7 @@ const ShopDashboardEditProductPage = () => {
                       className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
                         errors.name ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      placeholder="Enter product name"
+                      placeholder={t('editProduct.productNamePlaceholder', 'Enter product name')}
                     />
                     {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                   </div>
@@ -318,7 +324,7 @@ const ShopDashboardEditProductPage = () => {
                   {/* Description */}
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Description *
+                      {t('editProduct.description', 'Description')} *
                     </label>
                     <textarea
                       name="description"
@@ -328,7 +334,7 @@ const ShopDashboardEditProductPage = () => {
                       className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
                         errors.description ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      placeholder="Enter product description"
+                      placeholder={t('editProduct.descriptionPlaceholder', 'Enter product description')}
                     />
                     {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
                   </div>
@@ -337,13 +343,13 @@ const ShopDashboardEditProductPage = () => {
 
               {/* Category & Subcategory */}
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Category & Subcategory</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('editProduct.categorySubcategory', 'Category & Subcategory')}</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Category */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Category *
+                      {t('editProduct.category', 'Category')} *
                     </label>
                     <select
                       name="category"
@@ -353,7 +359,7 @@ const ShopDashboardEditProductPage = () => {
                         errors.category ? 'border-red-500' : 'border-gray-300'
                       }`}
                     >
-                      <option value="">Select a category</option>
+                      <option value="">{t('editProduct.selectCategory', 'Select a category')}</option>
                       {categories.map((category) => (
                         <option key={category._id} value={category._id}>
                           {i18n.language === 'ar' ? category.nameAr : 
@@ -368,7 +374,7 @@ const ShopDashboardEditProductPage = () => {
                   {/* Subcategory */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Subcategory *
+                      {t('editProduct.subcategory', 'Subcategory')} *
                     </label>
                     <select
                       name="subcategory"
@@ -379,7 +385,7 @@ const ShopDashboardEditProductPage = () => {
                       }`}
                       disabled={!formData.category}
                     >
-                      <option value="">Select a subcategory</option>
+                      <option value="">{t('editProduct.selectSubcategory', 'Select a subcategory')}</option>
                       {subcategories
                         .filter(sub => sub.category === formData.category)
                         .map((subcategory) => (
@@ -397,53 +403,70 @@ const ShopDashboardEditProductPage = () => {
 
               {/* Pricing & Stock */}
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Pricing & Stock</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('editProduct.pricingStock', 'Pricing & Stock')}</h2>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Original Price */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Original Price (DH) *
-                    </label>
-                    <input
-                      type="number"
-                      name="originalPrice"
-                      value={formData.originalPrice}
-                      onChange={handleInputChange}
-                      min="0"
-                      step="0.01"
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-                        errors.originalPrice ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="0.00"
-                    />
-                    {errors.originalPrice && <p className="text-red-500 text-sm mt-1">{errors.originalPrice}</p>}
-                  </div>
+                {/* Pricing Range */}
+                <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200 mb-6">
+                  <h3 className="text-md font-semibold text-orange-800 mb-4">{t('editProduct.pricingRange', 'Pricing Range')}</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Minimum Price */}
+                    <div>
+                      <label className="block text-sm font-medium text-orange-800 mb-2">
+                        {t('editProduct.minPrice', 'Minimum Price (DH)')} <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        name="minPrice"
+                        value={formData.minPrice}
+                        onChange={handleInputChange}
+                        min="0"
+                        step="0.01"
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+                          errors.minPrice ? 'border-red-500' : 'border-orange-300'
+                        }`}
+                        placeholder={t('editProduct.minPricePlaceholder', '0.00')}
+                      />
+                      {errors.minPrice && <p className="text-red-500 text-sm mt-1">{errors.minPrice}</p>}
+                    </div>
 
-                  {/* Discount Price */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Discount Price (DH) *
-                    </label>
-                    <input
-                      type="number"
-                      name="discountPrice"
-                      value={formData.discountPrice}
-                      onChange={handleInputChange}
-                      min="0"
-                      step="0.01"
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-                        errors.discountPrice ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="0.00"
-                    />
-                    {errors.discountPrice && <p className="text-red-500 text-sm mt-1">{errors.discountPrice}</p>}
+                    {/* Maximum Price */}
+                    <div>
+                      <label className="block text-sm font-medium text-orange-800 mb-2">
+                        {t('editProduct.maxPrice', 'Maximum Price (DH)')} <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        name="maxPrice"
+                        value={formData.maxPrice}
+                        onChange={handleInputChange}
+                        min="0"
+                        step="0.01"
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+                          errors.maxPrice ? 'border-red-500' : 'border-orange-300'
+                        }`}
+                        placeholder={t('editProduct.maxPricePlaceholder', '0.00')}
+                      />
+                      {errors.maxPrice && <p className="text-red-500 text-sm mt-1">{errors.maxPrice}</p>}
+                    </div>
                   </div>
+                  
+                  {/* Price Range Display */}
+                  {formData.minPrice && formData.maxPrice && (
+                    <div className="mt-4 p-3 bg-white rounded-lg border border-orange-200">
+                      <p className="text-sm text-orange-800 font-medium">
+                        {t('editProduct.priceRangeDisplay', 'Price Range')}: {formData.minPrice} DH - {formData.maxPrice} DH
+                      </p>
+                    </div>
+                  )}
+                </div>
 
+                {/* Stock & Order Quantity */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Stock */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Stock Quantity *
+                      {t('editProduct.stockQuantity', 'Stock Quantity')} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
@@ -462,7 +485,7 @@ const ShopDashboardEditProductPage = () => {
                   {/* Minimum Order Quantity */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Minimum Order Quantity
+                      {t('editProduct.minOrderQuantity', 'Minimum Order Quantity')}
                     </label>
                     <input
                       type="number"
@@ -482,12 +505,12 @@ const ShopDashboardEditProductPage = () => {
 
               {/* Images */}
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Product Images</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('editProduct.productImages', 'Product Images')}</h2>
                 
                 {/* Existing Images */}
                 {existingImages.length > 0 && (
                   <div className="mb-6">
-                    <h3 className="text-md font-medium text-gray-700 mb-3">Current Images</h3>
+                    <h3 className="text-md font-medium text-gray-700 mb-3">{t('editProduct.currentImages', 'Current Images')}</h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {existingImages.map((image, index) => (
                         <div key={index} className="relative group">
@@ -511,7 +534,7 @@ const ShopDashboardEditProductPage = () => {
 
                 {/* New Images */}
                 <div>
-                  <h3 className="text-md font-medium text-gray-700 mb-3">Add New Images</h3>
+                  <h3 className="text-md font-medium text-gray-700 mb-3">{t('editProduct.addNewImages', 'Add New Images')}</h3>
                   <input
                     type="file"
                     multiple
@@ -522,7 +545,7 @@ const ShopDashboardEditProductPage = () => {
                   
                   {selectedImages.length > 0 && (
                     <div className="mt-4">
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">Selected Images:</h4>
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">{t('editProduct.selectedImages', 'Selected Images:')}</h4>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {selectedImages.map((image, index) => (
                           <div key={index} className="relative group">
@@ -556,7 +579,7 @@ const ShopDashboardEditProductPage = () => {
                   className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-2"
                 >
                   <FiX size={16} />
-                  <span>Delete Product</span>
+                  <span>{t('editProduct.deleteProduct', 'Delete Product')}</span>
                 </button>
                 
                 <div className="flex space-x-4">
@@ -565,7 +588,7 @@ const ShopDashboardEditProductPage = () => {
                     onClick={() => navigate('/dashboard-products')}
                     className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    Cancel
+                    {t('editProduct.cancel', 'Cancel')}
                   </button>
                   <button
                     type="submit"
@@ -573,7 +596,7 @@ const ShopDashboardEditProductPage = () => {
                     className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 flex items-center space-x-2"
                   >
                     <FiSave size={16} />
-                    <span>{saving ? 'Updating...' : 'Update Product'}</span>
+                    <span>{saving ? t('editProduct.updating', 'Updating...') : t('editProduct.updateProduct', 'Update Product')}</span>
                   </button>
                 </div>
               </div>
@@ -587,10 +610,10 @@ const ShopDashboardEditProductPage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Delete Product
+              {t('editProduct.deleteProductTitle', 'Delete Product')}
             </h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this product? This action cannot be undone.
+              {t('editProduct.deleteConfirmation', 'Are you sure you want to delete this product? This action cannot be undone.')}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -599,7 +622,7 @@ const ShopDashboardEditProductPage = () => {
                 className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                 disabled={deleting}
               >
-                Cancel
+                {t('editProduct.cancel', 'Cancel')}
               </button>
               <button
                 type="button"
@@ -610,12 +633,12 @@ const ShopDashboardEditProductPage = () => {
                 {deleting ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    <span>Deleting...</span>
+                    <span>{t('editProduct.deleting', 'Deleting...')}</span>
                   </>
                 ) : (
                   <>
                     <FiX size={16} />
-                    <span>Delete</span>
+                    <span>{t('editProduct.delete', 'Delete')}</span>
                   </>
                 )}
               </button>

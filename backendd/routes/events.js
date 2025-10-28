@@ -108,13 +108,7 @@ router.get('/', async (req, res) => {
     
     const query = { isActive: true };
     
-    // For testing: show all events including upcoming ones
-    // TODO: Re-enable date filtering in production
-    // const currentDate = new Date();
-    // query.$or = [
-    //   { start_Date: { $exists: false } }, // Events without start date
-    //   { start_Date: { $lte: currentDate } } // Events that have started
-    // ];
+    // Note: Date filtering is done after fetching to handle timezone issues correctly
     
     if (search) {
       query.$and = query.$and || [];
@@ -139,10 +133,17 @@ router.get('/', async (req, res) => {
     }
 
     // Get all events first to implement dynamic sorting
-    const allEvents = await Event.find(query)
+    const allEventsRaw = await Event.find(query)
       .populate('shop', 'name avatar phoneNumber telegram verifiedBadge')
       .populate('category', 'name nameAr nameFr image')
       .populate('subcategory', 'name nameAr nameFr image');
+
+    // Filter events that have started (for customers)
+    const currentDate = new Date();
+    const allEvents = allEventsRaw.filter(event => {
+      const startDate = new Date(event.start_Date);
+      return startDate <= currentDate;
+    });
 
     // Separate boosted and normal events
     const boostedEvents = allEvents.filter(event => event.isBoosted);

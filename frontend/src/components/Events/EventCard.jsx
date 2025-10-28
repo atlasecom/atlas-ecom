@@ -169,7 +169,7 @@ const EventCard = ({ data, isEvent = true }) => {
   const stock = data?.stock || 0;
 
   return (
-    <div className={`w-full h-full bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden group flex flex-col ${isRTL ? 'rtl' : 'ltr'}`}>
+    <div className={`w-full h-full bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col border border-gray-100 hover:border-orange-200 ${isRTL ? 'rtl' : 'ltr'}`}>
       {/* Clickable Link for entire card */}
       <Link to={eventLink} className="block flex-grow">
         {/* Image Container */}
@@ -256,10 +256,10 @@ const EventCard = ({ data, isEvent = true }) => {
             e.stopPropagation();
             click ? removeFromWishlistHandler(data) : addToWishlistHandler(data);
           }}
-          className={`w-full py-1.5 sm:py-2.5 px-3 sm:px-4 rounded-lg font-medium text-white transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 ${
+          className={`w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg font-medium text-white transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 transform hover:scale-[1.02] ${
             click 
-              ? 'bg-red-500 hover:bg-red-600 shadow-lg' 
-              : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-md hover:shadow-lg'
+              ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg hover:shadow-xl' 
+              : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-md hover:shadow-xl'
           }`}
         >
           {click ? (
@@ -272,30 +272,41 @@ const EventCard = ({ data, isEvent = true }) => {
           </span>
         </button>
 
-        {/* WhatsApp and Telegram Buttons */}
-        <div className="flex gap-1">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleWhatsAppClick();
-            }}
-            className="flex-1 bg-green-500 hover:bg-green-600 text-white py-0.5 sm:py-2.5 px-1.5 sm:px-3 rounded-lg sm:rounded-l-lg transition-colors duration-200 flex items-center justify-center gap-1 sm:gap-2 shadow-md hover:shadow-lg"
-          >
-            <FaWhatsapp size={14} className="hidden sm:block w-4 h-4 text-white" />
-            <span className="text-xs sm:text-sm font-medium">{t("common.whatsapp", "WhatsApp")}</span>
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleTelegramClick();
-            }}
-            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-0.5 sm:py-2.5 px-1.5 sm:px-3 rounded-lg sm:rounded-r-lg transition-colors duration-200 flex items-center justify-center gap-1 sm:gap-2 shadow-md hover:shadow-lg"
-          >
-            <FaTelegram size={14} className="hidden sm:block w-4 h-4 text-white" />
-            <span className="text-xs sm:text-sm font-medium">{t("common.telegram", "Telegram")}</span>
-          </button>
+        {/* WhatsApp and Telegram Buttons - Dynamic based on availability */}
+        <div className="flex gap-1.5 sm:gap-2 min-w-0">
+          {/* WhatsApp Button - Always show if phone number is available */}
+          {data.shop?.phoneNumber && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleWhatsAppClick();
+              }}
+              className={`${
+                data.shop?.telegram ? 'flex-1' : 'w-full'
+              } bg-green-500 hover:bg-green-600 text-white py-2 sm:py-2.5 px-2 sm:px-3 md:px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 shadow-md hover:shadow-lg transform hover:scale-[1.02] min-w-0 overflow-hidden`}
+            >
+              <FaWhatsapp className="w-4 h-4 sm:w-5 sm:h-5 text-white flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold truncate">{t("common.whatsapp", "WhatsApp")}</span>
+            </button>
+          )}
+          
+          {/* Telegram Button - Only show if telegram is available */}
+          {data.shop?.telegram && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleTelegramClick();
+              }}
+              className={`${
+                data.shop?.phoneNumber ? 'flex-1' : 'w-full'
+              } bg-blue-500 hover:bg-blue-600 text-white py-2 sm:py-2.5 px-2 sm:px-3 md:px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 shadow-md hover:shadow-lg transform hover:scale-[1.02] min-w-0 overflow-hidden`}
+            >
+              <FaTelegram className="w-4 h-4 sm:w-5 sm:h-5 text-white flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold truncate">{t("common.telegram", "Telegram")}</span>
+            </button>
+          )}
         </div>
       </div>
     </div>

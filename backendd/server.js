@@ -526,20 +526,28 @@ app.get('/events', async (req, res) => {
     const Event = require('./models/Event');
     const { limit = 50 } = req.query;
     
-    // Get all active and approved events (including future events)
-    const events = await Event.find({ 
+    // Get current date/time
+    const now = new Date();
+    
+    // First, get all active and approved events
+    const allEvents = await Event.find({ 
       isActive: true,
       isApproved: true
     })
       .populate('shop', 'name avatar phoneNumber telegram verifiedBadge')
       .populate('category', 'name nameAr nameFr image')
       .populate('subcategory', 'name nameAr nameFr image tags')
-      .limit(parseInt(limit))
       .sort({ 
         isBoosted: -1,        // Boosted events first
         boostPriority: -1,    // Higher priority first
         createdAt: -1         // Then by creation date
       });
+    
+    // Filter events that have started (client-side to handle any timezone issues)
+    const events = allEvents.filter(event => {
+      const startDate = new Date(event.start_Date);
+      return startDate <= now;
+    }).slice(0, parseInt(limit));
 
     res.json({
       success: true,
@@ -675,16 +683,22 @@ app.get('/product/search', async (req, res) => {
 app.get('/products', async (req, res) => {
   try {
     const Product = require('./models/Product');
-    const products = await Product.find({ isActive: true, isApproved: true })
+    const products = await Product.find({ 
+      isActive: true, 
+      isApproved: true
+    })
       .populate('shop', 'name avatar phoneNumber telegram')
       .populate('category', 'name nameAr nameFr image')
       .populate('subcategory', 'name nameAr nameFr image tags')
       .limit(20)
       .sort({ createdAt: -1 });
 
+    // Filter out products with null shops
+    const validProducts = products.filter(product => product.shop != null);
+    
     res.json({
       success: true,
-      products: products.map(product => ({
+      products: validProducts.map(product => ({
         _id: product._id,
         name: product.name,
         description: product.description,
@@ -722,7 +736,10 @@ app.get('/api/v2/products', async (req, res) => {
     const Product = require('./models/Product');
     const { page = 1, limit = 12, category, subcategory, search } = req.query;
     
-    const query = { isActive: true, isApproved: true };
+    const query = { 
+      isActive: true, 
+      isApproved: true
+    };
     
     if (category) {
       query.category = category;
@@ -753,11 +770,14 @@ app.get('/api/v2/products', async (req, res) => {
         createdAt: -1         // Then by creation date
       });
 
+    // Filter out any products that still have null shops (shop is required for display)
+    const validProducts = products.filter(product => product.shop != null);
+
     const total = await Product.countDocuments(query);
 
     res.json({
       success: true,
-      products: products.map(product => ({
+      products: validProducts.map(product => ({
         _id: product._id,
         name: product.name,
         description: product.description,
@@ -767,9 +787,11 @@ app.get('/api/v2/products', async (req, res) => {
         images: product.images ? product.images.map(img => img.url) : [],
         category: product.category || null,
         subcategory: product.subcategory || null,
+        tags: product.tags || [],
         stock: product.stock,
         sold: product.sold_out,
         ratings: product.ratings,
+        reviews: product.reviews,
         numOfReviews: product.numOfReviews,
         isBoosted: product.isBoosted,
         boostPriority: product.boostPriority,
@@ -782,9 +804,9 @@ app.get('/api/v2/products', async (req, res) => {
           verifiedBadge: product.shop.verifiedBadge
         } : null
       })),
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.ceil(validProducts.length / limit),
       currentPage: page,
-      total
+      total: validProducts.length
     });
   } catch (error) {
     console.error('Error fetching products:', error);

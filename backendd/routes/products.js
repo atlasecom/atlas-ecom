@@ -37,9 +37,16 @@ router.post('/:id/track-click', async (req, res) => {
       };
     }
 
-    // Increment click count
+    // Increment click count in nested clickTracking object
     product.clickTracking[type]++;
     product.clickTracking.total++;
+    
+    // Also increment the top-level fields for analytics
+    if (type === 'whatsapp') {
+      product.whatsappClicks = (product.whatsappClicks || 0) + 1;
+    } else if (type === 'telegram') {
+      product.telegramClicks = (product.telegramClicks || 0) + 1;
+    }
 
     // Check if boost clicks are exhausted
     if (product.isBoosted && product.boostClicksRemaining) {
@@ -210,7 +217,10 @@ router.get('/', async (req, res) => {
     const SubCategory = require('../models/SubCategory');
     const { page = 1, limit = 12, category, search, minPrice, maxPrice, selectedSeller, sortBy = 'createdAt', order = 'desc' } = req.query;
     
-    const query = { isActive: true, isApproved: true }; // Only show approved products
+    const query = { 
+      isActive: true, 
+      isApproved: true
+    }; // Only show approved products
     
     if (category) {
       query.category = category;
@@ -255,9 +265,12 @@ router.get('/', async (req, res) => {
       .populate('category', 'name nameAr nameFr image')
       .populate('subcategory', 'name nameAr nameFr image tags');
 
+    // Filter out products with null shops
+    const validProducts = allProducts.filter(product => product.shop != null);
+
     // Separate boosted and normal products
-    const boostedProducts = allProducts.filter(product => product.isBoosted);
-    const normalProducts = allProducts.filter(product => !product.isBoosted);
+    const boostedProducts = validProducts.filter(product => product.isBoosted);
+    const normalProducts = validProducts.filter(product => !product.isBoosted);
 
     // Sort boosted products by priority (highest first)
     boostedProducts.sort((a, b) => {

@@ -19,13 +19,14 @@ const ProductsPage = () => {
   const [searchParams] = useSearchParams();
   const categoryData = searchParams.get("category");
   const subcategoryData = searchParams.get("subcategory");
+  const searchQuery = searchParams.get("item"); // Get search term from URL
 
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sellers, setSellers] = useState([]);
 
   // Filter states
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(searchQuery || ""); // Initialize with URL search term
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(categoryData || "");
@@ -87,6 +88,14 @@ const ProductsPage = () => {
     fetchProducts();
   }, []);
 
+  // Update search term when URL param changes
+  useEffect(() => {
+    if (searchQuery) {
+      setSearchTerm(searchQuery);
+      console.log('🔍 Search term from URL:', searchQuery);
+    }
+  }, [searchQuery]);
+
   // Update selected category and subcategory when URL params change or categories load
   useEffect(() => {
     console.log('🔍 URL Params:', { categoryData, subcategoryData });
@@ -136,7 +145,8 @@ const ProductsPage = () => {
         product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (typeof product.category === 'object' ? product.category?.name?.toLowerCase().includes(searchTerm.toLowerCase()) : product.category?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (typeof product.subcategory === 'object' ? product.subcategory?.name?.toLowerCase().includes(searchTerm.toLowerCase()) : product.subcategory?.toLowerCase().includes(searchTerm.toLowerCase()));
+        (typeof product.subcategory === 'object' ? product.subcategory?.name?.toLowerCase().includes(searchTerm.toLowerCase()) : product.subcategory?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (product.tags && Array.isArray(product.tags) && product.tags.some(tag => tag?.toLowerCase().includes(searchTerm.toLowerCase())));
 
       const matchesCategory = !selectedCategory || 
         (typeof product.category === 'object' ? product.category?._id === selectedCategory : product.category === selectedCategory);
