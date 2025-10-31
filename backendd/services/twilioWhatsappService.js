@@ -38,6 +38,25 @@ class TwilioWhatsAppService {
       console.log('   Account SID:', accountSid.substring(0, 10) + '...');
       console.log('   WhatsApp Number:', whatsappNumber);
       console.log('   Environment:', process.env.NODE_ENV || 'not set');
+      
+      // Detect if using sandbox (sandbox numbers typically have specific patterns)
+      const isSandbox = whatsappNumber.includes('+14155238886') || 
+                       whatsappNumber.includes('+1 415 523 8886') ||
+                       whatsappNumber.includes('sandbox');
+      
+      if (isSandbox) {
+        console.log('   ⚠️  DETECTED: Using Twilio WhatsApp Sandbox');
+        console.log('   ℹ️  IMPORTANT: Recipients must join sandbox before receiving messages');
+        console.log('   ℹ️  Steps to join:');
+        console.log('      1. Get sandbox join code from Twilio Console');
+        console.log('      2. Send join code FROM recipient phone TO sandbox number');
+        console.log('      3. Wait for confirmation message');
+        console.log('      4. 24-hour messaging window starts after join');
+      } else {
+        console.log('   ✅ Using Twilio WhatsApp Production API');
+        console.log('   ℹ️  Ensure your business is approved for WhatsApp Business API');
+      }
+      
       return true;
 
     } catch (error) {
@@ -93,6 +112,43 @@ class TwilioWhatsAppService {
       console.log('✅ WhatsApp message sent via Twilio successfully!');
       console.log('   Message SID:', response.sid);
       console.log('   Status:', response.status);
+      console.log('   Error Code:', response.errorCode || 'None');
+      console.log('   Error Message:', response.errorMessage || 'None');
+      
+      // Check if message is queued and provide helpful info
+      if (response.status === 'queued') {
+        console.log('   ⚠️  Message is queued. Checking delivery status...');
+        console.log('   ℹ️  If using Twilio WhatsApp Sandbox:');
+        console.log('      1. Recipient must join sandbox first');
+        console.log('      2. Send join code FROM recipient TO sandbox number');
+        console.log('      3. Wait for confirmation message');
+        console.log('      4. There is a 24-hour messaging window');
+        console.log('   ℹ️  Check Twilio Console → Monitor → Logs for delivery status');
+      }
+      
+      // Check delivery status after a short delay
+      setTimeout(async () => {
+        try {
+          const messageStatus = await this.client.messages(response.sid).fetch();
+          console.log('   📊 Message Status Update:');
+          console.log('      Status:', messageStatus.status);
+          console.log('      Error Code:', messageStatus.errorCode || 'None');
+          console.log('      Error Message:', messageStatus.errorMessage || 'None');
+          
+          if (messageStatus.status === 'failed' || messageStatus.errorCode) {
+            console.log('   ❌ Message delivery failed!');
+            if (messageStatus.errorCode === 63007) {
+              console.log('   💡 Solution: Recipient must join Twilio WhatsApp Sandbox first');
+            }
+          } else if (messageStatus.status === 'delivered') {
+            console.log('   ✅ Message delivered successfully!');
+          } else if (messageStatus.status === 'sent') {
+            console.log('   📤 Message sent (waiting for delivery confirmation)');
+          }
+        } catch (err) {
+          console.log('   ⚠️  Could not check message status:', err.message);
+        }
+      }, 3000); // Check after 3 seconds
       
       return {
         success: true,
@@ -100,7 +156,9 @@ class TwilioWhatsAppService {
         phoneNumber: phoneNumber,
         formattedNumber: whatsappNumber,
         provider: 'twilio',
-        status: response.status
+        status: response.status,
+        errorCode: response.errorCode,
+        errorMessage: response.errorMessage
       };
 
     } catch (error) {
