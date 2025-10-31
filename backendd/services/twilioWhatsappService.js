@@ -135,10 +135,22 @@ class TwilioWhatsAppService {
           console.log('      Error Code:', messageStatus.errorCode || 'None');
           console.log('      Error Message:', messageStatus.errorMessage || 'None');
           
-          if (messageStatus.status === 'failed' || messageStatus.errorCode) {
+          if (messageStatus.status === 'failed' || messageStatus.status === 'undelivered' || messageStatus.errorCode) {
             console.log('   ❌ Message delivery failed!');
             if (messageStatus.errorCode === 63007) {
               console.log('   💡 Solution: Recipient must join Twilio WhatsApp Sandbox first');
+            } else if (messageStatus.errorCode === 63016) {
+              console.log('   💡 Error 63016: Message delivery failed');
+              console.log('   📋 Possible reasons:');
+              console.log('      1. Phone number is not registered on WhatsApp');
+              console.log('      2. WhatsApp account is not active on that phone');
+              console.log('      3. Phone number format is incorrect');
+              console.log('      4. Recipient has blocked the sender number');
+              console.log('      5. WhatsApp Business API approval pending');
+              console.log('   🔍 Action: Verify the phone number has active WhatsApp account');
+            } else if (messageStatus.errorCode) {
+              console.log('   💡 Error Code:', messageStatus.errorCode);
+              console.log('   📋 Check Twilio documentation for error code:', messageStatus.errorCode);
             }
           } else if (messageStatus.status === 'delivered') {
             console.log('   ✅ Message delivered successfully!');
@@ -176,6 +188,8 @@ class TwilioWhatsAppService {
         errorMessage = 'Unsubscribed recipient. The phone number has unsubscribed from WhatsApp messages.';
       } else if (error.code === 63007) {
         errorMessage = 'Phone number not in WhatsApp sandbox. Send join code to Twilio sandbox number first.';
+      } else if (error.code === 63016) {
+        errorMessage = 'Message delivery failed. Phone number may not be registered on WhatsApp, account inactive, or number format incorrect.';
       }
       
       return {
