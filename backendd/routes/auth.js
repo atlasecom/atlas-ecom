@@ -1553,33 +1553,71 @@ router.post('/users/send-phone-verification', [
 
     // Send verification code via WhatsApp
     try {
+      console.log('📱 Sending verification code via WhatsApp...');
+      console.log('   Phone:', formattedPhone);
+      console.log('   Code:', code);
+      console.log('   NODE_ENV:', process.env.NODE_ENV);
+      
       const whatsappResult = await whatsappService.sendVerificationCode(formattedPhone, code);
       
       if (whatsappResult.success) {
+        console.log('✅ Verification code sent successfully via WhatsApp');
         res.json({
           success: true,
           message: 'Verification code sent to WhatsApp',
-          phone: formattedPhone
+          phone: formattedPhone,
+          provider: whatsappResult.provider || 'whatsapp'
         });
       } else {
-        console.error(`Failed to send WhatsApp code to ${formattedPhone}:`, whatsappResult.error);
+        console.error(`❌ Failed to send WhatsApp code to ${formattedPhone}:`);
+        console.error('   Error:', whatsappResult.error);
+        console.error('   Error Code:', whatsappResult.errorCode);
+        console.error('   Details:', whatsappResult.details);
         
-        res.json({
-          success: true,
-          message: 'WhatsApp service unavailable. Code logged to console.',
-          code: code, // Include code in response as fallback
-          phone: formattedPhone
-        });
+        // In development, show the code as fallback
+        // In production, return proper error
+        if (process.env.NODE_ENV === 'development') {
+          res.json({
+            success: true,
+            message: whatsappResult.error || 'WhatsApp service unavailable. Code logged to console.',
+            code: code, // Include code in response as fallback for development
+            phone: formattedPhone,
+            warning: true
+          });
+        } else {
+          // Production: Return error but include code for debugging
+          res.status(400).json({
+            success: false,
+            message: whatsappResult.error || 'Failed to send verification code via WhatsApp',
+            errorCode: whatsappResult.errorCode,
+            phone: formattedPhone,
+            code: code // Include code for now to help debug, remove later
+          });
+        }
       }
     } catch (error) {
-      console.error('WhatsApp service error:', error);
+      console.error('❌ WhatsApp service error:', error);
+      console.error('   Error details:', error.stack);
       
-      res.json({
-        success: true,
-        message: 'WhatsApp service error. Code logged to console.',
-        code: code, // Include code in response as fallback
-        phone: formattedPhone
-      });
+      // In development, show the code as fallback
+      if (process.env.NODE_ENV === 'development') {
+        res.json({
+          success: true,
+          message: 'WhatsApp service error. Code logged to console.',
+          code: code, // Include code in response as fallback for development
+          phone: formattedPhone,
+          warning: true,
+          error: error.message
+        });
+      } else {
+        // Production: Return error
+        res.status(500).json({
+          success: false,
+          message: 'WhatsApp service error. Please try again or contact support.',
+          phone: formattedPhone,
+          code: code // Include code for debugging
+        });
+      }
     }
 
   } catch (error) {

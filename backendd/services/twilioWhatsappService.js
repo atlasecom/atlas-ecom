@@ -35,6 +35,9 @@ class TwilioWhatsAppService {
       this.isReady = true;
       
       console.log('✅ Twilio WhatsApp Service initialized successfully');
+      console.log('   Account SID:', accountSid.substring(0, 10) + '...');
+      console.log('   WhatsApp Number:', whatsappNumber);
+      console.log('   Environment:', process.env.NODE_ENV || 'not set');
       return true;
 
     } catch (error) {
@@ -49,9 +52,13 @@ class TwilioWhatsAppService {
     if (!this.isReady || !this.client) {
       const initialized = await this.initialize();
       if (!initialized) {
+        console.error('❌ Twilio WhatsApp service is not ready. Check environment variables:');
+        console.error('   TWILIO_ACCOUNT_SID:', process.env.TWILIO_ACCOUNT_SID ? 'SET' : 'NOT SET');
+        console.error('   TWILIO_AUTH_TOKEN:', process.env.TWILIO_AUTH_TOKEN ? 'SET' : 'NOT SET');
+        console.error('   TWILIO_WHATSAPP_NUMBER:', process.env.TWILIO_WHATSAPP_NUMBER || 'NOT SET');
         return {
           success: false,
-          error: 'Twilio WhatsApp service is not ready',
+          error: 'Twilio WhatsApp service is not ready. Check environment variables and logs.',
           phoneNumber: phoneNumber
         };
       }
@@ -71,6 +78,11 @@ class TwilioWhatsAppService {
       // WhatsApp format: whatsapp:+countrycode+number
       const whatsappNumber = `whatsapp:+${formattedNumber}`;
 
+      console.log('📱 Attempting to send WhatsApp message via Twilio:');
+      console.log('   From:', this.whatsappNumber);
+      console.log('   To:', whatsappNumber);
+      console.log('   Original phone:', phoneNumber);
+
       // Send message via Twilio WhatsApp API
       const response = await this.client.messages.create({
         body: message,
@@ -78,22 +90,43 @@ class TwilioWhatsAppService {
         to: whatsappNumber
       });
       
-      console.log('✅ WhatsApp message sent via Twilio:', response.sid);
+      console.log('✅ WhatsApp message sent via Twilio successfully!');
+      console.log('   Message SID:', response.sid);
+      console.log('   Status:', response.status);
       
       return {
         success: true,
         messageId: response.sid,
         phoneNumber: phoneNumber,
-        provider: 'twilio'
+        formattedNumber: whatsappNumber,
+        provider: 'twilio',
+        status: response.status
       };
 
     } catch (error) {
-      console.error('❌ Twilio WhatsApp send message error:', error);
+      console.error('❌ Twilio WhatsApp send message error:');
+      console.error('   Error code:', error.code);
+      console.error('   Error message:', error.message);
+      console.error('   Phone number:', phoneNumber);
+      console.error('   Full error:', error);
+      
+      // Check for specific Twilio error codes
+      let errorMessage = error.message;
+      if (error.code === 21211) {
+        errorMessage = 'Invalid phone number format. For Twilio WhatsApp sandbox, you must join the sandbox first by sending the join code to the sandbox number.';
+      } else if (error.code === 21608) {
+        errorMessage = 'Unsubscribed recipient. The phone number has unsubscribed from WhatsApp messages.';
+      } else if (error.code === 63007) {
+        errorMessage = 'Phone number not in WhatsApp sandbox. Send join code to Twilio sandbox number first.';
+      }
+      
       return {
         success: false,
-        error: error.message,
+        error: errorMessage,
+        errorCode: error.code,
         phoneNumber: phoneNumber,
-        provider: 'twilio'
+        provider: 'twilio',
+        details: error.toString()
       };
     }
   }
