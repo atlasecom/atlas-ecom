@@ -140,14 +140,14 @@ class TwilioWhatsAppService {
             if (messageStatus.errorCode === 63007) {
               console.log('   💡 Solution: Recipient must join Twilio WhatsApp Sandbox first');
             } else if (messageStatus.errorCode === 63016) {
-              console.log('   💡 Error 63016: Message delivery failed');
-              console.log('   📋 Possible reasons:');
-              console.log('      1. Phone number is not registered on WhatsApp');
-              console.log('      2. WhatsApp account is not active on that phone');
-              console.log('      3. Phone number format is incorrect');
-              console.log('      4. Recipient has blocked the sender number');
-              console.log('      5. WhatsApp Business API approval pending');
-              console.log('   🔍 Action: Verify the phone number has active WhatsApp account');
+              console.log('   💡 Error 63016: Failed to send freeform message (outside 24h window)');
+              console.log('   📋 Solution: You MUST use a WhatsApp Message Template for verification codes');
+              console.log('   📝 Steps:');
+              console.log('      1. Create template in Twilio Console → Content → Templates');
+              console.log('      2. Get the Content SID (starts with HX...)');
+              console.log('      3. Add TWILIO_WHATSAPP_TEMPLATE_NAME to environment variables');
+              console.log('      4. See WHATSAPP_TEMPLATE_SETUP.md for detailed instructions');
+              console.log('   ⚠️  Templates are required for first-time messages (phone verification)');
             } else if (messageStatus.errorCode) {
               console.log('   💡 Error Code:', messageStatus.errorCode);
               console.log('   📋 Check Twilio documentation for error code:', messageStatus.errorCode);
@@ -189,7 +189,7 @@ class TwilioWhatsAppService {
       } else if (error.code === 63007) {
         errorMessage = 'Phone number not in WhatsApp sandbox. Send join code to Twilio sandbox number first.';
       } else if (error.code === 63016) {
-        errorMessage = 'Message delivery failed. Phone number may not be registered on WhatsApp, account inactive, or number format incorrect.';
+        errorMessage = 'Failed to send freeform message because you are outside the allowed window. For WhatsApp verification codes, you must use a Message Template. See TWILIO_WHATSAPP_SETUP.md for template setup instructions.';
       }
       
       return {
@@ -204,9 +204,98 @@ class TwilioWhatsAppService {
   }
 
   async sendVerificationCode(phoneNumber, code) {
-    const message = `🔐 Atlas E-commerce Verification Code\n\nYour verification code is: *${code}*\n\nThis code will expire in 10 minutes.\n\nDo not share this code with anyone.\n\nBest regards,\nAtlas E-commerce Team`;
+    // Check if template name is configured
+    const templateName = process.env.TWILIO_WHATSAPP_TEMPLATE_NAME;
     
-    return await this.sendMessage(phoneNumber, message);
+    if (templateName) {
+      // Use WhatsApp Message Template (required for first-time messages)
+      return await this.sendTemplateMessage(phoneNumber, templateName, [code]);
+    } else {
+      // Fallback to freeform message (only works within 24-hour window)
+      console.log('⚠️  No WhatsApp template configured. Using freeform message (may fail outside 24h window).');
+      const message = `🔐 Atlas E-commerce Verification Code\n\nYour verification code is: *${code}*\n\nThis code will expire in 10 minutes.\n\nDo not share this code with anyone.\n\nBest regards,\nAtlas E-commerce Team`;
+      return await this.sendMessage(phoneNumber, message);
+    }
+  }
+
+  async sendTemplateMessage(phoneNumber, templateName, parameters = []) {
+    if (!this.isReady || !this.client) {
+      const initialized = await this.initialize();
+      if (!initialized) {
+        return {
+          success: false,
+          error: 'Twilio WhatsApp service is not ready. Check environment variables and logs.',
+          phoneNumber: phoneNumber
+        };
+      }
+    }
+
+    try {
+      // Format phone number for WhatsApp
+      let formattedNumber = phoneNumber.replace(/\D/g, '');
+      
+      // Add country code if not present (assuming Moroccan numbers)
+      if (formattedNumber.startsWith('0')) {
+        formattedNumber = '212' + formattedNumber.substring(1);
+      } else if (!formattedNumber.startsWith('212')) {
+        formattedNumber = '212' + formattedNumber;
+      }
+
+      // WhatsApp format: whatsapp:+countrycode+number
+      const whatsappNumber = `whatsapp:+${formattedNumber}`;
+
+      console.log('📱 Attempting to send WhatsApp template via Twilio:');
+      console.log('   From:', this.whatsappNumber);
+      console.log('   To:', whatsappNumber);
+      console.log('   Template:', templateName);
+      console.log('   Parameters:', parameters);
+
+      // Send template message via Twilio WhatsApp API
+      // Template format: Template name with {{1}}, {{2}}, etc. for parameters
+      const contentSid = templateName; // This should be the Content SID from Twilio
+      
+      // Try using content variables for template messages
+      const contentVariables = JSON.stringify(
+        parameters.reduce((acc, param, index) => {
+          acc[`${index + 1}`] = param;
+          return acc;
+        }, {})
+      );
+
+      const response = await this.client.messages.create({
+        contentSid: contentSid,
+        contentVariables: contentVariables,
+        from: this.whatsappNumber,
+        to: whatsappNumber
+      });
+      
+      console.log('✅ WhatsApp template sent via Twilio successfully!');
+      console.log('   Message SID:', response.sid);
+      console.log('   Status:', response.status);
+      
+      return {
+        success: true,
+        messageId: response.sid,
+        phoneNumber: phoneNumber,
+        formattedNumber: whatsappNumber,
+        provider: 'twilio',
+        status: response.status,
+        template: templateName
+      };
+
+    } catch (error) {
+      console.error('❌ Twilio WhatsApp send template error:');
+      console.error('   Error code:', error.code);
+      console.error('   Error message:', error.message);
+      console.error('   Template:', templateName);
+      console.error('   Full error:', error);
+      
+      // Fallback to regular message if template fails
+      console.log('   ⚠️  Falling back to freeform message...');
+      const code = parameters[0] || 'CODE';
+      const message = `🔐 Atlas E-commerce Verification Code\n\nYour verification code is: *${code}*\n\nThis code will expire in 10 minutes.`;
+      return await this.sendMessage(phoneNumber, message);
+    }
   }
 
   isServiceReady() {
